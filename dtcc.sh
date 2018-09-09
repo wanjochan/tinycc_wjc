@@ -1,5 +1,2 @@
-# eg.
-# ./dtcc -v
-# ./dtcc -run examples/ex5.c
-
-docker run -v `pwd`:/work/ -w /work/ -ti cmptech/tinycc_dev tcc $*
+#docker run -v `pwd`:/work/ -w /work/ -ti cmptech/tinycc_dev tcc $*
+sh dkrun.sh tcc $*
