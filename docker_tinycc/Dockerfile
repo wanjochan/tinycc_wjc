@@ -1,0 +1,31 @@
+#FROM alpine:edge
+FROM alpine
+
+#old for edge...
+#RUN echo "http://nl.alpinelinux.org/alpine/latest-stable/main" > /etc/apk/repositories \
+#&& echo "http://nl.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories \
+#&& echo "http://nl.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories \
+#&& echo "nameserver 8.8.8.8" >> /etc/resolv.conf && apk update && apk upgrade && \
+
+#apk del libaio-dev php7-dev git autoconf build-base linux-headers
+
+#TODO 
+#docker run -v"$PWD:/sptrader" -i -w/sptrader $1 \
+#	cmptech/auto_ubuntuessential_nodejs_sharessl \
+#	sh run_api_server_in_docker.sh $*
+
+#&& ./configure --config=musl && make && amke install \
+
+
+RUN apk update && apk upgrade \
+&& apk add git autoconf build-base linux-headers \
+&& cd /root/ \
+&& git clone https://github.com/mirror/tinycc.git --depth 1 \
+&& cd tinycc/ \
+&& ./configure --config-musl && make && make install \
+&& apk del git autoconf build-base \
+&& rm -rf /var/cache/apk/* \
+&& rm -rf /root/tinycc* \
+&& rm -rf /tmp/*
+
+
