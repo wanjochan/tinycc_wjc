@@ -1,3 +1,2 @@
-IMID=`docker build .`
-CID=`docker run -D $IMID`
-docker commit cmptech/tinycc $CID
+docker build -t cmptech/tinycc_dev .
+docker push cmptech/tinycc_dev
