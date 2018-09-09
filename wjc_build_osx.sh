@@ -12,8 +12,9 @@ make install
 cp -R ../include_mac ./
 cp -R ../examples ./
 
-# TODO ren later
-cp ../wjc_tcc_tcc_osx_test.sh ./tcctcc.sh
+# TODO later
+#cp ../wjc_tcc_tcc_osx_test.sh ./tcctcc.sh
+
 cp ../wjc_tcc_run_in.sh ./tcc_run.sh
 
 chmod +x *.sh
@@ -27,5 +28,5 @@ echo ---------- test examples/ex1
 echo ---------- test examples/ex3
 ./tcc_run.sh examples/ex3.c 30
 
-echo ----------- test tcctcc.sh -vv
-./tcctcc.sh -vv
+#echo ----------- test tcctcc.sh -vv
+#./tcctcc.sh -vv
