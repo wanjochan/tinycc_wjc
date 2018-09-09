@@ -56,3 +56,8 @@ tests/vla_test
 tests/hello
 tests/tests2/fred.txt
 build_wjc
+build_tcc
+build_docker_tcc
+build_docker_tcc_tcc
+build_docker
+build
