@@ -20,7 +20,8 @@ cp -R ../examples ./
 # TODO ren later
 #cp ../wjc_tcc_tcc_osx_test.sh ./tcctcc.sh
 #cp ../wjc_tcc_run_in.sh ./tcc_run.sh
-#
+cp ../wjc_tcc_run_in_docker.sh ./tcc_run.sh
+
 #chmod +x *.sh
 #
 #echo ---------- test examples/ex5
@@ -30,7 +31,7 @@ cp -R ../examples ./
 #./tcc_run.sh examples/ex1.c
 #
 #echo ---------- test examples/ex3
-#./tcc_run.sh examples/ex3.c 30
+./tcc_run.sh examples/ex3.c 30
 #
 #echo ----------- test tcctcc.sh -vv
 #./tcctcc.sh -vv
