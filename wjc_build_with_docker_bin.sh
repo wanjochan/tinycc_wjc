@@ -5,7 +5,7 @@ mkdir build_docker
 cd build_docker
 
 #../configure --prefix=. --cc=clang
-../configure --config-musl --prefix=. ONE_SOURCE=yes --cc=tcc
+../configure --config-musl --prefix=. --cc=tcc
 
 make clean
 make ONE_SOURCE=yes
@@ -14,6 +14,8 @@ make install
 #cp -R ../include_mac ./
 
 cp -R ../examples ./
+
+# TODO test with dtcc then
 
 # TODO ren later
 #cp ../wjc_tcc_tcc_osx_test.sh ./tcctcc.sh
