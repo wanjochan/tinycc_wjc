@@ -3,7 +3,12 @@ mkdir build_wjc
 cd build_wjc
 
 #../configure --prefix=. --cc=clang
-../configure --prefix=.
+#../configure --prefix=.
+
+#TODO fail on OS:
+#../configure --prefix=. --config-musl
+
+../configure --prefix=. 
 
 make clean
 make ONE_SOURCE=yes

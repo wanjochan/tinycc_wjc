@@ -193,6 +193,10 @@ $(X)tcc.o : tcctools.c
 tcc$(EXESUF): tcc.o $(LIBTCC)
 	$(CC) -o $@ $^ $(LIBS) $(LDFLAGS) $(LINK_LIBTCC)
 
+# tcc_core_run
+tcc_core_run: tcc_core_run.o $(LIBTCC)
+	$(CC) -o $@ $^ $(LIBS) $(LDFLAGS) $(LINK_LIBTCC)
+
 # Cross Tiny C Compilers
 %-tcc$(EXESUF): FORCE
 	@$(MAKE) --no-print-directory $@ CROSS_TARGET=$* ONE_SOURCE=$(or $(ONE_SOURCE),yes)
@@ -366,6 +370,9 @@ distclean: clean
 help:
 	@echo "make"
 	@echo "   build native compiler (from separate objects)"
+	@echo ""
+	@echo "make tcc_core_run"
+	@echo "   build tcc_core_run"
 	@echo ""
 	@echo "make cross"
 	@echo "   build cross compilers (from one source)"
