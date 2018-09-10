@@ -1,36 +1,17 @@
+Fabrice Bellard is one of the best Programmer of the world.
+
 # Target
 
-build and install to any folder (standalone)
-sh standalone/tccsh.sh -run $PWD/tcc.c $*
-* build tcc with tcc
-* build tcc with tcc-cross
-* build tcc-corss with tcc-cross
-
-# Thoughts
-
-* Fabrice Bellard is one of the best Programmer of the world, which's why I tried best not to touch the source codes from mob
-
-重点 tccpp 预编译器 到内存
-
-计划:
-
-* 先写 tcc_pp
-* 重做 tcc_pp_run （参考tccrun）
-
-tccpp.h
-tccpp.c //编译到内存
-tcc_pp_run.c //执行编译后的内存程序
-
-tcc_??? //新的tcc ?
-
-using elf2mac to build OSX binary later...
-https://github.com/vertis/objconv/blob/master/src/elf2mac.cpp
-wget https://github.com/vertis/objconv/raw/master/src/elf2mac.cpp
+* iPhone build;
+* Android build;
+* OSX build (need to learn objconv + mach-o); estimate 1 year later
 
 # OSX stuffs
 
-## llvm symbol table dumper
+https://github.com/vertis/objconv/blob/master/src/elf2mac.cpp
+wget https://github.com/vertis/objconv/raw/master/src/elf2mac.cpp
 
+## llvm symbol table dumper
 ```
 ## 
 nm -D /usr/lib/libc.dylib 
