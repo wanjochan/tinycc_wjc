@@ -12,6 +12,7 @@ cd build_wjc
 
 make clean
 make ONE_SOURCE=yes
+#make tcc_core_run
 make install
 
 cp -R ../include_mac ./

@@ -281,6 +281,9 @@ redo:
 
 	s->ppfp = ppfp;
 
+	//wjc tmp 还有问题，应该是还有参数影响到 。
+	tcc_set_output_type(s, TCC_OUTPUT_MEMORY);
+
 	//TODO add notes to explain dflag
 	s->dflag |= t ? 32 : 0, s->run_test = ++t, n = s->nb_files;
 

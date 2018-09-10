@@ -193,9 +193,9 @@ $(X)tcc.o : tcctools.c
 tcc$(EXESUF): tcc.o $(LIBTCC)
 	$(CC) -o $@ $^ $(LIBS) $(LDFLAGS) $(LINK_LIBTCC)
 
-# tcc_core_run
-tcc_core_run: tcc_core_run.o $(LIBTCC)
-	$(CC) -o $@ $^ $(LIBS) $(LDFLAGS) $(LINK_LIBTCC)
+## tcc_core_run
+#tcc_core_run: tcc_core_run.o $(LIBTCC)
+#	$(CC) -o $@ $^ $(LIBS) $(LDFLAGS) $(LINK_LIBTCC)
 
 # Cross Tiny C Compilers
 %-tcc$(EXESUF): FORCE
