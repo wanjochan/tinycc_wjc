@@ -9,7 +9,7 @@ cd build_docker
 
 make clean
 make ONE_SOURCE=yes
-#make cross
+make cross
 #make test
 make install
 
@@ -37,3 +37,8 @@ cp ../wjc_tcc_run_in_docker.sh ./tcc_run.sh
 #
 #echo ----------- test tcctcc.sh -vv
 #./tcctcc.sh -vv
+
+
+# build a test_c for i386 win32
+./i386-win32-tcc -o ../test_wjc/test_c_w32.exe ../test_wjc/test_c.c
+
