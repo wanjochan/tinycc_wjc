@@ -75,3 +75,7 @@ echo dkrun ./mjsbin mjs/tests/test_1.js
 #https://code.google.com/archive/p/quad-wheel/
 #https://github.com/gfwilliams/tiny-js
 #https://github.com/cesanta/v7 (moved to mjs)
+
+# TODO UV
+#https://github.com/wanjochan/uv_callback
+#https://github.com/libuv/libuv
