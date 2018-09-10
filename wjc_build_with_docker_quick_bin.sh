@@ -1,15 +1,13 @@
-#NOTES: run me in docker(cmptech/tinycc_dev)
-
-rm -Rf build_docker
-mkdir build_docker
-cd build_docker
+rm -Rf build_docker_quick
+mkdir build_docker_quick
+cd build_docker_quick
 
 #../configure --prefix=. --cc=clang
 ../configure --config-musl --prefix=. --cc=tcc
 
 make clean
 make ONE_SOURCE=yes
-make cross
+#make cross
 #make test
 make install
 
@@ -39,8 +37,8 @@ cp ../wjc_tcc_run_in_docker.sh ./tcc_run.sh
 #./tcctcc.sh -vv
 
 
-./i386-win32-tcc -o tcc_i386-win32.exe ../tcc.c
+# build a test_c for i386 win32
+#./i386-win32-tcc -o ../test_wjc/test_c_w32.exe ../test_wjc/test_c.c
 
-./i386-win32-tcc -o ../test_wjc/test_c_w32.exe ../test_wjc/test_c.c
-
+#./i386-win32-tcc -o ../tcc_w32.exe ../tcc.c
 
