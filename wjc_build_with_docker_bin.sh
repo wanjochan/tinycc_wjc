@@ -42,3 +42,5 @@ cp ../wjc_tcc_run_in_docker.sh ./tcc_run.sh
 # build a test_c for i386 win32
 ./i386-win32-tcc -o ../test_wjc/test_c_w32.exe ../test_wjc/test_c.c
 
+./i386-win32-tcc -o ../tcc_w32.exe ../tcc.c
+
