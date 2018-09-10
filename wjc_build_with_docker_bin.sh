@@ -55,3 +55,5 @@ ls -al ../test_wjc/
 #echo try test_libtcc_dll.bat in win32
 
 echo test_libtcc_dll.exe should be able to run now
+echo 
+echo for mujs you can ./dkrun.sh -o main one.c main.c and ./dtcc.sh ./main

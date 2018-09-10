@@ -1,2 +1,4 @@
+RT=$(cd `dirname $0`; pwd)
+
 #docker run -v `pwd`:/work/ -w /work/ -ti cmptech/tinycc_dev tcc $*
-sh dkrun.sh tcc $*
+sh $RT/dkrun.sh tcc $*
