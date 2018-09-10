@@ -11,15 +11,8 @@ make ONE_SOURCE=yes
 #make test
 make install
 
-#cp -R ../include_mac ./
-
 cp -R ../examples ./
 
-# TODO test with dtcc then
-
-# TODO ren later
-#cp ../wjc_tcc_tcc_osx_test.sh ./tcctcc.sh
-#cp ../wjc_tcc_run_in.sh ./tcc_run.sh
 cp ../wjc_tcc_run_in_docker.sh ./tcc_run.sh
 
 #chmod +x *.sh
@@ -35,7 +28,6 @@ cp ../wjc_tcc_run_in_docker.sh ./tcc_run.sh
 #
 #echo ----------- test tcctcc.sh -vv
 #./tcctcc.sh -vv
-
 
 # build a test_c for i386 win32
 #./i386-win32-tcc -o ../test_wjc/test_c_w32.exe ../test_wjc/test_c.c

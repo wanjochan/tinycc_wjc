@@ -15,7 +15,6 @@ make
 ##make install
 
 cp -R ../include ./
-cp -R ../include_mac ./
 
 #cp ../libtcc1.a ./
 

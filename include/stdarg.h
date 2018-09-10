@@ -16,7 +16,16 @@ typedef struct {
     char *reg_save_area;
 } __va_list_struct;
 
+#ifndef _VA_LIST_T //OSX
+
+#ifndef __DEFINED_va_list
+
 typedef __va_list_struct va_list[1];
+#define __DEFINED_va_list
+
+#endif //__DEFINED_va_list
+
+#endif //_VA_LIST_T
 
 void __va_start(__va_list_struct *ap, void *fp);
 void *__va_arg(__va_list_struct *ap, int arg_type, int size, int align);

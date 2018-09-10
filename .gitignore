@@ -63,3 +63,4 @@ build_docker
 build
 build_tcc_tcc
 build_docker_quick
+_del

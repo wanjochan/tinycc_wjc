@@ -13,8 +13,6 @@ make cross
 #make test
 make install
 
-#cp -R ../include_mac ./
-
 cp -R ../examples ./
 
 # TODO test with dtcc then
