@@ -9,6 +9,8 @@ cd build_docker
 
 make clean
 make ONE_SOURCE=yes
+#make cross
+#make test
 make install
 
 #cp -R ../include_mac ./

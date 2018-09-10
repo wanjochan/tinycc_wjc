@@ -25,6 +25,7 @@ tcc_??? //新的tcc ?
 
 using elf2mac to build OSX binary later...
 https://github.com/vertis/objconv/blob/master/src/elf2mac.cpp
+wget https://github.com/vertis/objconv/raw/master/src/elf2mac.cpp
 
 # OSX stuffs
 
