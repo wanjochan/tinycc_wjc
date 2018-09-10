@@ -60,11 +60,18 @@ echo sudo cp dtcc /usr/loca/bin/
 echo 
 echo test_libtcc_dll.exe should be able to run now
 echo 
-echo mujs:
+echo mujs (338 KB, https://mujs.com/):
 echo dtcc -o main one.c main.c
 echo dkrun ./main
 echo 
-echo mjs:
+echo mjs(214 KB, https://github.com/cesanta/mjs):
 echo dtcc -DMJS_MAIN -o mjsbin mjs.c
 echo dkrun ./mjsbin mjs/tests/test_1.js
 
+#TODO
+#https://duktape.org/
+#https://github.com/espruino/Espruino
+#http://jerryscript.net/
+#https://code.google.com/archive/p/quad-wheel/
+#https://github.com/gfwilliams/tiny-js
+#https://github.com/cesanta/v7 (moved to mjs)
