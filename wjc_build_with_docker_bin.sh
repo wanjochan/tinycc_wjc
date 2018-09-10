@@ -55,10 +55,16 @@ ls -al ../test_wjc/
 #echo try test_libtcc_dll.bat in win32
 
 echo you can:
-echo sudo cp dkrun.sh /usr/loca/bin/dkrun
-echo sudo cp dtcc.sh /usr/loca/bin/dtcc
+echo sudo cp dkrun /usr/loca/bin/
+echo sudo cp dtcc /usr/loca/bin/
 echo 
 echo test_libtcc_dll.exe should be able to run now
 echo 
-echo for mujs you can ./dkrun.sh -o main one.c main.c and ./dtcc.sh ./main
+echo mujs:
+echo dtcc -o main one.c main.c
+echo dkrun ./main
+echo 
+echo mjs:
+echo dtcc -DMJS_MAIN -o mjsbin mjs.c
+echo dkrun ./mjsbin mjs/tests/test_1.js
 
