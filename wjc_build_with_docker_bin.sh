@@ -70,11 +70,22 @@ echo dkrun ./mjsbin mjs/tests/test_1.js
 
 #TODO
 #https://duktape.org/ - https://github.com/svaarala/duktape
+#
+#static(docker) OK:
+#dtcc -std=c99 -ohello hello.c duktape.c -lm
+#dkrun ./hello
+#
+#dyn(539KB, docker) basic OK:
+#dtcc -fPIC -ldl -shared -rdynamic -soname duktape.dl.lnx -o duktape.dl.lnx duktape.c
+#dtcc -fPIC -ldl -O2 -Wall -shared -rdynamic -soname duktape.dl.lnx -o duktape.dl.lnx duktape.c && ls -al duktape.dl.lnx
+#echo export LD_LIBRARY_PATH=\$PWD > test_c.sh && echo ./hello >> test_c.sh
+#dkrun sh test_c.sh 
+
 #https://github.com/espruino/Espruino
 #http://jerryscript.net/
-#https://code.google.com/archive/p/quad-wheel/
-#https://github.com/gfwilliams/tiny-js
-#https://github.com/cesanta/v7 (moved to mjs)
+#https://code.google.com/archive/p/quad-wheel/ - https://github.com/radare/quad-wheel
+#https://github.com/gfwilliams/tiny-js (cpp, give-up)
+#https://github.com/cesanta/v7 (moved to mjs, give-up)
 
 # TODO UV
 #https://github.com/wanjochan/uv_callback
