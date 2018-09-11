@@ -91,5 +91,8 @@ echo dkrun ./mjsbin mjs/tests/test_1.js
 #https://github.com/wanjochan/uv_callback
 #https://github.com/libuv/libuv
 
-# TODO Smaller C
+# Smaller C
 # https://github.com/alexfru/SmallerC
+# need to fix readline, remove the -f
+# compile pass using:
+# dkrun make
