@@ -1,7 +1,7 @@
 FROM alpine
 
 RUN apk update && apk upgrade \
-&& apk add git autoconf build-base linux-headers \
+&& apk add git autoconf build-base linux-headers nasm \
 && cd /root/ \
 && git clone https://github.com/mirror/tinycc.git --depth 1 \
 && cd tinycc/ \

@@ -69,7 +69,7 @@ echo dtcc -DMJS_MAIN -o mjsbin mjs.c
 echo dkrun ./mjsbin mjs/tests/test_1.js
 
 #TODO
-#https://duktape.org/
+#https://duktape.org/ - https://github.com/svaarala/duktape
 #https://github.com/espruino/Espruino
 #http://jerryscript.net/
 #https://code.google.com/archive/p/quad-wheel/
@@ -79,3 +79,6 @@ echo dkrun ./mjsbin mjs/tests/test_1.js
 # TODO UV
 #https://github.com/wanjochan/uv_callback
 #https://github.com/libuv/libuv
+
+# TODO Smaller C
+# https://github.com/alexfru/SmallerC

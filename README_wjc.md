@@ -131,3 +131,13 @@ nm /usr/lib/libc.dylib
                  U _xpc_atfork_prepare
                  U dyld_stub_binder
 ```
+
+# Smaller C
+```
+//readlink remove -f...
+
+dkrun ./configure
+dkrun ./make
+dkrun ./make install
+```
+
