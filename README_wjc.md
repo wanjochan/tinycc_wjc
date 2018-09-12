@@ -6,6 +6,55 @@ Fabrice Bellard is one of the best Programmer of the world.
 * Android build;
 * OSX build (need to learn objconv + mach-o); estimate 1 year later
 
+
+# More Testing...
+
+```
+#echo try test_libtcc_dll.bat in win32
+echo you can:
+echo sudo cp dkrun /usr/loca/bin/
+echo sudo cp dtcc /usr/loca/bin/
+echo 
+echo test_libtcc_dll.exe should be able to run now
+echo 
+echo mujs (338 KB, https://mujs.com/):
+echo dtcc -o main one.c main.c
+echo dkrun ./main
+echo 
+echo mjs(214 KB, https://github.com/cesanta/mjs):
+echo dtcc -DMJS_MAIN -o mjsbin mjs.c
+echo dkrun ./mjsbin mjs/tests/test_1.js
+
+#TODO
+#https://duktape.org/ - https://github.com/svaarala/duktape
+#
+#static(docker) OK:
+#dtcc -std=c99 -ohello hello.c duktape.c -lm
+#dkrun ./hello
+#
+#dyn(539KB, docker) basic OK:
+#dtcc -fPIC -ldl -shared -rdynamic -soname duktape.dl.lnx -o duktape.dl.lnx duktape.c
+#dtcc -fPIC -ldl -O2 -Wall -shared -rdynamic -soname duktape.dl.lnx -o duktape.dl.lnx duktape.c && ls -al duktape.dl.lnx
+#echo export LD_LIBRARY_PATH=\$PWD > test_c.sh && echo ./hello >> test_c.sh
+#dkrun sh test_c.sh 
+
+#https://github.com/espruino/Espruino
+#http://jerryscript.net/
+#https://code.google.com/archive/p/quad-wheel/ - https://github.com/radare/quad-wheel
+#https://github.com/gfwilliams/tiny-js (cpp, give-up)
+#https://github.com/cesanta/v7 (moved to mjs, give-up)
+
+# TODO UV
+#https://github.com/wanjochan/uv_callback
+#https://github.com/libuv/libuv
+
+# Smaller C
+# https://github.com/alexfru/SmallerC
+# need to fix readline, remove the -f
+# compile pass using:
+# dkrun make
+```
+
 # OSX stuffs
 
 https://github.com/vertis/objconv/blob/master/src/elf2mac.cpp
