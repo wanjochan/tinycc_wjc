@@ -1,4 +1,7 @@
-#RT=$(cd `dirname $0`; pwd)
-#docker run -v `pwd`:/work/ -w /work/ -ti cmptech/tinycc_dev tcc $*
+#!/bin/sh
+
+docker tcc 
+
+#TODO if not found dkrun then do ./dkrun tcc $*
 
 dkrun tcc $*
