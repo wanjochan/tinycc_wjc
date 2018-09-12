@@ -1,3 +1,5 @@
+#
+
 Fabrice Bellard is one of the best Programmer of the world.
 
 # Target
@@ -6,6 +8,11 @@ Fabrice Bellard is one of the best Programmer of the world.
 * Android build;
 * OSX build (need to learn objconv + mach-o); estimate 1 year later
 
+# TODO
+
+* remove 
+* tcc_make (quick replacement for the make) auto judge plaform and arch
+* cross build all binary for all platform known.. ${arch}_${os} like nodejs addon?
 
 # More Testing...
 
@@ -30,6 +37,9 @@ echo dkrun ./mjsbin mjs/tests/test_1.js
 #
 #static(docker) OK:
 #dtcc -std=c99 -ohello hello.c duktape.c -lm
+tcc -o eval1 eval.c duktape.c -lm
+tcc -o eval2 eval.c duktape.c
+i386-win32-tcc -DDUK_F_MINT -o eval.exe eval.c duktape.c
 #dkrun ./hello
 #
 #dyn(539KB, docker) basic OK:
@@ -37,6 +47,11 @@ echo dkrun ./mjsbin mjs/tests/test_1.js
 #dtcc -fPIC -ldl -O2 -Wall -shared -rdynamic -soname duktape.dl.lnx -o duktape.dl.lnx duktape.c && ls -al duktape.dl.lnx
 #echo export LD_LIBRARY_PATH=\$PWD > test_c.sh && echo ./hello >> test_c.sh
 #dkrun sh test_c.sh 
+
+#i386-win32-tcc -std=c99 -DDUK_F_MINT -DTCC_TARGET_I386 -DTCC_TARGET_PE -shared -rdynamic -soname duktape.dl.win -o duktape.dl.win duktape.c
+i386-win32-tcc -DDUK_F_MINT -shared -rdynamic -soname duktape.dl.win -o duktape.dl.win duktape.c
+i386-win32-tcc -DDUK_F_MINT -o hello.exe hello.c duktape.dl.win
+i386-win32-tcc -DDUK_F_MINT -o eval.exe eval.c duktape.dl.win
 
 #https://github.com/espruino/Espruino
 #http://jerryscript.net/
