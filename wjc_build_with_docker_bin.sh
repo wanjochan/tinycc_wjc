@@ -28,6 +28,13 @@ chmod +x *.sh
 #echo ---------- test examples/ex3
 ./tcc_run.sh examples/ex3.c 30
 
+
+# TODO rebuild  "i386-win32-tcc" with libtcc1.a in same folder.....
+
+
+
+
+
 # i386 cross test
 
 #cp i386-libtcc1.a ../test_wjc/
