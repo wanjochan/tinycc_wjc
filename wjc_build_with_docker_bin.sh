@@ -41,15 +41,15 @@ chmod +x *.sh
 #cp i386-win32-libtcc1.a ../test_wjc/
 cp i386-win32-libtcc1.a ../test_wjc/lib/libtcc1.a
 
-./i386-win32-tcc -o ../test_wjc/test_c_w32.exe ../test_wjc/test_c.c
+./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -o ../test_wjc/test_c_w32.exe ../test_wjc/test_c.c
 
-./i386-win32-tcc -o ../test_wjc/tcc_i386-win32.exe ../tcc.c
-./i386-win32-tcc -I.. -shared -rdynamic -o ../test_wjc/libtcc_dll.dll ../test_wjc/libtcc_dll.c
+./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -o ../test_wjc/tcc_i386-win32.exe ../tcc.c
+./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -I.. -shared -rdynamic -o ../test_wjc/libtcc_dll.dll ../test_wjc/libtcc_dll.c
 
 ./i386-win32-tcc -impdef ../test_wjc/libtcc_dll.dll
 mv *.def ../test_wjc/
 
-./i386-win32-tcc -o ../test_wjc/test_libtcc_dll.exe ../test_wjc/test_libtcc_dll.c ../test_wjc/libtcc_dll.dll
+./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -o ../test_wjc/test_libtcc_dll.exe ../test_wjc/test_libtcc_dll.c ../test_wjc/libtcc_dll.dll
 
 cp -R lib ../test_wjc/
 cp -Rf ../include ../test_wjc
