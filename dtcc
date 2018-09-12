@@ -1,7 +1,3 @@
 #!/bin/sh
 
-docker tcc 
-
-#TODO if not found dkrun then do ./dkrun tcc $*
-
 dkrun tcc $*
