@@ -1866,9 +1866,13 @@ static void pe_add_runtime(TCCState *s1, struct pe_info *pe)
         ELFW(ST_INFO)(STB_GLOBAL, STT_NOTYPE), 0,
         SHN_UNDEF, start_symbol);
 
+		//TODO.wjc nostdlib
     if (0 == s1->nostdlib) {
         static const char *libs[] = {
-            TCC_LIBTCC1, "msvcrt", "kernel32", "", "user32", "gdi32", NULL
+#ifdef TCC_LIBTCC1
+            TCC_LIBTCC1,
+#endif
+						"msvcrt", "kernel32", "", "user32", "gdi32", NULL
         };
         const char **pp, *p;
         for (pp = libs; 0 != (p = *pp); ++pp) {
