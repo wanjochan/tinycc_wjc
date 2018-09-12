@@ -32,7 +32,7 @@ chmod +x *.sh
 
 #cp i386-libtcc1.a ../test_wjc/
 #cp i386-win32-libtcc1.a ../test_wjc/
-#cp i386-win32-libtcc1.a ../test_wjc/lib/libtcc1.a
+cp i386-win32-libtcc1.a ../test_wjc/lib/libtcc1.a
 
 ./i386-win32-tcc -o ../test_wjc/test_c_w32.exe ../test_wjc/test_c.c
 
@@ -44,6 +44,7 @@ mv *.def ../test_wjc/
 
 ./i386-win32-tcc -o ../test_wjc/test_libtcc_dll.exe ../test_wjc/test_libtcc_dll.c ../test_wjc/libtcc_dll.dll
 
+cp -R lib ../test_wjc/
 cp -Rf ../include ../test_wjc
 cp -R ../win32/include/* ../test_wjc/include/
 

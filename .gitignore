@@ -65,3 +65,4 @@ build_tcc_tcc
 build_docker_quick
 _del
 test_wjc/include
+test_wjc/lib
