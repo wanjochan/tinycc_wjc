@@ -39,9 +39,9 @@ chmod +x *.sh
 
 ./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -o ../test_wjc/tcc_i386-win32.exe ../tcc.c
 
-cp ../test_wjc/tcc_i386-win32.exe ../text_wjc/tcc_upx.exe
+cp ../test_wjc/tcc_i386-win32.exe ../test_wjc/tcc_upx.exe
 
-upx ../text_wjc/tcc_upx.exe
+upx ../test_wjc/tcc_upx.exe
 
 #./i386-win32-tcc -DTCC_LIB_DLL -I.. -shared -rdynamic -o ../test_wjc/libtcc.dll ../tcc.c
 ./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -DTCC_LIB_DLL -I.. -shared -rdynamic -o ../test_wjc/libtcc.dll ../tcc.c
