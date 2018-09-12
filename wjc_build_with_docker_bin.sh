@@ -28,12 +28,11 @@ chmod +x *.sh
 #echo ---------- test examples/ex3
 ./tcc_run.sh examples/ex3.c 30
 
-#
-cp i386-libtcc1.a ../test_wjc/
+# i386 cross test
 
-#
-cp i386-win32-libtcc1.a ../test_wjc/
-cp i386-win32-libtcc1.a ../test_wjc/lib/libtcc1.a
+#cp i386-libtcc1.a ../test_wjc/
+#cp i386-win32-libtcc1.a ../test_wjc/
+#cp i386-win32-libtcc1.a ../test_wjc/lib/libtcc1.a
 
 ./i386-win32-tcc -o ../test_wjc/test_c_w32.exe ../test_wjc/test_c.c
 
