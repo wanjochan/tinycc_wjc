@@ -14,6 +14,13 @@ Fabrice Bellard is one of the best Programmer of the world.
 * tcc_make (quick replacement for the make) auto judge plaform and arch
 * cross build all binary for all platform known.. ${arch}_${os} like nodejs addon?
 
+# WIN32
+
+```
+http://download.savannah.gnu.org/releases/tinycc/
+http://download.savannah.gnu.org/releases/tinycc/winapi-full-for-0.9.27.zip
+```
+
 # More Testing...
 
 ```

@@ -3,6 +3,7 @@ export PS1='\u: \w\n$ '
 #alias rn='react-native'
 
 alias ll='ls -al'
+alias tcc_run='tcc -I. -I.. -run'
 
 #alias subl='~/bin/subl -w'
 
