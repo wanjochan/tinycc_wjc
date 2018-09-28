@@ -16,16 +16,15 @@ typedef struct {
     char *reg_save_area;
 } __va_list_struct;
 
-#ifndef _VA_LIST_T //For OSX
+#ifndef _VA_LIST_T{//Tmp For OSX, TODO check wheter effect other place??
+#define _VA_LIST_T
 
-#ifndef __DEFINED_va_list
+//#include <machine/types.h> /* __darwin_va_list */
+//typedef __darwin_va_list va_list;
 
 typedef __va_list_struct va_list[1];
-#define __DEFINED_va_list
 
-#endif //__DEFINED_va_list
-
-#endif //_VA_LIST_T
+#endif //} _VA_LIST_T
 
 void __va_start(__va_list_struct *ap, void *fp);
 void *__va_arg(__va_list_struct *ap, int arg_type, int size, int align);
@@ -36,8 +35,6 @@ void *__va_arg(__va_list_struct *ap, int arg_type, int size, int align);
 #define va_copy(dest, src) (*(dest) = *(src))
 #define va_end(ap)
 
-/* avoid conflicting definition for va_list on Macs. */
-#define _VA_LIST_T
 
 #else /* _WIN64 */
 typedef char *va_list;
@@ -82,7 +79,11 @@ typedef char *va_list;
 #endif
 
 /* fix a buggy dependency on GCC in libio.h */
-typedef va_list __gnuc_va_list;
+//TODO wjc do again... later
+//#ifndef __APPLE__ 
+//typedef va_list __gnuc_va_list;
+//#endif
+
 #define _VA_LIST_DEFINED
 
 #endif /* _STDARG_H */

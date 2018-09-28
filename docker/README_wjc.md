@@ -219,3 +219,29 @@ smlrcc -macos test_c.c -o test_c.osx
 
 ```
 
+
+# OSX
+
+mkdir build_osx
+cd build_osx
+
+## default cc
+../configure --config-musl --prefix=.
+make cross
+
+./tcc -I.. -I../include -run ../examples/ex3.c
+
+#pass: tcc -run tcc.c
+./tcc -D__APPLE__ -DTCC_TARGET_X86_64 -DTCC_TARGET_MACHO -I. -I.. -Iinclude -I../include  -B. -run ../tcc.c
+
+#ko
+#./x86_64-tcc -I. -I.. -Iinclude -I../include -run ../examples/ex3.c
+./x86_64-osx-tcc -D__APPLE__ -DTCC_TARGET_X86_64 -DTCC_TARGET_MACHO -I. -I.. -Iinclude -I../include  -B. -run ../examples/ex3.c
+./x86_64-osx-tcc -D__APPLE__ -DTCC_TARGET_X86_64 -DTCC_TARGET_MACHO -I. -I.. -Iinclude -I../include  -B. -run ../examples/ex3.c
+./x86_64-osx-tcc -D__APPLE__ -DTCC_TARGET_X86_64 -DTCC_TARGET_MACHO -I. -I.. -Iinclude -I../include  -B. -run ../tcc.c
+
+#./tcc -D__APPLE__ -DTCC_TARGET_X86_64 -DTCC_TARGET_MACHO -I. -I.. -Iinclude -I../include -run ../examples.ex3.c
+#./tcc -D__APPLE__ -U_GNU_SOURCE -DTCC_TARGET_X86_64 -DTCC_TARGET_MACHO -I. -I.. -Iinclude -I../include -run ../examples.ex3.c
+#./x86_64-tcc -I. -I.. -Iinclude -I../include -run ../examples/ex3.c
+
+

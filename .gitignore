@@ -67,3 +67,4 @@ _del
 test_docker/include
 test_docker/lib
 wjc/
+build_osx

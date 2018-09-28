@@ -39,8 +39,8 @@ i386-win32-tcc -o test_tcc_dll.exe ../docker/test_tcc_dll.c tcc.dll
 
 cp -R lib ../docker/
 
-cp -Rf ../include ../docker
-cp -R ../win32/include/* ../docker/include/
+#cp -Rf ../include ../docker
+#cp -R ../win32/include/* ../docker/include/
 
 ############################
 tcc -DTCC_DLL -I.. -shared -rdynamic -o tcc.so ../tcc.c
