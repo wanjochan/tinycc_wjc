@@ -1866,7 +1866,6 @@ static void pe_add_runtime(TCCState *s1, struct pe_info *pe)
         ELFW(ST_INFO)(STB_GLOBAL, STT_NOTYPE), 0,
         SHN_UNDEF, start_symbol);
 
-		//TODO.wjc nostdlib
     if (0 == s1->nostdlib) {
         static const char *libs[] = {
 #ifdef TCC_LIBTCC1

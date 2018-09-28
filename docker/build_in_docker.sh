@@ -45,8 +45,7 @@ cp ../test_docker/tcc_i386-win32.exe ../test_docker/tcc_upx.exe
 
 upx ../test_docker/tcc_upx.exe
 
-#./i386-win32-tcc -DTCC_LIB_DLL -I.. -shared -rdynamic -o ../test_docker/libtcc.dll ../tcc.c
-./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -DTCC_LIB_DLL -I.. -shared -rdynamic -o ../test_docker/libtcc.dll ../tcc.c
+./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -DTCC_OUTPUT_DLL -I.. -shared -rdynamic -o ../test_docker/libtcc.dll ../tcc.c
 
 ./i386-win32-tcc -impdef ../test_docker/libtcc.dll
 mv *.def ../test_docker/
@@ -61,8 +60,7 @@ cp -R ../win32/include/* ../test_docker/include/
 ls -al ../test_docker/
 
 ############################
-#tcc -DTCC_LIB_DLL -I. -I.. -shared -rdynamic -o ../test_docker/libtcc.so ./tcc.c 
-tcc -DTCC_LIB_DLL -I.. -shared -rdynamic -o tcc.so ../tcc.c
+tcc -DTCC_OUTPUT_DLL -I.. -shared -rdynamic -o tcc.so ../tcc.c
 tcc -o ./test_libtcc_dll ../test_docker/test_libtcc_dll.c ./tcc.so
 LD_LIBRARY_PATH=. ./test_libtcc_dll
 
