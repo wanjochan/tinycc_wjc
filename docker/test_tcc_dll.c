@@ -2,7 +2,7 @@
 #include <tcclib.h>
 
 //from share
-int tcc_main(int argc0, char **argv0)
+int tcc_main(int argc0, char **argv0);
 
 int main(int argc0, char **argv0)
 {

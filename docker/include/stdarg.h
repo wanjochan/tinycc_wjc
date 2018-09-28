@@ -16,7 +16,7 @@ typedef struct {
     char *reg_save_area;
 } __va_list_struct;
 
-#ifndef _VA_LIST_T //OSX
+#ifndef _VA_LIST_T //For OSX
 
 #ifndef __DEFINED_va_list
 

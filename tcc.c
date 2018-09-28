@@ -254,7 +254,7 @@ static unsigned getclock_ms(void)
 #endif
 }
 
-#ifndef TCC_OUTPUT_DLL
+#ifndef TCC_DLL
 int main(int argc0, char **argv0)
 #else
 //output as dll/so with tcc_main()

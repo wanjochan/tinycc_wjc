@@ -15,53 +15,41 @@ make install
 
 cp -R ../examples ./
 
-#cp ../wjc_tcc_run_in_docker.sh ./tcc_run.sh
-
 chmod +x *.sh
-
-#echo ---------- test examples/ex5
-#./tcc_run.sh examples/ex5.c
-#
-#echo ---------- test examples/ex1
-#./tcc_run.sh examples/ex1.c
-#
-#echo ---------- test examples/ex3
-#./tcc_run.sh examples/ex3.c 30
 
 alias tcc_run='tcc -I. -I.. -run'
 tcc_run examples/ex3.c 30
 
-# i386 cross test
+# i386 cross test //i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE
 
-#cp i386-libtcc1.a ../test_docker/
-#cp i386-win32-libtcc1.a ../test_docker/
-#cp i386-win32-libtcc1.a ../test_docker/lib/libtcc1.a
+i386-win32-tcc -o test_c_w32.exe ../docker/test_c.c
 
-./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -o ../test_docker/test_c_w32.exe ../test_docker/test_c.c
+i386-win32-tcc -o tcc_i386-win32.exe ../tcc.c
 
-./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -o ../test_docker/tcc_i386-win32.exe ../tcc.c
+cp tcc_i386-win32.exe tcc_upx.exe
+cp tcc_i386-win32.exe ../docker/
 
-cp ../test_docker/tcc_i386-win32.exe ../test_docker/tcc_upx.exe
+upx tcc_upx.exe
 
-upx ../test_docker/tcc_upx.exe
+i386-win32-tcc -DTCC_DLL -I.. -shared -rdynamic -o tcc.dll ../tcc.c
 
-./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -DTCC_OUTPUT_DLL -I.. -shared -rdynamic -o ../test_docker/libtcc.dll ../tcc.c
+i386-win32-tcc -impdef tcc.dll
 
-./i386-win32-tcc -impdef ../test_docker/libtcc.dll
-mv *.def ../test_docker/
+i386-win32-tcc -o test_tcc_dll.exe ../docker/test_tcc_dll.c tcc.dll
 
-./i386-win32-tcc -DTCC_TARGET_I386 -DTCC_TARGET_PE -o ../test_docker/test_libtcc_dll.exe ../test_docker/test_libtcc_dll.c ../test_docker/libtcc.dll
+cp -R lib ../docker/
 
-cp -R lib ../test_docker/
-
-cp -Rf ../include ../test_docker
-cp -R ../win32/include/* ../test_docker/include/
-
-ls -al ../test_docker/
+cp -Rf ../include ../docker
+cp -R ../win32/include/* ../docker/include/
 
 ############################
-tcc -DTCC_OUTPUT_DLL -I.. -shared -rdynamic -o tcc.so ../tcc.c
-tcc -o ./test_libtcc_dll ../test_docker/test_libtcc_dll.c ./tcc.so
-LD_LIBRARY_PATH=. ./test_libtcc_dll
+tcc -DTCC_DLL -I.. -shared -rdynamic -o tcc.so ../tcc.c
+tcc -o ./test_tcc_dll ../docker/test_tcc_dll.c ./tcc.so
+LD_LIBRARY_PATH=. ./test_tcc_dll
+
+############################
+ls -al ../docker/
+ls -al ../build_docker/
+
 
 echo now you can refer to README_wjc for more testing examples
