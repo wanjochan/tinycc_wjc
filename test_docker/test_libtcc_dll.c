@@ -1,3 +1,4 @@
+#include "test_libtcc_dll.h"
 //#include <windows.h>
 
 #include <stdio.h>
@@ -6,7 +7,6 @@
 //
 ////#include "tcctools.c"
 //
-int libtcc_dll_main(int argc0, char **argv0);
 
 int main(int argc0, char **argv0)
 {

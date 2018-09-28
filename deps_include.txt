@@ -1,0 +1,33 @@
+grep -Rs "^#\s*include" *.h *.c include/ | grep -o "<.*>" > deps_include.txt
+
+is it possible to make it platform independent
+
+<inttypes.h>
+<stdlib.h>
+<stdio.h>
+<stdarg.h>
+<string.h>
+<errno.h>
+<math.h>
+<fcntl.h>
+<setjmp.h>
+<time.h>
+<unistd.h>
+<sys/time.h>
+<dlfcn.h>
+<windows.h>
+<io.h>
+<direct.h>
+<stdint.h>
+<stddef.h>
+<stdarg.h>
+<assert.h>
+<stdio.h>
+<windows.h>
+<sys/stat.h>
+<sys/mman.h>
+<signal.h>
+<sys/ucontext.h>
+<process.h>
+<sys/_symbol_aliasing.h>
+<sys/_posix_availability.h>

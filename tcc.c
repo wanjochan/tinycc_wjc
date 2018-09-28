@@ -262,6 +262,8 @@ int main(int argc0, char **argv0)
 #ifdef TCC_TARGET_PE
 #include <windows.h>
 __declspec(dllexport) int libtcc_dll_main(int argc0, char **argv0)
+#else
+int libtcc_dll_main(int argc0, char **argv0)
 #endif
 
 #endif

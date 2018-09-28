@@ -60,4 +60,10 @@ cp -R ../win32/include/* ../test_docker/include/
 
 ls -al ../test_docker/
 
+############################
+#tcc -DTCC_LIB_DLL -I. -I.. -shared -rdynamic -o ../test_docker/libtcc.so ./tcc.c 
+tcc -DTCC_LIB_DLL -I.. -shared -rdynamic -o tcc.so ../tcc.c
+tcc -o ./test_libtcc_dll ../test_docker/test_libtcc_dll.c ./tcc.so
+LD_LIBRARY_PATH=. ./test_libtcc_dll
+
 echo now you can refer to README_wjc for more testing examples

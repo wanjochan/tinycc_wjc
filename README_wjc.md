@@ -1,18 +1,18 @@
-#
+# A collection for TCC
 
-Fabrice Bellard is one of the best Programmer of the world.
+* Fabrice Bellard is one of the best Programmer of the world.
+* I hate cmake/make/configure etc... stuff
 
 # Target
 
+* cross build all binary for all platform known.. ${arch}_${os} like nodejs addon?
+```
 * iPhone build;
 * Android build;
-* OSX build (need to learn objconv + mach-o); estimate 1 year later
-
-# TODO
-
-* remove 
-* tcc_make (quick replacement for the make) auto judge plaform and arch
-* cross build all binary for all platform known.. ${arch}_${os} like nodejs addon?
+* OSX build (need to learn objconv + mach-o); under knowledge of SmallerC
+* win32
+* win64
+```
 
 # WIN32
 
@@ -204,11 +204,18 @@ nm /usr/lib/libc.dylib
 ```
 
 # Smaller C
+
+## with gcc
 ```
 //readlink remove -f...
 
-dkrun ./configure
-dkrun ./make
-dkrun ./make install
+dkrun sh
+
+./configure
+./make
+./make install
+
+smlrcc -macos test_c.c -o test_c.osx
+
 ```
 
