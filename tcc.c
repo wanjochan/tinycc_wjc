@@ -184,9 +184,17 @@ static void print_search_dirs(TCCState *s)
     print_dirs("include", s->sysinclude_paths, s->nb_sysinclude_paths);
     print_dirs("libraries", s->library_paths, s->nb_library_paths);
 #ifdef TCC_TARGET_PE
-    printf("libtcc1:\n  %s/lib/"TCC_LIBTCC1"\n", s->tcc_lib_path);
-#else
-    printf("libtcc1:\n  %s/"TCC_LIBTCC1"\n", s->tcc_lib_path);
+#ifdef TCC_LIBTCC1
+	printf("libtcc1(win):\n  %s/lib/"TCC_LIBTCC1"\n", s->tcc_lib_path);
+#endif
+#elif defined(TCC_TARGET_MACHO)
+#ifdef TCC_LIBTCC1
+	printf("libtcc1(osx):\n  %s/lib/"TCC_LIBTCC1"\n", s->tcc_lib_path);
+#endif
+#else //assume ELF
+#ifdef TCC_LIBTCC1
+	printf("libtcc1(elf):\n  %s/"TCC_LIBTCC1"\n", s->tcc_lib_path);
+#endif
     print_dirs("crt", s->crt_paths, s->nb_crt_paths);
     printf("elfinterp:\n  %s\n",  DEFAULT_ELFINTERP(s));
 #endif
@@ -246,7 +254,18 @@ static unsigned getclock_ms(void)
 #endif
 }
 
+#ifndef TCC_OUTPUT_DLL
 int main(int argc0, char **argv0)
+#else
+//output as dll/so with tcc_main()
+#ifdef TCC_TARGET_PE
+//#include <windows.h>
+__declspec(dllexport) int tcc_main(int argc0, char **argv0)
+#else
+int tcc_main(int argc0, char **argv0)
+#endif
+
+#endif
 {
     TCCState *s;
     int ret, opt, n = 0, t = 0;
