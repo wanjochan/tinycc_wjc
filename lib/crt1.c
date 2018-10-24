@@ -4,8 +4,11 @@
 // _UNICODE for tchar.h, UNICODE for API
 #include <tchar.h>
 
-#include <stdio.h>
+//#define __cdecl
+
+//#include <stdio.h>
 #include <stdlib.h>
+//#include <tcc.h>
 
 #define _UNKNOWN_APP    0
 #define _CONSOLE_APP    1

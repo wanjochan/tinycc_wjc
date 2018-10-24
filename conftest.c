@@ -1,4 +1,5 @@
-#include <stdio.h>
+//#include <stdio.h>
+#include "tcc_dl.h"
 
 /* Define architecture */
 #if defined(__i386__) || defined _M_IX86
@@ -53,31 +54,31 @@ int main(int argc, char *argv[])
         case 'b':
         {
             volatile unsigned foo = 0x01234567;
-            puts(*(unsigned char*)&foo == 0x67 ? "no" : "yes");
+            TCC(puts)(*(unsigned char*)&foo == 0x67 ? "no" : "yes");
             break;
         }
 #ifdef __GNUC__
         case 'm':
-            printf("%d\n", __GNUC_MINOR__);
+            TCC(printf)("%d\n", __GNUC_MINOR__);
             break;
         case 'v':
-            printf("%d\n", __GNUC__);
+            TCC(printf)("%d\n", __GNUC__);
             break;
 #elif defined __TINYC__
         case 'v':
-            puts("0");
+            TCC(puts)("0");
             break;
         case 'm':
-            printf("%d\n", __TINYC__);
+            TCC(printf)("%d\n", __TINYC__);
             break;
 #else
         case 'm':
         case 'v':
-            puts("0");
+            TCC(puts)("0");
             break;
 #endif
         case 't':
-            puts(TRIPLET);
+            TCC(puts)(TRIPLET);
             break;
 
         default:

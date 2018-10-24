@@ -16,7 +16,7 @@ typedef struct {
     char *reg_save_area;
 } __va_list_struct;
 
-#ifndef _VA_LIST_T{//Tmp For OSX, TODO check wheter effect other place??
+#ifndef _VA_LIST_T//{Tmp For OSX, TODO check wheter effect other place??
 #define _VA_LIST_T
 
 //#include <machine/types.h> /* __darwin_va_list */

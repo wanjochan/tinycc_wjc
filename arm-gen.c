@@ -412,6 +412,7 @@ static uint32_t intr(int r)
   if (r >= TREG_SP && r <= TREG_LR)
     return r + (13 - TREG_SP);
   tcc_error("compiler error! register %i is no int register",r);
+	return -1;
 }
 
 static void calcaddr(uint32_t *base, int *off, int *sgn, int maxoff, unsigned shift)
@@ -958,7 +959,7 @@ static int assign_regs(int nb_args, int float_abi, struct plan *plan, int *todo)
   ncrn = nsaa = 0;
   *todo = 0;
   plan->pplans = tcc_malloc(nb_args * sizeof(*plan->pplans));
-  memset(plan->clsplans, 0, sizeof(plan->clsplans));
+  TCC(memset)(plan->clsplans, 0, sizeof(plan->clsplans));
   for(i = nb_args; i-- ;) {
     int j, start_vfpreg = 0;
     CType type = vtop[-i].type;

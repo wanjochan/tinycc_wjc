@@ -259,7 +259,7 @@ void relocate(TCCState *s1, ElfW_Rel *rel, int type, unsigned char *ptr, addr_t 
                     name = (char *) symtab_section->link->data + sym->st_name;
                     text_section = s1->sections[sym->st_shndx];
                     /* Modify reloc to target a thumb stub to switch to ARM */
-                    snprintf(buf, sizeof(buf), "%s_from_thumb", name);
+                    TCC(snprintf)(buf, sizeof(buf), "%s_from_thumb", name);
                     index = put_elf_sym(symtab_section,
                                         text_section->data_offset + 1,
                                         sym->st_size, sym->st_info, 0,
@@ -389,7 +389,7 @@ void relocate(TCCState *s1, ElfW_Rel *rel, int type, unsigned char *ptr, addr_t 
             /* do nothing */
             return;
         default:
-            fprintf(stderr,"FIXME: handle reloc type %x at %x [%p] to %x\n",
+            TCC(fprintf)((FILE*)stderr,"FIXME: handle reloc type %x at %x [%p] to %x\n",
                 type, (unsigned)addr, ptr, (unsigned)val);
             return;
     }

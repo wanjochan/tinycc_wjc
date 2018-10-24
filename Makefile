@@ -8,7 +8,24 @@ ifndef TOP
  INCLUDED = no
 endif
 
-include $(TOP)/config.mak
+#include $(TOP)/Makefile.env
+#include Makefile.env
+
+ENV_MAK=Makefile.env
+ifeq ($(ENV_MAK), $(wildcard $(ENV_MAK)))
+include $(ENV_MAK)
+endif
+ENV_MAK=../Makefile.env
+ifeq ($(ENV_MAK), $(wildcard $(ENV_MAK)))
+include $(ENV_MAK)
+endif
+
+CONFIG_MAK = $(TOP)/config.mak
+ifeq ($(CONFIG_MAK), $(wildcard $(CONFIG_MAK)))
+include $(CONFIG_MAK)
+else
+NEED_CONFIG=1
+endif
 
 ifeq (-$(CC)-$(GCC_MAJOR)-$(findstring $(GCC_MINOR),56789)-,-gcc-4--)
  CFLAGS += -D_FORTIFY_SOURCE=0
@@ -30,10 +47,14 @@ ifdef CONFIG_WIN32
  CFGWIN = -win
  NATIVE_TARGET = $(ARCH)-win$(if $(findstring arm,$(ARCH)),ce,32)
 else
+
+ifdef CONFIG_OSX
+else
  LIBS=-lm
  ifneq ($(CONFIG_ldl),no)
   LIBS+=-ldl
  endif
+endif
  # make libtcc as static or dynamic library?
  ifeq ($(CONFIG_static),no)
   LIBTCC=libtcc$(DLLSUF)
@@ -46,7 +67,17 @@ else
  NATIVE_TARGET = $(ARCH)
  ifdef CONFIG_OSX
   NATIVE_TARGET = $(ARCH)-osx
+ifeq (-$(findstring $(CC),tcc)-,-tcc-)
+  LDFLAGS += -flat_namespace
+else
+
+ifdef CONFIG_OSX
+  LDFLAGS += -flat_namespace
+else
   LDFLAGS += -flat_namespace -undefined warning
+endif
+
+endif
   export MACOSX_DEPLOYMENT_TARGET := 10.2
  endif
 endif
@@ -86,9 +117,39 @@ ifeq ($(INCLUDED),no)
 
 PROGS = tcc$(EXESUF)
 TCCLIBS = $(LIBTCC1) $(LIBTCC) $(LIBTCCDEF)
-TCCDOCS = tcc.1 tcc-doc.html tcc-doc.info
 
-all: $(PROGS) $(TCCLIBS) $(TCCDOCS)
+
+# --------------------------------------------------------------------------
+ifdef NEED_CONFIG
+
+default:env
+	@echo ERROR: not found config.mak, maybe need ./configure
+everything:env
+	@echo ERROR: not found config.mak, maybe need ./configure
+
+else #NEED_CONFIG
+
+default:env $(PROGS) $(TCCLIBS)
+
+ifeq ($(CONFIG_WIN32),yes)
+everything:env clean $(PROGS) $(TCCLIBS) cross libtcc.dll
+else
+everything:env clean $(PROGS) $(TCCLIBS) cross libtcc.so
+endif
+
+ifdef CONFIG_cross
+default:cross
+endif
+
+all:default
+
+endif #NEED_CONFIG
+# --------------------------------------------------------------------------
+
+env:
+	$(eval export CPU_ARCH=$(CPU_ARCH))
+	$(eval export OS_TYPE=$(OS_TYPE))
+	@echo ${OS_TYPE},${CPU_ARCH}
 
 # cross compiler targets to build
 TCC_X = i386 x86_64 i386-win32 x86_64-win32 x86_64-osx arm arm64 arm-wince c67
@@ -110,9 +171,6 @@ install: ; @$(MAKE) --no-print-directory install$(CFGWIN)
 install-strip: ; @$(MAKE) --no-print-directory install$(CFGWIN) CONFIG_strip=yes
 uninstall: ; @$(MAKE) --no-print-directory uninstall$(CFGWIN)
 
-ifdef CONFIG_cross
-all : cross
-endif
 
 # --------------------------------------------
 
@@ -210,7 +268,11 @@ libtcc.a: $(LIBTCC_OBJ)
 
 # dynamic libtcc library
 libtcc.so: $(LIBTCC_OBJ)
+ifdef CONFIG_OSX
+	$(CC) -shared -Wl,-install_name,$@ -o $@ $^ $(LDFLAGS)
+else
 	$(CC) -shared -Wl,-soname,$@ -o $@ $^ $(LDFLAGS)
+endif
 
 libtcc.so: CFLAGS+=-fPIC
 libtcc.so: LDFLAGS+=-fPIC
@@ -238,16 +300,16 @@ FORCE:
 
 # --------------------------------------------------------------------------
 # documentation and man page
-tcc-doc.html: tcc-doc.texi
-	makeinfo --no-split --html --number-sections -o $@ $< || true
+#tcc-doc.html: tcc-doc.texi
+#	makeinfo --no-split --html --number-sections -o $@ $< || true
 
-tcc.1: tcc-doc.texi
-	$(TOPSRC)/texi2pod.pl $< tcc.pod \
-	&& pod2man --section=1 --center="Tiny C Compiler" --release="$(VERSION)" tcc.pod >tmp.1 \
-	&& mv tmp.1 $@ || rm -f tmp.1
+#tcc.1: tcc-doc.texi
+#	$(TOPSRC)/texi2pod.pl $< tcc.pod \
+#	&& pod2man --section=1 --center="Tiny C Compiler" --release="$(VERSION)" tcc.pod >tmp.1 \
+#	&& mv tmp.1 $@ || rm -f tmp.1
 
-tcc-doc.info: tcc-doc.texi
-	makeinfo $< || true
+#tcc-doc.info: tcc-doc.texi
+#	makeinfo $< || true
 
 # --------------------------------------------------------------------------
 # install
@@ -268,23 +330,23 @@ IR = mkdir -p $2 && cp -r $1/. $2
 install-unx:
 	$(call IBw,$(PROGS) $(PROGS_CROSS),"$(bindir)")
 	$(call IFw,$(LIBTCC1) $(LIBTCC1_U),"$(tccdir)")
-	$(call IF,$(TOPSRC)/include/*.h $(TOPSRC)/tcclib.h,"$(tccdir)/include")
+	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/include")
 	$(call $(if $(findstring .so,$(LIBTCC)),IBw,IFw),$(LIBTCC),"$(libdir)")
 	$(call IF,$(TOPSRC)/libtcc.h,"$(includedir)")
-	$(call IFw,tcc.1,"$(mandir)/man1")
+	#$(call IFw,tcc.1,"$(mandir)/man1")
 	$(call IFw,tcc-doc.info,"$(infodir)")
 	$(call IFw,tcc-doc.html,"$(docdir)")
 ifneq "$(wildcard $(LIBTCC1_W))" ""
 	$(call IFw,$(TOPSRC)/win32/lib/*.def $(LIBTCC1_W),"$(tccdir)/win32/lib")
 	$(call IR,$(TOPSRC)/win32/include,"$(tccdir)/win32/include")
-	$(call IF,$(TOPSRC)/include/*.h $(TOPSRC)/tcclib.h,"$(tccdir)/win32/include")
+	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/win32/include")
 endif
 
 # uninstall
 uninstall-unx:
 	@rm -fv $(foreach P,$(PROGS) $(PROGS_CROSS),"$(bindir)/$P")
 	@rm -fv "$(libdir)/libtcc.a" "$(libdir)/libtcc.so" "$(includedir)/libtcc.h"
-	@rm -fv "$(mandir)/man1/tcc.1" "$(infodir)/tcc-doc.info"
+	#@rm -fv "$(mandir)/man1/tcc.1" "$(infodir)/tcc-doc.info"
 	@rm -fv "$(docdir)/tcc-doc.html"
 	rm -r "$(tccdir)"
 
@@ -293,7 +355,7 @@ install-win:
 	$(call IBw,$(PROGS) $(PROGS_CROSS) $(subst libtcc.a,,$(LIBTCC)),"$(bindir)")
 	$(call IF,$(TOPSRC)/win32/lib/*.def,"$(tccdir)/lib")
 	$(call IFw,libtcc1.a $(LIBTCC1_W),"$(tccdir)/lib")
-	$(call IF,$(TOPSRC)/include/*.h $(TOPSRC)/tcclib.h,"$(tccdir)/include")
+	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/include")
 	$(call IR,$(TOPSRC)/win32/include,"$(tccdir)/include")
 	$(call IR,$(TOPSRC)/win32/examples,"$(tccdir)/examples")
 	$(call IF,$(TOPSRC)/tests/libtcc_test.c,"$(tccdir)/examples")
@@ -301,7 +363,7 @@ install-win:
 	$(call IFw,$(TOPSRC)/win32/tcc-win32.txt tcc-doc.html,"$(docdir)")
 ifneq "$(wildcard $(LIBTCC1_U))" ""
 	$(call IFw,$(LIBTCC1_U),"$(tccdir)/lib")
-	$(call IF,$(TOPSRC)/include/*.h $(TOPSRC)/tcclib.h,"$(tccdir)/lib/include")
+	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/lib/include")
 endif
 
 # the msys-git shell works to configure && make except it does not have install
@@ -365,7 +427,12 @@ distclean: clean
 
 help:
 	@echo "make"
+	@echo "make default"
+	@echo "make all"
 	@echo "   build native compiler (from separate objects)"
+	@echo ""
+	@echo "make everything"
+	@echo "   clean and make everything can be make..."
 	@echo ""
 	@echo "make cross"
 	@echo "   build cross compilers (from one source)"
@@ -406,3 +473,9 @@ help:
 
 # --------------------------------------------------------------------------
 endif # ($(INCLUDED),no)
+
+#debug:
+#	@echo ARCH=$(ARCH)
+#	@echo NATIVE_TARGET=$(NATIVE_TARGET)
+#	@echo T=$(T)
+#	@echo X=$(X)

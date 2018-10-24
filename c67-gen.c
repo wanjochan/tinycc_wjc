@@ -2456,25 +2456,25 @@ void gen_cvt_itof(int t)
 /* XXX: handle long long case */
 void gen_cvt_ftoi(int t)
 {
-    int r;
+	int r;
 
-    gv(RC_FLOAT);
-    r = vtop->r;
+	gv(RC_FLOAT);
+	r = vtop->r;
 
-    if (t != VT_INT)
-	tcc_error("long long not supported");
-    else {
-	if ((vtop->type.t & VT_BTYPE) == VT_DOUBLE) {
-	    C67_DPTRUNC(r, r);
-	    C67_NOP(3);
+	if (t != VT_INT){
+		tcc_error("long long not supported");
 	} else {
-	    C67_SPTRUNC(r, r);
-	    C67_NOP(3);
+		if ((vtop->type.t & VT_BTYPE) == VT_DOUBLE) {
+			C67_DPTRUNC(r, r);
+			C67_NOP(3);
+		} else {
+			C67_SPTRUNC(r, r);
+			C67_NOP(3);
+		}
+
+		vtop->type.t = VT_INT;
+
 	}
-
-	vtop->type.t = VT_INT;
-
-    }
 }
 
 /* convert from one floating point type to another */

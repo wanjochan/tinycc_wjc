@@ -22,45 +22,46 @@
 #define _TCC_H
 
 #define _GNU_SOURCE
+
 #include "config.h"
+//#define TCC_VERSION "TCCOS_0_0_2"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <errno.h>
-#include <math.h>
-#include <fcntl.h>
-#include <setjmp.h>
-#include <time.h>
+#include "tcc_libc.h"
 
-#ifndef _WIN32
-# include <unistd.h>
-# include <sys/time.h>
-# ifndef CONFIG_TCC_STATIC
-#  include <dlfcn.h>
-# endif
-/* XXX: need to define this to use them in non ISOC99 context */
-extern float strtof (const char *__nptr, char **__endptr);
-extern long double strtold (const char *__nptr, char **__endptr);
-#endif
+#define error3(s1,is_warning,...) {\
+	char tcc_error3_buf[2048]={'\0'};\
+	tcc_error_a(s1,is_warning,tcc_error3_buf);\
+	TCC(snprintf)(tcc_error3_buf + TCC(strlen,int)(tcc_error3_buf),sizeof(tcc_error3_buf)-TCC(strlen,int)(tcc_error3_buf),__VA_ARGS__);\
+	tcc_error_b(s1,is_warning,tcc_error3_buf);\
+}
+
+#define tcc_warning(...) {\
+	if(tcc_state->warn_none){}else{error3(tcc_state, 1, __VA_ARGS__);}\
+}
+
+#define tcc_error(...) { error3(tcc_state, 0, __VA_ARGS__);\
+	(tcc_state->error_set_jmp_enabled)?TCC(longjmp)(tcc_state->error_jmp_buf, 1):TCC(exit)(1);\
+}
+
+#define tcc_error_noabort(...) error3(tcc_state, 0, __VA_ARGS__)
 
 #ifdef _WIN32
-# include <windows.h>
-# include <io.h> /* open, close etc. */
-# include <direct.h> /* getcwd */
-# ifdef __GNUC__
-#  include <stdint.h>
-# endif
+//TODO
+//# include <windows.h>
+//# include <io.h> /* open, close etc. */
+//# include <direct.h> /* getcwd */
+//# ifdef __GNUC__
+//#  include <stdint.h>
+//# endif
 # define inline __inline
 # define snprintf _snprintf
 # define vsnprintf _vsnprintf
-# ifndef __GNUC__
-#  define strtold (long double)strtod
-#  define strtof (float)strtod
-#  define strtoll _strtoi64
-#  define strtoull _strtoui64
-# endif
+//# ifndef __GNUC__
+//#  define strtold (long double)strtod
+//#  define strtof (float)strtod
+//#  define strtoll _strtoi64
+//#  define strtoull _strtoui64
+//# endif
 # ifdef LIBTCC_AS_DLL
 #  define LIBTCCAPI __declspec(dllexport)
 #  define PUB_FUNC LIBTCCAPI
@@ -75,7 +76,7 @@ extern long double strtold (const char *__nptr, char **__endptr);
 #  define ssize_t intptr_t
 # endif
 # undef CONFIG_TCC_STATIC
-#endif
+#endif//_WIN32
 
 #ifndef O_BINARY
 # define O_BINARY 0
@@ -90,22 +91,20 @@ extern long double strtold (const char *__nptr, char **__endptr);
 #endif
 
 #ifdef _MSC_VER
-# define NORETURN __declspec(noreturn)
 # define ALIGNED(x) __declspec(align(x))
 #else
-# define NORETURN __attribute__((noreturn))
 # define ALIGNED(x) __attribute__((aligned(x)))
 #endif
 
 #ifdef _WIN32
 # define IS_DIRSEP(c) (c == '/' || c == '\\')
 # define IS_ABSPATH(p) (IS_DIRSEP(p[0]) || (p[0] && p[1] == ':' && IS_DIRSEP(p[2])))
-# define PATHCMP stricmp
+# define PATHCMP TCC(stricmp,int)
 # define PATHSEP ";"
 #else
 # define IS_DIRSEP(c) (c == '/')
 # define IS_ABSPATH(p) IS_DIRSEP(p[0])
-# define PATHCMP strcmp
+# define PATHCMP TCC(strcmp,int)
 # define PATHSEP ":"
 #endif
 
@@ -176,7 +175,8 @@ extern long double strtold (const char *__nptr, char **__endptr);
 # define CONFIG_SYSROOT ""
 #endif
 #ifndef CONFIG_TCCDIR
-# define CONFIG_TCCDIR "/usr/local/lib/tcc"
+//# define CONFIG_TCCDIR "/usr/local/lib/tcc"
+# define CONFIG_TCCDIR "."
 #endif
 #ifndef CONFIG_LDDIR
 # define CONFIG_LDDIR "lib"
@@ -280,8 +280,11 @@ extern long double strtold (const char *__nptr, char **__endptr);
 
 /* -------------------------------------------- */
 
-#include "libtcc.h"
 #include "elf.h"
+
+#include "libtcc.h"
+
+//@ref tccpp && tccgen
 #include "stab.h"
 
 /* -------------------------------------------- */
@@ -309,6 +312,7 @@ extern long double strtold (const char *__nptr, char **__endptr);
 #endif
 
 /* -------------------------------------------- */
+//TODO build with arch
 /* include the target specific definitions */
 
 #define TARGET_DEFS_ONLY
@@ -727,6 +731,7 @@ struct TCCState {
     void (*error_func)(void *opaque, const char *msg);
     int error_set_jmp_enabled;
     jmp_buf error_jmp_buf;
+    //typeof(TCC(jmp_buf)) error_jmp_buf;//segment fault
     int nb_errors;
 
     /* output file for preprocessing (-E) */
@@ -1110,15 +1115,15 @@ PUB_FUNC void *tcc_realloc_debug(void *ptr, unsigned long size, const char *file
 PUB_FUNC char *tcc_strdup_debug(const char *str, const char *file, int line);
 #endif
 
-#define free(p) use_tcc_free(p)
-#define malloc(s) use_tcc_malloc(s)
-#define realloc(p, s) use_tcc_realloc(p, s)
-#undef strdup
-#define strdup(s) use_tcc_strdup(s)
+//#define free(p) use_tcc_free(p)
+//#define malloc(s) use_tcc_malloc(s)
+//#define realloc(p, s) use_tcc_realloc(p, s)
+//#undef strdup
+//#define strdup(s) use_tcc_strdup(s)
 PUB_FUNC void tcc_memcheck(void);
-PUB_FUNC void tcc_error_noabort(const char *fmt, ...);
-PUB_FUNC NORETURN void tcc_error(const char *fmt, ...);
-PUB_FUNC void tcc_warning(const char *fmt, ...);
+
+PUB_FUNC void tcc_error_a(TCCState *s1, int is_warning,char* buf);
+PUB_FUNC void tcc_error_b(TCCState *s1, int is_warning,char* buf);
 
 /* other utilities */
 ST_FUNC void dynarray_add(void *ptab, int *nb_ptr, void *data);
@@ -1204,15 +1209,14 @@ ST_DATA TokenSym **table_ident;
 #define TOK_FLAG_ENDIF 0x0004 /* a endif was found matching starting #ifdef */
 #define TOK_FLAG_EOF   0x0008 /* end of file */
 
-#define PARSE_FLAG_PREPROCESS 0x0001 /* activate preprocessing */
-#define PARSE_FLAG_TOK_NUM    0x0002 /* return numbers instead of TOK_PPNUM */
-#define PARSE_FLAG_LINEFEED   0x0004 /* line feed is returned as a
-                                        token. line feed is also
-                                        returned at eof */
-#define PARSE_FLAG_ASM_FILE 0x0008 /* we processing an asm file: '#' can be used for line comment, etc. */
-#define PARSE_FLAG_SPACES     0x0010 /* next() returns space tokens (for -E) */
+//@ref PARSE_* => tccasm.c && tccpp.c
+#define PARSE_FLAG_PREPROCESS    0x0001 /* activate preprocessing */
+#define PARSE_FLAG_TOK_NUM       0x0002 /* return numbers instead of TOK_PPNUM */
+#define PARSE_FLAG_LINEFEED      0x0004 /* line feed return as a token, returned at eof */
+#define PARSE_FLAG_ASM_FILE      0x0008 /* we processing an asm file: '#' can be used for line comment, etc. */
+#define PARSE_FLAG_SPACES        0x0010 /* next() returns space tokens (for -E) */
 #define PARSE_FLAG_ACCEPT_STRAYS 0x0020 /* next() returns '\\' token */
-#define PARSE_FLAG_TOK_STR    0x0040 /* return parsed strings instead of TOK_PPSTR */
+#define PARSE_FLAG_TOK_STR       0x0040 /* return parsed strings instead of TOK_PPSTR */
 
 /* isidnum_table flags: */
 #define IS_SPC 1
@@ -1248,7 +1252,7 @@ ST_FUNC void tccpp_new(TCCState *s);
 ST_FUNC void tccpp_delete(TCCState *s);
 ST_FUNC int tcc_preprocess(TCCState *s1);
 ST_FUNC void skip(int c);
-ST_FUNC NORETURN void expect(const char *msg);
+ST_FUNC int expect(const char *msg);
 
 /* space excluding newline */
 static inline int is_space(int ch) {
@@ -1586,6 +1590,7 @@ ST_FUNC Sym* get_asm_sym(int name, Sym *csym);
 ST_FUNC void asm_expr(TCCState *s1, ExprValue *pe);
 ST_FUNC int asm_int_expr(TCCState *s1);
 ST_FUNC int tcc_assemble(TCCState *s1, int do_preprocess);
+
 /* ------------ i386-asm.c ------------ */
 ST_FUNC void gen_expr32(ExprValue *pe);
 #ifdef TCC_TARGET_X86_64
@@ -1630,25 +1635,17 @@ ST_FUNC void *dlopen(const char *filename, int flag);
 ST_FUNC void dlclose(void *p);
 ST_FUNC const char *dlerror(void);
 ST_FUNC void *dlsym(void *handle, const char *symbol);
-#endif
+#endif//CONFIG_TCC_STATIC
+
 #ifdef CONFIG_TCC_BACKTRACE
 ST_DATA int rt_num_callers;
 ST_DATA const char **rt_bound_error_msg;
 ST_DATA void *rt_prog_main;
 ST_FUNC void tcc_set_num_callers(int n);
-#endif
-ST_FUNC void tcc_run_free(TCCState *s1);
-#endif
+#endif//CONFIG_TCC_BACKTRACE
 
-/* ------------ tcctools.c ----------------- */
-#if 0 /* included in tcc.c */
-ST_FUNC int tcc_tool_ar(TCCState *s, int argc, char **argv);
-#ifdef TCC_TARGET_PE
-ST_FUNC int tcc_tool_impdef(TCCState *s, int argc, char **argv);
-#endif
-ST_FUNC void tcc_tool_cross(TCCState *s, char **argv, int option);
-ST_FUNC void gen_makedeps(TCCState *s, const char *target, const char *filename);
-#endif
+ST_FUNC void tcc_run_free(TCCState *s1);
+#endif//TCC_IS_NATIVE
 
 /********************************************************/
 #undef ST_DATA
@@ -1658,4 +1655,5 @@ ST_FUNC void gen_makedeps(TCCState *s, const char *target, const char *filename)
 #define ST_DATA
 #endif
 /********************************************************/
+
 #endif /* _TCC_H */

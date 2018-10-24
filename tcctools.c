@@ -9,7 +9,7 @@
 /* -------------------------------------------------------------- */
 /*
  * This program is for making libtcc1.a without ar
- * tiny_libmaker - tiny elf lib maker
+ *  create library  : tcc -ar [rcsv] lib.a files\n"
  * usage: tiny_libmaker [lib] files...
  * Copyright (c) 2007 Timppa
  *
@@ -61,8 +61,8 @@ static int contains_any(const char *s, const char *list) {
 }
 
 static int ar_usage(int ret) {
-    fprintf(stderr, "usage: tcc -ar [rcsv] lib file...\n");
-    fprintf(stderr, "create library ([abdioptxN] not supported).\n");
+    TCC(fprintf)(stderr, "usage: tcc -ar [rcsv] lib file...\n");
+    TCC(fprintf)(stderr, "create library ([abdioptxN] not supported).\n");
     return ret;
 }
 
@@ -107,12 +107,12 @@ ST_FUNC int tcc_tool_ar(TCCState *s1, int argc, char **argv)
     i_lib = 0; i_obj = 0;  // will hold the index of the lib and first obj
     for (i = 1; i < argc; i++) {
         const char *a = argv[i];
-        if (*a == '-' && strstr(a, "."))
+        if (*a == '-' && TCC(strstr,char*)(a, "."))
             ret = 1; // -x.y is always invalid (same as gnu ar)
-        if ((*a == '-') || (i == 1 && !strstr(a, "."))) {  // options argument
+        if ((*a == '-') || (i == 1 && !TCC(strstr,char*)(a, "."))) {  // options argument
             if (contains_any(a, ops_conflict))
                 ret = 1;
-            if (strstr(a, "v"))
+            if (TCC(strstr,char*)(a, "v"))
                 verbose = 1;
         } else {  // lib or obj files: don't abort - keep validating all args.
             if (!i_lib)  // first file is the lib
@@ -128,22 +128,22 @@ ST_FUNC int tcc_tool_ar(TCCState *s1, int argc, char **argv)
     if (ret == 1)
         return ar_usage(ret);
 
-    if ((fh = fopen(argv[i_lib], "wb")) == NULL)
+    if ((fh = TCC(fopen,FILE*)(argv[i_lib], "wb")) == NULL)
     {
-        fprintf(stderr, "tcc: ar: can't open file %s \n", argv[i_lib]);
+        TCC(fprintf)(stderr, "tcc: ar: can't open file %s \n", argv[i_lib]);
         goto the_end;
     }
 
-    sprintf(tfile, "%s.tmp", argv[i_lib]);
-    if ((fo = fopen(tfile, "wb+")) == NULL)
+    TCC(sprintf)(tfile, "%s.tmp", argv[i_lib]);
+    if ((fo = TCC(fopen)(tfile, "wb+")) == NULL)
     {
-        fprintf(stderr, "tcc: ar: can't create temporary file %s\n", tfile);
+        TCC(fprintf)(stderr, "tcc: ar: can't create temporary file %s\n", tfile);
         goto the_end;
     }
 
     funcmax = 250;
     afpos = tcc_realloc(NULL, funcmax * sizeof *afpos); // 250 func
-    memcpy(&arhdro.ar_mode, "100666", 6);
+    TCC(memcpy)(&arhdro.ar_mode, "100666", 6);
 
     // i_obj = first input object file
     while (i_obj < argc)
@@ -152,25 +152,25 @@ ST_FUNC int tcc_tool_ar(TCCState *s1, int argc, char **argv)
             i_obj++;
             continue;
         }
-        if ((fi = fopen(argv[i_obj], "rb")) == NULL) {
-            fprintf(stderr, "tcc: ar: can't open file %s \n", argv[i_obj]);
+        if ((fi = TCC(fopen)(argv[i_obj], "rb")) == NULL) {
+            TCC(fprintf)(stderr, "tcc: ar: can't open file %s \n", argv[i_obj]);
             goto the_end;
         }
         if (verbose)
-            printf("a - %s\n", argv[i_obj]);
+            TCC(printf)("a - %s\n", argv[i_obj]);
 
-        fseek(fi, 0, SEEK_END);
-        fsize = ftell(fi);
-        fseek(fi, 0, SEEK_SET);
+        TCC(fseek)(fi, 0, SEEK_END);
+        fsize = TCC(ftell,int)(fi);
+        TCC(fseek)(fi, 0, SEEK_SET);
         buf = tcc_malloc(fsize + 1);
-        fread(buf, fsize, 1, fi);
-        fclose(fi);
+        TCC(fread)(buf, fsize, 1, fi);
+        TCC(fclose)(fi);
 
         // elf header
         ehdr = (ElfW(Ehdr) *)buf;
         if (ehdr->e_ident[4] != ELFCLASSW)
         {
-            fprintf(stderr, "tcc: ar: Unsupported Elf Class: %s\n", argv[i_obj]);
+            TCC(fprintf)(stderr, "tcc: ar: Unsupported Elf Class: %s\n", argv[i_obj]);
             goto the_end;
         }
 
@@ -188,7 +188,7 @@ ST_FUNC int tcc_tool_ar(TCCState *s1, int argc, char **argv)
             }
             if (shdr->sh_type == SHT_STRTAB)
             {
-                if (!strcmp(shstr + shdr->sh_name, ".strtab"))
+                if (!TCC(strcmp,int)(shstr + shdr->sh_name, ".strtab"))
                 {
                     strtab = (char *)(buf + shdr->sh_offset);
                     //strtabsize = shdr->sh_size;
@@ -199,7 +199,7 @@ ST_FUNC int tcc_tool_ar(TCCState *s1, int argc, char **argv)
         if (symtab && symtabsize)
         {
             int nsym = symtabsize / sizeof(ElfW(Sym));
-            //printf("symtab: info size shndx name\n");
+            //TCC(printf)("symtab: info size shndx name\n");
             for (i = 1; i < nsym; i++)
             {
                 sym = (ElfW(Sym) *) (symtab + i * sizeof(ElfW(Sym)));
@@ -208,10 +208,10 @@ ST_FUNC int tcc_tool_ar(TCCState *s1, int argc, char **argv)
                     || sym->st_info == 0x11
                     || sym->st_info == 0x12
                     )) {
-                    //printf("symtab: %2Xh %4Xh %2Xh %s\n", sym->st_info, sym->st_size, sym->st_shndx, strtab + sym->st_name);
-                    istrlen = strlen(strtab + sym->st_name)+1;
+                    //TCC(printf)("symtab: %2Xh %4Xh %2Xh %s\n", sym->st_info, sym->st_size, sym->st_shndx, strtab + sym->st_name);
+                    istrlen = TCC(strlen,int)(strtab + sym->st_name)+1;
                     anames = tcc_realloc(anames, strpos+istrlen);
-                    strcpy(anames + strpos, strtab + sym->st_name);
+                    TCC(strcpy)(anames + strpos, strtab + sym->st_name);
                     strpos += istrlen;
                     if (++funccnt >= funcmax) {
                         funcmax += 250;
@@ -223,19 +223,19 @@ ST_FUNC int tcc_tool_ar(TCCState *s1, int argc, char **argv)
         }
 
         file = argv[i_obj];
-        for (name = strchr(file, 0);
+        for (name = TCC(strchr,char*)(file, 0);
              name > file && name[-1] != '/' && name[-1] != '\\';
              --name);
-        istrlen = strlen(name);
+        istrlen = TCC(strlen,int)(name);
         if (istrlen >= sizeof(arhdro.ar_name))
             istrlen = sizeof(arhdro.ar_name) - 1;
-        memset(arhdro.ar_name, ' ', sizeof(arhdro.ar_name));
-        memcpy(arhdro.ar_name, name, istrlen);
+        TCC(memset)(arhdro.ar_name, ' ', sizeof(arhdro.ar_name));
+        TCC(memcpy)(arhdro.ar_name, name, istrlen);
         arhdro.ar_name[istrlen] = '/';
-        sprintf(stmp, "%-10d", fsize);
-        memcpy(&arhdro.ar_size, stmp, 10);
-        fwrite(&arhdro, sizeof(arhdro), 1, fo);
-        fwrite(buf, fsize, 1, fo);
+        TCC(sprintf)(stmp, "%-10d", fsize);
+        TCC(memcpy)(&arhdro.ar_size, stmp, 10);
+        TCC(fwrite)(&arhdro, sizeof(arhdro), 1, fo);
+        TCC(fwrite)(buf, fsize, 1, fo);
         tcc_free(buf);
         i_obj++;
         fpos += (fsize + sizeof(arhdro));
@@ -245,24 +245,24 @@ ST_FUNC int tcc_tool_ar(TCCState *s1, int argc, char **argv)
     if ((hofs & 1)) // align
         hofs++, fpos = 1;
     // write header
-    fwrite("!<arch>\n", 8, 1, fh);
-    sprintf(stmp, "%-10d", (int)(strpos + (funccnt+1) * sizeof(int)));
-    memcpy(&arhdr.ar_size, stmp, 10);
-    fwrite(&arhdr, sizeof(arhdr), 1, fh);
+    TCC(fwrite)("!<arch>\n", 8, 1, fh);
+    TCC(sprintf)(stmp, "%-10d", (int)(strpos + (funccnt+1) * sizeof(int)));
+    TCC(memcpy)(&arhdr.ar_size, stmp, 10);
+    TCC(fwrite)(&arhdr, sizeof(arhdr), 1, fh);
     afpos[0] = le2belong(funccnt);
     for (i=1; i<=funccnt; i++)
         afpos[i] = le2belong(afpos[i] + hofs);
-    fwrite(afpos, (funccnt+1) * sizeof(int), 1, fh);
-    fwrite(anames, strpos, 1, fh);
+    TCC(fwrite)(afpos, (funccnt+1) * sizeof(int), 1, fh);
+    TCC(fwrite)(anames, strpos, 1, fh);
     if (fpos)
-        fwrite("", 1, 1, fh);
+        TCC(fwrite)("", 1, 1, fh);
     // write objects
-    fseek(fo, 0, SEEK_END);
-    fsize = ftell(fo);
-    fseek(fo, 0, SEEK_SET);
+    TCC(fseek)(fo, 0, SEEK_END);
+    fsize = TCC(ftell,int)(fo);
+    TCC(fseek)(fo, 0, SEEK_SET);
     buf = tcc_malloc(fsize + 1);
-    fread(buf, fsize, 1, fo);
-    fwrite(buf, fsize, 1, fh);
+    TCC(fread)(buf, fsize, 1, fo);
+    TCC(fwrite)(buf, fsize, 1, fh);
     tcc_free(buf);
     ret = 0;
 the_end:
@@ -271,9 +271,11 @@ the_end:
     if (afpos)
         tcc_free(afpos);
     if (fh)
-        fclose(fh);
-    if (fo)
-        fclose(fo), remove(tfile);
+        TCC(fclose)(fh);
+		if (fo){
+			TCC(fclose)(fo);
+		}
+		TCC(remove)(tfile);
     return ret;
 }
 
@@ -324,23 +326,23 @@ ST_FUNC int tcc_tool_impdef(TCCState *s1, int argc, char **argv)
     for (i = 1; i < argc; ++i) {
         const char *a = argv[i];
         if ('-' == a[0]) {
-            if (0 == strcmp(a, "-v")) {
+            if (0 == TCC(strcmp,int)(a, "-v")) {
                 v = 1;
-            } else if (0 == strcmp(a, "-o")) {
+            } else if (0 == TCC(strcmp,int)(a, "-o")) {
                 if (++i == argc)
                     goto usage;
-                strcpy(outfile, argv[i]);
+                TCC(strcpy)(outfile, argv[i]);
             } else
                 goto usage;
         } else if (0 == infile[0])
-            strcpy(infile, a);
+            TCC(strcpy)(infile, a);
         else
             goto usage;
     }
 
     if (0 == infile[0]) {
 usage:
-        fprintf(stderr,
+        TCC(fprintf)(stderr,
             "usage: tcc -impdef library.dll [-v] [-o outputfile]\n"
             "create export definition file (.def) from dll\n"
             );
@@ -348,11 +350,11 @@ usage:
     }
 
     if (0 == outfile[0]) {
-        strcpy(outfile, tcc_basename(infile));
-        q = strrchr(outfile, '.');
+        TCC(strcpy)(outfile, tcc_basename(infile));
+        q = TCC(strrchr,char*)(outfile, '.');
         if (NULL == q)
-            q = strchr(outfile, 0);
-        strcpy(q, ".def");
+            q = TCC(strchr,char*)(outfile, 0);
+        TCC(strcpy)(q, ".def");
     }
 
     file = infile;
@@ -362,7 +364,7 @@ usage:
 #endif
     ret = tcc_get_dllexports(file, &p);
     if (ret || !p) {
-        fprintf(stderr, "tcc: impdef: %s '%s'\n",
+        TCC(fprintf)(stderr, "tcc: impdef: %s '%s'\n",
             ret == -1 ? "can't find file" :
             ret ==  1 ? "can't read symbols" :
             ret ==  0 ? "no symbols found in" :
@@ -372,22 +374,22 @@ usage:
     }
 
     if (v)
-        printf("-> %s\n", file);
+        TCC(printf)("-> %s\n", file);
 
-    op = fopen(outfile, "wb");
+    op = TCC(fopen)(outfile, "wb");
     if (NULL == op) {
-        fprintf(stderr, "tcc: impdef: could not create output file: %s\n", outfile);
+        TCC(fprintf)(stderr, "tcc: impdef: could not create output file: %s\n", outfile);
         goto the_end;
     }
 
-    fprintf(op, "LIBRARY %s\n\nEXPORTS\n", tcc_basename(file));
+    TCC(fprintf)(op, "LIBRARY %s\n\nEXPORTS\n", tcc_basename(file));
     for (q = p, i = 0; *q; ++i) {
-        fprintf(op, "%s\n", q);
-        q += strlen(q) + 1;
+        TCC(fprintf)(op, "%s\n", q);
+        q += TCC(strlen,int)(q) + 1;
     }
 
     if (v)
-        printf("<- %s (%d symbol%s)\n", outfile, i, &"s"[i<2]);
+       TCC(printf)("<- %s (%d symbol%s)\n", outfile, i, &"s"[i<2]);
 
     ret = 0;
 
@@ -397,9 +399,9 @@ the_end:
     /* if (p)
         tcc_free(p); */
     if (fp)
-        fclose(fp);
+        TCC(fclose)(fp);
     if (op)
-        fclose(op);
+        TCC(fclose)(op);
     return ret;
 }
 
@@ -437,7 +439,7 @@ ST_FUNC void tcc_tool_cross(TCCState *s, char **argv, int option)
 
 #else
 #ifdef _WIN32
-#include <process.h>
+//#include <process.h>
 
 static char *str_replace(const char *str, const char *p, const char *r)
 {
@@ -445,19 +447,19 @@ static char *str_replace(const char *str, const char *p, const char *r)
     char *d, *d0;
     int sl, pl, rl;
 
-    sl = strlen(str);
-    pl = strlen(p);
-    rl = strlen(r);
+    sl = TCC(strlen,int)(str);
+    pl = TCC(strlen,int)(p);
+    rl = TCC(strlen,int)(r);
     for (d0 = NULL;; d0 = tcc_malloc(sl + 1)) {
-        for (d = d0, s = str; s0 = s, s = strstr(s, p), s; s += pl) {
+        for (d = d0, s = str; s0 = s, s = TCC(strstr,char*)(s, p), s; s += pl) {
             if (d) {
-                memcpy(d, s0, sl = s - s0), d += sl;
-                memcpy(d, r, rl), d += rl;
+                TCC(memcpy)(d, s0, sl = s - s0), d += sl;
+                TCC(memcpy)(d, r, rl), d += rl;
             } else
                 sl += rl - pl;
         }
         if (d) {
-            strcpy(d, s0);
+            TCC(strcpy)(d, s0);
             return d0;
         }
     }
@@ -468,9 +470,9 @@ static int execvp_win32(const char *prog, char **argv)
     int ret; char **p;
     /* replace all " by \" */
     for (p = argv; *p; ++p)
-        if (strchr(*p, '"'))
+        if (TCC(strchr,char*)(*p, '"'))
             *p = str_replace(*p, "\"", "\\\"");
-    ret = _spawnvp(P_NOWAIT, prog, (const char *const*)argv);
+    ret = TCC(_spawnvp,int)(P_NOWAIT, prog, (const char *const*)argv);
     if (-1 == ret)
         return ret;
     _cwait(&ret, ret, WAIT_CHILD);
@@ -485,7 +487,7 @@ ST_FUNC void tcc_tool_cross(TCCState *s, char **argv, int target)
     char *a0 = argv[0];
     int prefix = tcc_basename(a0) - a0;
 
-    snprintf(program, sizeof program,
+    TCC(snprintf)(program, sizeof program,
         "%.*s%s"
 #ifdef TCC_TARGET_PE
         "-win32"
@@ -496,8 +498,8 @@ ST_FUNC void tcc_tool_cross(TCCState *s, char **argv, int target)
 #endif
         , prefix, a0, target == 64 ? "x86_64" : "i386");
 
-    if (strcmp(a0, program))
-        execvp(argv[0] = program, argv);
+    if (TCC(strcmp,int)(a0, program))
+        TCC(execvp)(argv[0] = program, argv);
     tcc_error("could not run '%s'", program);
 }
 
@@ -515,6 +517,7 @@ int _dowildcard = 1;
 /* -------------------------------------------------------------- */
 /* generate xxx.d file */
 
+//@ref tcc.c
 ST_FUNC void gen_makedeps(TCCState *s, const char *target, const char *filename)
 {
     FILE *depout;
@@ -523,24 +526,24 @@ ST_FUNC void gen_makedeps(TCCState *s, const char *target, const char *filename)
 
     if (!filename) {
         /* compute filename automatically: dir/file.o -> dir/file.d */
-        snprintf(buf, sizeof buf, "%.*s.d",
+        TCC(snprintf)(buf, sizeof buf, "%.*s.d",
             (int)(tcc_fileextension(target) - target), target);
         filename = buf;
     }
 
     if (s->verbose)
-        printf("<- %s\n", filename);
+       TCC(printf)("<- %s\n", filename);
 
     /* XXX return err codes instead of error() ? */
-    depout = fopen(filename, "w");
+    depout = TCC(fopen)(filename, "w");
     if (!depout)
         tcc_error("could not open '%s'", filename);
 
-    fprintf(depout, "%s: \\\n", target);
+    TCC(fprintf)(depout, "%s: \\\n", target);
     for (i=0; i<s->nb_target_deps; ++i)
-        fprintf(depout, " %s \\\n", s->target_deps[i]);
-    fprintf(depout, "\n");
-    fclose(depout);
+        TCC(fprintf)(depout, " %s \\\n", s->target_deps[i]);
+    TCC(fprintf)(depout, "\n");
+    TCC(fclose)(depout);
 }
 
 /* -------------------------------------------------------------- */

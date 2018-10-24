@@ -133,8 +133,6 @@
      DEF(TOK_DLLEXPORT, "dllexport")
      DEF(TOK_DLLIMPORT, "dllimport")
      DEF(TOK_NODECORATE, "nodecorate")
-     DEF(TOK_NORETURN1, "noreturn")
-     DEF(TOK_NORETURN2, "__noreturn__")
      DEF(TOK_VISIBILITY1, "visibility")
      DEF(TOK_VISIBILITY2, "__visibility__")
 

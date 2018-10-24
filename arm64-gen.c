@@ -537,7 +537,7 @@ ST_FUNC void load(int r, SValue *sv)
         return;
     }
 
-    printf("load(%x, (%x, %x, %llx))\n", r, svtt, sv->r, (long long)svcul);
+    TCC(printf)("load(%x, (%x, %x, %llx))\n", r, svtt, sv->r, (long long)svcul);
     assert(0);
 }
 
@@ -574,7 +574,7 @@ ST_FUNC void store(int r, SValue *sv)
         return;
     }
 
-    printf("store(%x, (%x, %x, %llx))\n", r, svtt, sv->r, (long long)svcul);
+    TCC(printf)("store(%x, (%x, %x, %llx))\n", r, svtt, sv->r, (long long)svcul);
     assert(0);
 }
 
@@ -801,19 +801,19 @@ static unsigned long arm64_pcs(int n, CType **type, unsigned long *a)
         int i;
         for (i = 0; i <= n; i++) {
             if (!i)
-                printf("arm64_pcs return: ");
+                TCC(printf)("arm64_pcs return: ");
             else
-                printf("arm64_pcs arg %d: ", i);
+                TCC(printf)("arm64_pcs arg %d: ", i);
             if (a[i] == (unsigned long)-1)
-                printf("void\n");
+                TCC(printf)("void\n");
             else if (a[i] == 1 && !i)
-                printf("X8 pointer\n");
+                TCC(printf)("X8 pointer\n");
             else if (a[i] < 16)
-                printf("X%lu%s\n", a[i] / 2, a[i] & 1 ? " pointer" : "");
+                TCC(printf)("X%lu%s\n", a[i] / 2, a[i] & 1 ? " pointer" : "");
             else if (a[i] < 32)
-                printf("V%lu\n", a[i] / 2 - 8);
+                TCC(printf)("V%lu\n", a[i] / 2 - 8);
             else
-                printf("stack %lu%s\n",
+                TCC(printf)("stack %lu%s\n",
                        (a[i] - 32) & ~1, a[i] & 1 ? " pointer" : "");
         }
     }

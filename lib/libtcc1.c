@@ -582,6 +582,7 @@ unsigned long long __fixunsdfdi (double a1)
         return 0;
 }
 
+//@ref TOK___fixxfdi, asm-gen.c & i386-gen.c
 long long __fixdfdi (double a1)
 {
     long long ret; int s;
@@ -613,6 +614,7 @@ unsigned long long __fixunsxfdi (long double a1)
         return 0;
 }
 
+//@ref TOK___fixxfdi, asm-gen.c & i386-gen.c
 long long __fixxfdi (long double a1)
 {
     long long ret; int s;

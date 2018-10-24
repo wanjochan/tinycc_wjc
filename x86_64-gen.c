@@ -604,7 +604,7 @@ void store(int r, SValue *v)
             gen_modrm64(op64, r, v->r, v->sym, fc);
         } else if (fr != r) {
             /* XXX: don't we really come here? */
-            abort();
+            TCC(abort)();
             o(0xc0 + fr + r * 8); /* mov r, fr */
         }
     } else {
@@ -612,7 +612,7 @@ void store(int r, SValue *v)
             gen_modrm(r, v->r, v->sym, fc);
         } else if (fr != r) {
             /* XXX: don't we really come here? */
-            abort();
+            TCC(abort)();
             o(0xc0 + fr + r * 8); /* mov r, fr */
         }
     }
@@ -1734,6 +1734,7 @@ ST_FUNC int gtst(int inv, int t)
 }
 
 /* generate an integer binary operation */
+//@ref compare to the tccgen.c:gen_opl()
 void gen_opi(int op)
 {
     int r, fr, opc, c;

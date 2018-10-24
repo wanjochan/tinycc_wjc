@@ -309,7 +309,7 @@ strip="${cross_prefix}${strip}"
 
 if test -z "$cross_prefix" ; then
   CONFTEST=./conftest$EXESUF
-  if ! $cc -o $CONFTEST $source_path/conftest.c 2>/dev/null ; then
+  if ! $cc -I ../include -o $CONFTEST $source_path/conftest.c 2>/dev/null ; then
     echo "configure: error: '$cc' failed to compile conftest.c."
   else
     gcc_major="$($CONFTEST version)"
@@ -368,7 +368,7 @@ fi
 if ! echo "$cc" | grep -q "tcc"; then
   OPT1="-Wdeclaration-after-statement -fno-strict-aliasing"
   # we want -Wno- but gcc does not always reject unknown -Wno- options
-  OPT2="-Wpointer-sign -Wsign-compare -Wunused-result"
+  OPT2="-Wpointer-sign -Wsign-compare -Wunused-result -Wunused-function -Wunused-but-set-variable"
   if echo "$cc" | grep -q "clang"; then
     OPT1="$OPT1 -fheinous-gnu-extensions"
     OPT2="$OPT2 -Wstring-plus-int"

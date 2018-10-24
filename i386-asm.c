@@ -252,32 +252,45 @@ static const uint16_t op0_codes[] = {
 #endif
 };
 
-static inline int get_reg_shift(TCCState *s1)
+//@ref parse_operand()
+// [1,2,4,8]=>[0,1,2,3]
+// [0x1,0x2,0x4,0x8]=>[0x0,0x1,0x2,0x3]
+// return (v&0x1||0x0)||(v&0x2||0x1)||(v&0x4||0x2)||(v&0x3||0x3)||expect("");
+static inline int get_reg_shift_v(int v)
 {
-    int shift, v;
-    v = asm_int_expr(s1);
-    switch(v) {
-    case 1:
-        shift = 0;
-        break;
-    case 2:
-        shift = 1;
-        break;
-    case 4:
-        shift = 2;
-        break;
-    case 8:
-        shift = 3;
-        break;
-    default:
-        expect("1, 2, 4 or 8 constant");
-        shift = 0;
-        break;
-    }
-    return shift;
+	if(v==1)return 0;
+	if(v==2)return 1;
+	if(v==4)return 2;
+	if(v==8)return 3;
+	return expect("1, 2, 4 or 8 constant");
 }
 
+//static inline int get_reg_shift(TCCState *s1)
+//{
+//    int shift;
+//    switch(asm_int_expr(s1)) {
+//    case 1:
+//        shift = 0;
+//        break;
+//    case 2:
+//        shift = 1;
+//        break;
+//    case 4:
+//        shift = 2;
+//        break;
+//    case 8:
+//        shift = 3;
+//        break;
+//    default:
+//        expect("1, 2, 4 or 8 constant");
+//        shift = 0;
+//        break;
+//    }
+//    return shift;
+//}
+
 #ifdef TCC_TARGET_X86_64
+//@ref parse_operand(),asm_clobber(),asm_parse_reg()
 static int asm_parse_numeric_reg(int t, unsigned int *type)
 {
     int reg = -1;
@@ -317,6 +330,7 @@ static int asm_parse_numeric_reg(int t, unsigned int *type)
 }
 #endif
 
+//@ref parse_operand()
 static int asm_parse_reg(unsigned int *type)
 {
     int reg = 0;
@@ -346,6 +360,7 @@ static int asm_parse_reg(unsigned int *type)
     return reg;
 }
 
+//@ref asm_opcode(),asm_parse_regvar()
 static void parse_operand(TCCState *s1, Operand *op)
 {
     ExprValue e;
@@ -465,7 +480,8 @@ static void parse_operand(TCCState *s1, Operand *op)
                 }
                 if (tok == ',') {
                     next();
-                    op->shift = get_reg_shift(s1);
+                    //op->shift = get_reg_shift(s1);
+                    op->shift = get_reg_shift_v(asm_int_expr(s1));
                 }
             }
 	    if (type & OP_REG32)
@@ -476,9 +492,10 @@ static void parse_operand(TCCState *s1, Operand *op)
             op->type |= OP_ADDR;
     }
     op->type |= indir;
-}
+}//parse_operand()
 
 /* XXX: unify with C code output ? */
+//@ref asm_opcode(), asm_modrm()
 ST_FUNC void gen_expr32(ExprValue *pe)
 {
     if (pe->pcrel)
@@ -490,6 +507,7 @@ ST_FUNC void gen_expr32(ExprValue *pe)
 }
 
 #ifdef TCC_TARGET_X86_64
+//@ref asm_opcode()
 ST_FUNC void gen_expr64(ExprValue *pe)
 {
     gen_addr64(pe->sym ? VT_SYM : 0, pe->sym, pe->v);
@@ -497,6 +515,7 @@ ST_FUNC void gen_expr64(ExprValue *pe)
 #endif
 
 /* XXX: unify with C code output ? */
+//@ref asm_opcode()
 static void gen_disp32(ExprValue *pe)
 {
     Sym *sym = pe->sym;
@@ -517,6 +536,7 @@ static void gen_disp32(ExprValue *pe)
 }
 
 /* generate the modrm operand */
+//@ref asm_opcode()
 static inline int asm_modrm(int reg, Operand *op)
 {
     int mod, reg1, reg2, sib_reg1;
@@ -572,7 +592,7 @@ static inline int asm_modrm(int reg, Operand *op)
         }
     }
     return 0;
-}
+}//asm_modrm()
 
 #ifdef TCC_TARGET_X86_64
 #define REX_W 0x48
@@ -580,6 +600,7 @@ static inline int asm_modrm(int reg, Operand *op)
 #define REX_X 0x42
 #define REX_B 0x41
 
+//@ref asm_opcode()
 static void asm_rex(int width64, Operand *ops, int nb_ops, int *op_type,
 		    int regi, int rmi)
 {
@@ -637,6 +658,7 @@ static void asm_rex(int width64, Operand *ops, int nb_ops, int *op_type,
 }
 #endif
 
+//@ref asm_opcode()
 static void maybe_print_stats (void)
 {
   static int already = 1;
@@ -650,7 +672,7 @@ static void maybe_print_stats (void)
 
 	already = 1;
         nb_op_vals = 0;
-        memset(freq, 0, sizeof(freq));
+        TCC(memset)(freq, 0, sizeof(freq));
         for(pa = asm_instrs; pa->sym != 0; pa++) {
             freq[pa->nb_ops]++;
             //for(i=0;i<pa->nb_ops;i++) {
@@ -667,15 +689,16 @@ static void maybe_print_stats (void)
         for(i=0;i<nb_op_vals;i++) {
             int v = op_vals[i];
             //if ((v & (v - 1)) != 0)
-                printf("%3d: %08x\n", i, v);
+                TCC(printf)("%3d: %08x\n", i, v);
         }
-        printf("size=%d nb=%d f0=%d f1=%d f2=%d f3=%d\n",
+        TCC(printf)("size=%d nb=%d f0=%d f1=%d f2=%d f3=%d\n",
                (int)sizeof(asm_instrs),
 	       (int)sizeof(asm_instrs) / (int)sizeof(ASMInstr),
                freq[0], freq[1], freq[2], freq[3]);
     }
 }
 
+//@ref tcc_assemble_internal()
 ST_FUNC void asm_opcode(TCCState *s1, int opcode)
 {
     const ASMInstr *pa;
@@ -850,8 +873,8 @@ again:
 	       them, but we don't want them to blow up our tables.  */
 	    TokenSym *ts = table_ident[opcode - TOK_IDENT];
 	    if (ts->len >= 6
-		&& strchr("wlq", ts->str[ts->len-1])
-		&& !memcmp(ts->str, "cmov", 4)) {
+		&& TCC(strchr,char*)("wlq", ts->str[ts->len-1])
+		&& !TCC(memcmp,int)(ts->str, "cmov", 4)) {
 		opcode = tok_alloc(ts->str, ts->len-1)->tok;
 		goto again;
 	    }
@@ -1134,10 +1157,11 @@ again:
     /* after immediate operands, adjust pc-relative address */
     if (pc)
         add32le(cur_text_section->data + pc - 4, pc - ind);
-}
+}//asm_opcode()
 
 /* return the constraint priority (we allocate first the lowest
    numbered constraints) */
+//@ref asm_compute_constraints()
 static inline int constraint_priority(const char *str)
 {
     int priority, c, pr;
@@ -1197,7 +1221,8 @@ static const char *skip_constraint_modifiers(const char *p)
 
 /* If T (a token) is of the form "%reg" returns the register
    number and type, otherwise return -1.  */
-ST_FUNC int asm_parse_regvar (int t)
+//@ref tccgen.c:decl_initializer_alloc()
+ST_FUNC int asm_parse_regvar(int t)
 {
     const char *s;
     Operand op;
@@ -1206,7 +1231,7 @@ ST_FUNC int asm_parse_regvar (int t)
     s = table_ident[t - TOK_IDENT]->str;
     if (s[0] != '%')
         return -1;
-    t = tok_alloc(s+1, strlen(s)-1)->tok;
+    t = tok_alloc(s+1, TCC(strlen,int)(s)-1)->tok;
     unget_tok(t);
     unget_tok('%');
     parse_operand(tcc_state, &op);
@@ -1222,6 +1247,7 @@ ST_FUNC int asm_parse_regvar (int t)
 
 #define is_reg_allocated(reg) (regs_allocated[reg] & reg_mask)
 
+//@ref tccasm.c: asm_instr()
 ST_FUNC void asm_compute_constraints(ASMOperand *operands,
                                     int nb_operands, int nb_outputs,
                                     const uint8_t *clobber_regs,
@@ -1456,7 +1482,7 @@ ST_FUNC void asm_compute_constraints(ASMOperand *operands,
     for(i=0;i<nb_operands;i++) {
         j = sorted_op[i];
         op = &operands[j];
-        printf("%%%d [%s]: \"%s\" r=0x%04x reg=%d\n",
+        TCC(printf)("%%%d [%s]: \"%s\" r=0x%04x reg=%d\n",
                j,
                op->id ? get_tok_str(op->id, NULL) : "",
                op->constraint,
@@ -1464,10 +1490,11 @@ ST_FUNC void asm_compute_constraints(ASMOperand *operands,
                op->reg);
     }
     if (*pout_reg >= 0)
-        printf("out_reg=%d\n", *pout_reg);
+        TCC(printf)("out_reg=%d\n", *pout_reg);
 #endif
 }
 
+//@ref tccasm.c: asm_instr()
 ST_FUNC void subst_asm_operand(CString *add_str,
                               SValue *sv, int modifier)
 {
@@ -1487,7 +1514,7 @@ ST_FUNC void subst_asm_operand(CString *add_str,
 		   in the C symbol table when later looking up
 		   this name.  So enter them now into the asm label
 		   list when we still know the symbol.  */
-		get_asm_sym(tok_alloc(name, strlen(name))->tok, sv->sym);
+		get_asm_sym(tok_alloc(name, TCC(strlen,int)(name))->tok, sv->sym);
 	    }
             cstr_cat(add_str, name, -1);
             if ((uint32_t)sv->c.i == 0)
@@ -1497,7 +1524,7 @@ ST_FUNC void subst_asm_operand(CString *add_str,
         val = sv->c.i;
         if (modifier == 'n')
             val = -val;
-        snprintf(buf, sizeof(buf), "%d", (int)sv->c.i);
+        TCC(snprintf)(buf, sizeof(buf), "%d", (int)sv->c.i);
         cstr_cat(add_str, buf, -1);
     no_offset:;
 #ifdef TCC_TARGET_X86_64
@@ -1506,16 +1533,16 @@ ST_FUNC void subst_asm_operand(CString *add_str,
 #endif
     } else if ((r & VT_VALMASK) == VT_LOCAL) {
 #ifdef TCC_TARGET_X86_64
-        snprintf(buf, sizeof(buf), "%d(%%rbp)", (int)sv->c.i);
+        TCC(snprintf)(buf, sizeof(buf), "%d(%%rbp)", (int)sv->c.i);
 #else
-        snprintf(buf, sizeof(buf), "%d(%%ebp)", (int)sv->c.i);
+        TCC(snprintf)(buf, sizeof(buf), "%d(%%ebp)", (int)sv->c.i);
 #endif
         cstr_cat(add_str, buf, -1);
     } else if (r & VT_LVAL) {
         reg = r & VT_VALMASK;
         if (reg >= VT_CONST)
             tcc_error("internal compiler error");
-        snprintf(buf, sizeof(buf), "(%%%s)",
+        TCC(snprintf)(buf, sizeof(buf), "(%%%s)",
 #ifdef TCC_TARGET_X86_64
                  get_tok_str(TOK_ASM_rax + reg, NULL)
 #else
@@ -1582,142 +1609,144 @@ ST_FUNC void subst_asm_operand(CString *add_str,
             break;
 #endif
         }
-        snprintf(buf, sizeof(buf), "%%%s", get_tok_str(reg, NULL));
+        TCC(snprintf)(buf, sizeof(buf), "%%%s", get_tok_str(reg, NULL));
         cstr_cat(add_str, buf, -1);
     }
 }
 
 /* generate prolog and epilog code for asm statement */
+//@ref tccasm.c: asm_instr()
 ST_FUNC void asm_gen_code(ASMOperand *operands, int nb_operands,
                          int nb_outputs, int is_output,
                          uint8_t *clobber_regs,
                          int out_reg)
 {
-    uint8_t regs_allocated[NB_ASM_REGS];
-    ASMOperand *op;
-    int i, reg;
+	uint8_t regs_allocated[NB_ASM_REGS];
+	ASMOperand *op;
+	int i, reg;
 
-    /* Strictly speaking %Xbp and %Xsp should be included in the
-       call-preserved registers, but currently it doesn't matter.  */
+	/* Strictly speaking %Xbp and %Xsp should be included in the
+		 call-preserved registers, but currently it doesn't matter.  */
 #ifdef TCC_TARGET_X86_64
 #ifdef TCC_TARGET_PE
-    static uint8_t reg_saved[] = { 3, 6, 7, 12, 13, 14, 15 };
+	static uint8_t reg_saved[] = { 3, 6, 7, 12, 13, 14, 15 };
 #else
-    static uint8_t reg_saved[] = { 3, 12, 13, 14, 15 };
+	static uint8_t reg_saved[] = { 3, 12, 13, 14, 15 };
 #endif
 #else
-    static uint8_t reg_saved[] = { 3, 6, 7 };
+	static uint8_t reg_saved[] = { 3, 6, 7 };
 #endif
 
-    /* mark all used registers */
-    memcpy(regs_allocated, clobber_regs, sizeof(regs_allocated));
-    for(i = 0; i < nb_operands;i++) {
-        op = &operands[i];
-        if (op->reg >= 0)
-            regs_allocated[op->reg] = 1;
-    }
-    if (!is_output) {
-        /* generate reg save code */
-        for(i = 0; i < sizeof(reg_saved)/sizeof(reg_saved[0]); i++) {
-            reg = reg_saved[i];
-            if (regs_allocated[reg]) {
-		if (reg >= 8)
-		  g(0x41), reg-=8;
-                g(0x50 + reg);
-            }
-        }
+	/* mark all used registers */
+	TCC(memcpy)(regs_allocated, clobber_regs, sizeof(regs_allocated));
+	for(i = 0; i < nb_operands;i++) {
+		op = &operands[i];
+		if (op->reg >= 0)
+			regs_allocated[op->reg] = 1;
+	}
+	if (!is_output) {
+		/* generate reg save code */
+		for(i = 0; i < sizeof(reg_saved)/sizeof(reg_saved[0]); i++) {
+			reg = reg_saved[i];
+			if (regs_allocated[reg]) {
+				if (reg >= 8)
+					g(0x41), reg-=8;
+				g(0x50 + reg);
+			}
+		}
 
-        /* generate load code */
-        for(i = 0; i < nb_operands; i++) {
-            op = &operands[i];
-            if (op->reg >= 0) {
-                if ((op->vt->r & VT_VALMASK) == VT_LLOCAL &&
-                    op->is_memory) {
-                    /* memory reference case (for both input and
-                       output cases) */
-                    SValue sv;
-                    sv = *op->vt;
-                    sv.r = (sv.r & ~VT_VALMASK) | VT_LOCAL | VT_LVAL;
-                    sv.type.t = VT_PTR;
-                    load(op->reg, &sv);
-                } else if (i >= nb_outputs || op->is_rw) {
-                    /* load value in register */
-                    load(op->reg, op->vt);
-                    if (op->is_llong) {
-                        SValue sv;
-                        sv = *op->vt;
-                        sv.c.i += 4;
-                        load(TREG_XDX, &sv);
-                    }
-                }
-            }
-        }
-    } else {
-        /* generate save code */
-        for(i = 0 ; i < nb_outputs; i++) {
-            op = &operands[i];
-            if (op->reg >= 0) {
-                if ((op->vt->r & VT_VALMASK) == VT_LLOCAL) {
-                    if (!op->is_memory) {
-                        SValue sv;
-                        sv = *op->vt;
-                        sv.r = (sv.r & ~VT_VALMASK) | VT_LOCAL;
-			sv.type.t = VT_PTR;
-                        load(out_reg, &sv);
+		/* generate load code */
+		for(i = 0; i < nb_operands; i++) {
+			op = &operands[i];
+			if (op->reg >= 0) {
+				if ((op->vt->r & VT_VALMASK) == VT_LLOCAL &&
+						op->is_memory) {
+					/* memory reference case (for both input and
+						 output cases) */
+					SValue sv;
+					sv = *op->vt;
+					sv.r = (sv.r & ~VT_VALMASK) | VT_LOCAL | VT_LVAL;
+					sv.type.t = VT_PTR;
+					load(op->reg, &sv);
+				} else if (i >= nb_outputs || op->is_rw) {
+					/* load value in register */
+					load(op->reg, op->vt);
+					if (op->is_llong) {
+						SValue sv;
+						sv = *op->vt;
+						sv.c.i += 4;
+						load(TREG_XDX, &sv);
+					}
+				}
+			}
+		}
+	} else {
+		/* generate save code */
+		for(i = 0 ; i < nb_outputs; i++) {
+			op = &operands[i];
+			if (op->reg >= 0) {
+				if ((op->vt->r & VT_VALMASK) == VT_LLOCAL) {
+					if (!op->is_memory) {
+						SValue sv;
+						sv = *op->vt;
+						sv.r = (sv.r & ~VT_VALMASK) | VT_LOCAL;
+						sv.type.t = VT_PTR;
+						load(out_reg, &sv);
 
-			sv = *op->vt;
-                        sv.r = (sv.r & ~VT_VALMASK) | out_reg;
-                        store(op->reg, &sv);
-                    }
-                } else {
-                    store(op->reg, op->vt);
-                    if (op->is_llong) {
-                        SValue sv;
-                        sv = *op->vt;
-                        sv.c.i += 4;
-                        store(TREG_XDX, &sv);
-                    }
-                }
-            }
-        }
-        /* generate reg restore code */
-        for(i = sizeof(reg_saved)/sizeof(reg_saved[0]) - 1; i >= 0; i--) {
-            reg = reg_saved[i];
-            if (regs_allocated[reg]) {
-		if (reg >= 8)
-		  g(0x41), reg-=8;
-                g(0x58 + reg);
-            }
-        }
-    }
-}
+						sv = *op->vt;
+						sv.r = (sv.r & ~VT_VALMASK) | out_reg;
+						store(op->reg, &sv);
+					}
+				} else {
+					store(op->reg, op->vt);
+					if (op->is_llong) {
+						SValue sv;
+						sv = *op->vt;
+						sv.c.i += 4;
+						store(TREG_XDX, &sv);
+					}
+				}
+			}
+		}
+		/* generate reg restore code */
+		for(i = sizeof(reg_saved)/sizeof(reg_saved[0]) - 1; i >= 0; i--) {
+			reg = reg_saved[i];
+			if (regs_allocated[reg]) {
+				if (reg >= 8)
+					g(0x41), reg-=8;
+				g(0x58 + reg);
+			}
+		}
+	}
+}//asm_gen_code()
 
+//@ref tccasm.c: asm_instr()
 ST_FUNC void asm_clobber(uint8_t *clobber_regs, const char *str)
 {
-    int reg;
-    TokenSym *ts;
+	int reg;
+	TokenSym *ts;
 #ifdef TCC_TARGET_X86_64
-    unsigned int type;
+	unsigned int type;
 #endif
 
-    if (!strcmp(str, "memory") ||
-        !strcmp(str, "cc") ||
-	!strcmp(str, "flags"))
-        return;
-    ts = tok_alloc(str, strlen(str));
-    reg = ts->tok;
-    if (reg >= TOK_ASM_eax && reg <= TOK_ASM_edi) {
-        reg -= TOK_ASM_eax;
-    } else if (reg >= TOK_ASM_ax && reg <= TOK_ASM_di) {
-        reg -= TOK_ASM_ax;
+	if (!TCC(strcmp,int)(str, "memory") ||
+			!TCC(strcmp,int)(str, "cc") ||
+			!TCC(strcmp,int)(str, "flags"))
+		return;
+	ts = tok_alloc(str, TCC(strlen,int)(str));
+	reg = ts->tok;
+	if (reg >= TOK_ASM_eax && reg <= TOK_ASM_edi) {
+		reg -= TOK_ASM_eax;
+	} else if (reg >= TOK_ASM_ax && reg <= TOK_ASM_di) {
+		reg -= TOK_ASM_ax;
 #ifdef TCC_TARGET_X86_64
-    } else if (reg >= TOK_ASM_rax && reg <= TOK_ASM_rdi) {
-        reg -= TOK_ASM_rax;
-    } else if ((reg = asm_parse_numeric_reg(reg, &type)) >= 0) {
-	;
+	} else if (reg >= TOK_ASM_rax && reg <= TOK_ASM_rdi) {
+		reg -= TOK_ASM_rax;
+	} else if ((reg = asm_parse_numeric_reg(reg, &type)) >= 0) {
+		;
 #endif
-    } else {
-        tcc_error("invalid clobber register '%s'", str);
-    }
-    clobber_regs[reg] = 1;
+	} else {
+		tcc_error("invalid clobber register '%s'", str);
+	}
+	clobber_regs[reg] = 1;
 }
