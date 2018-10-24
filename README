@@ -1,3 +1,23 @@
+
+-----------------------------------------------------------------------
+tinycc_wjc:  branch for wjc/tccos
+
+Features:
+- std c header depend-less ! (using dl)
+- using TCC() macro to make the calling more clear
+- patches for OSX/ARM etc
+
+Targets:
+* arm-asm.c
+* osx macho output
+* foundation toolchain for TccOS
+
+
+
+
+
+
+-----------------------------------------------------------------------
 Tiny C Compiler - C Scripting Everywhere - The Smallest ANSI C compiler
 -----------------------------------------------------------------------
 
