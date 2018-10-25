@@ -23,9 +23,6 @@ extern char *dlerror (void);
 #define RTLD_NOLOAD				-1
 #define RTLD_GLOBAL				-1
 
-//#define tcc_dlsym dlsym
-#define tcc_dlopen dlopen
-
 #endif /* __DLFCN_H__ */
 #else//not _WIN32
 #ifndef __DLFCN_H__
@@ -71,7 +68,6 @@ extern char *dlerror (void);
 #endif
 
 //#define tcc_dlsym dlsym
-#define tcc_dlopen dlopen
 //TODO make tcc_dlsym() more clever with tcc_dl.c ?
 //TODO make tcc_dlopen dlopen( #LIB , RTLD_GLOBAL | RTLD_LAZY)
 //TODO prepare function if speedup?
@@ -108,7 +104,8 @@ extern FILE *__stderrp;
 #define stdin __stdinp
 #define stdout __stdoutp
 #define stderr __stderrp
-#else
+
+#else//TODO for !__APPLE__
 
 /* Very Standard streams.  */
 extern FILE *stdin;		/* Standard input stream.  */
@@ -122,9 +119,29 @@ extern FILE *stderr;		/* Standard error output stream.  */
 
 #endif//__APPLE__
 
-static inline void* tcc_dlsym(char* sym) {
+static inline void* tcc_dlsym(const char* sym) {
 	return dlsym(RTLD_DEFAULT,sym);
 }
+
+static inline void* tcc_dlopen(const char* lib) {
+	return dlopen(lib, RTLD_GLOBAL | RTLD_LAZY);
+}
+
+enum{
+    TCC_C_stdin,
+    TCC_C_stdout,
+    TCC_C_stderr,
+};
+//TODO improve later
+static inline FILE* tcc_std(int std){
+	//TODO try dlsym later...
+	if(TCC_C_stdin==std)return stdin;
+	if(TCC_C_stdout==std)return stdout;
+	if(TCC_C_stderr==std)return stderr;
+}
+
+//TODO maybe merge to TCC() later
+#define TCCSTD(STD) (FILE*)tcc_std(TCC_C_std##STD)
 
 #endif//_TCC_DL_H
 

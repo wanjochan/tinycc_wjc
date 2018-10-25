@@ -1798,7 +1798,7 @@ static uint32_t is_fconst()
 void gen_opf(int op)
 {
   uint32_t x, r, r2, c1, c2;
-  //fputs("gen_opf\n",stderr);
+  //fputs("gen_opf\n",TCCSTD(err));
   vswap();
   c1 = is_fconst();
   vswap();

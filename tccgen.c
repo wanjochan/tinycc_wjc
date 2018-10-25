@@ -2253,8 +2253,8 @@ redo:
 ///	    int v[10];
 ///	    int i = 10;
 ///	    int j = 9;
-///	    fprintf(stderr, "v+i-j  = %p\n", v+i-j);
-///	    fprintf(stderr, "v+(i-j)  = %p\n", v+(i-j));
+///	    fprintf(TCCSTD(err), "v+i-j  = %p\n", v+i-j);
+///	    fprintf(TCCSTD(err), "v+(i-j)  = %p\n", v+(i-j));
 ///	}
 ///    When this code is on. then the output looks like 
 ///	v+i-j = 0xfffffffe
@@ -3710,7 +3710,7 @@ static void struct_layout(CType *type, AttributeDef *ad)
 
 #ifdef BF_DEBUG
     TCC(printf)("struct size %-2d align %-2d\n\n", c, a);
-		TCC(fflush)(stdout);
+		TCC(fflush)(TCCSTD(out));
 #endif
 
     /* check whether we can access bitfields by their type */

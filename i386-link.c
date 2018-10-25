@@ -238,7 +238,7 @@ void relocate(TCCState *s1, ElfW_Rel *rel, int type, unsigned char *ptr, addr_t 
             */
             return;
         default:
-            TCC(fprintf)(stderr,"FIXME: handle reloc type %d at %x [%p] to %x\n",
+            TCC(fprintf)(TCCSTD(err),"FIXME: handle reloc type %d at %x [%p] to %x\n",
                 type, (unsigned)addr, ptr, (unsigned)val);
             return;
     }

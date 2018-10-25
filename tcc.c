@@ -273,7 +273,7 @@ int tcc_main(int argc0, char **argv0)
     unsigned start_time = 0;
     const char *first_file;
     int argc; char **argv;
-    FILE *ppfp = (FILE*) stdout;
+    FILE *ppfp = TCCSTD(out);
 
 redo:
     argc = argc0, argv = argv0;
@@ -389,7 +389,7 @@ redo:
         goto redo; /* compile more files with -c */
     if (t)
         goto redo; /* run more tests with -dt -run */
-    if (ppfp && ppfp != (FILE*) stdout)
+    if (ppfp && ppfp != TCCSTD(out))
         TCC(fclose)(ppfp);
     return ret;
 }

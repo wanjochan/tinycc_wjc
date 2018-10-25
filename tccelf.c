@@ -789,7 +789,7 @@ ST_FUNC void relocate_syms(TCCState *s1, Section *symtab, int do_resolve)
             /* Use ld.so to resolve symbol for us (for tcc -run) */
             if (do_resolve) {
 #if defined TCC_IS_NATIVE && !defined TCC_TARGET_PE
-                void *addr = dlsym(RTLD_DEFAULT, name);
+                void *addr = tcc_dlsym(name);
                 if (addr) {
                     sym->st_value = (addr_t) addr;
 #ifdef DEBUG_RELOC
@@ -1998,8 +1998,8 @@ static int tcc_write_elf_file(TCCState *s1, const char *filename, int phnum,
 	//    mode = 0777;
 	TCC(unlink)(filename);
 
-	////fd = ((TCC_DL_dlsym_int_func_ptr)dlsym(RTLD_DEFAULT, "open"))(filename, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, mode);
-	//fd = ((TCC_DL_dlsym_int_func_ptr)dlsym(RTLD_DEFAULT, "open"))(filename, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, mode);
+	////fd = ((TCC_DL_dlsym_int_func_ptr)tcc_dlsym("open"))(filename, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, mode);
+	//fd = ((TCC_DL_dlsym_int_func_ptr)tcc_dlsym("open"))(filename, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, mode);
 	//if (fd < 0) {
 	//    tcc_error_noabort("tcc_write_elf_file(): could not write '%s',%d", filename,fd);
 	//    return -1;

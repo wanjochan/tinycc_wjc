@@ -295,9 +295,9 @@ static mem_debug_header_t *malloc_check(void *ptr, const char *msg)
         header->magic2 != MEM_DEBUG_MAGIC2 ||
         MEM_DEBUG_CHECK3(header) != MEM_DEBUG_MAGIC3 ||
         header->size == (unsigned)-1) {
-       TCC(fprintf)(stderr, "%s check failed\n", msg);
+       TCC(fprintf)(TCCSTD(err), "%s check failed\n", msg);
         if (header->magic1 == MEM_DEBUG_MAGIC1)
-           TCC(fprintf)(stderr, "%s:%u: block allocated here.\n",
+           TCC(fprintf)(TCCSTD(err), "%s:%u: block allocated here.\n",
                 header->file_name, header->line_num);
         TCC(exit)(1);
     }
@@ -398,10 +398,10 @@ PUB_FUNC void tcc_memcheck(void)
 {
     if (mem_cur_size) {
         mem_debug_header_t *header = mem_debug_chain;
-       TCC(fprintf)(stderr, "MEM_DEBUG: mem_leak= %d bytes, mem_max_size= %d bytes\n",
+       TCC(fprintf)(TCCSTD(err), "MEM_DEBUG: mem_leak= %d bytes, mem_max_size= %d bytes\n",
             mem_cur_size, mem_max_size);
         while (header) {
-           TCC(fprintf)(stderr, "%s:%u: error: %u bytes leaked\n",
+           TCC(fprintf)(TCCSTD(err), "%s:%u: error: %u bytes leaked\n",
                 header->file_name, header->line_num, header->size);
             header = header->next;
         }
@@ -497,12 +497,12 @@ PUB_FUNC void tcc_error_a(TCCState *s1, int is_warning,char* buf)
 PUB_FUNC void tcc_error_b(TCCState *s1, int is_warning,char* buf)
 {
 	if (!s1->error_func) {
-		if (s1->output_type == TCC_OUTPUT_PREPROCESS && s1->ppfp == (FILE*) stdout){
-		TCC(printf)("\n"), TCC(fflush)(stdout);
+		if (s1->output_type == TCC_OUTPUT_PREPROCESS && s1->ppfp == TCCSTD(out)){
+		TCC(printf)("\n"), TCC(fflush)(TCCSTD(out));
 		}
-		TCC(fflush)(stdout);
-		TCC(fprintf)(stderr, "%s\n", buf);
-		TCC(fflush)(stderr);
+		TCC(fflush)(TCCSTD(out));
+		TCC(fprintf)(TCCSTD(err), "%s\n", buf);
+		TCC(fflush)(TCCSTD(err));
 	} else { s1->error_func(s1->error_opaque, buf); }
 	if (!is_warning || s1->warn_error) s1->nb_errors++;
 }
@@ -991,7 +991,7 @@ ST_FUNC int tcc_add_file_internal(TCCState *s1, const char *filename, int flags)
             if (s1->output_type == TCC_OUTPUT_MEMORY) {
                 ret = 0;
 #ifdef TCC_IS_NATIVE
-                if (NULL == dlopen(filename, RTLD_GLOBAL | RTLD_LAZY))
+                if (NULL == tcc_dlopen(filename))
                     ret = -1;
 #endif
             } else {
@@ -1934,13 +1934,13 @@ PUB_FUNC void tcc_print_stats(TCCState *s, unsigned total_time)
         total_time = 1;
     if (total_bytes < 1)
         total_bytes = 1;
-    TCC(fprintf)(stderr, "* %d idents, %d lines, %d bytes\n"
+    TCC(fprintf)(TCCSTD(err), "* %d idents, %d lines, %d bytes\n"
                     "* %0.3f s, %u lines/s, %0.1f MB/s\n",
            tok_ident - TOK_IDENT, total_lines, total_bytes,
            (double)total_time/1000,
            (unsigned)total_lines*1000/total_time,
            (double)total_bytes/1000/total_time);
 #ifdef MEM_DEBUG
-    TCC(fprintf)(stderr, "* %d bytes memory used\n", mem_max_size);
+    TCC(fprintf)(TCCSTD(err), "* %d bytes memory used\n", mem_max_size);
 #endif
 }

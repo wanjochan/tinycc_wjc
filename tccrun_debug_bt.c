@@ -16,9 +16,9 @@ static int rt_get_caller_pc(addr_t *paddr, ucontext_t *uc, int level);
 {\
     addr_t pc;\
     int i;\
-    TCC(fprintf)(stderr, "Runtime error: ");\
-    TCC(vfprintf)(stderr, __VA_ARGS__);\
-    TCC(fprintf)(stderr, "\n");\
+    TCC(fprintf)(TCCSTD(err), "Runtime error: ");\
+    TCC(vfprintf)(TCCSTD(err), __VA_ARGS__);\
+    TCC(fprintf)(TCCSTD(err), "\n");\
     for(i=0;i<rt_num_callers;i++) {\
         if (rt_get_caller_pc(&pc, uc, i) < 0) break;\
         pc = rt_printline(pc, i ? "by" : "at");\
@@ -151,28 +151,28 @@ no_stabs:
         }
     }
     /* did not find any info: */
-    TCC(fprintf)(stderr, "%s %p ???\n", msg, (void*)wanted_pc);
-    TCC(fflush)(stderr);
+    TCC(fprintf)(TCCSTD(err), "%s %p ???\n", msg, (void*)wanted_pc);
+    TCC(fflush)(TCCSTD(err));
     return 0;
  found:
     i = incl_index;
     if (i > 0)
-        TCC(fprintf)(stderr, "%s:%d: ", incl_files[--i], last_line_num);
-    TCC(fprintf)(stderr, "%s %p", msg, (void*)wanted_pc);
+        TCC(fprintf)(TCCSTD(err), "%s:%d: ", incl_files[--i], last_line_num);
+    TCC(fprintf)(TCCSTD(err), "%s %p", msg, (void*)wanted_pc);
     if (last_func_name[0] != '\0')
-        TCC(fprintf)(stderr, " %s()", last_func_name);
+        TCC(fprintf)(TCCSTD(err), " %s()", last_func_name);
     if (--i >= 0) {
-        TCC(fprintf)(stderr, " (included from ");
+        TCC(fprintf)(TCCSTD(err), " (included from ");
         for (;;) {
-            TCC(fprintf)(stderr, "%s", incl_files[i]);
+            TCC(fprintf)(TCCSTD(err), "%s", incl_files[i]);
             if (--i < 0)
                 break;
-            TCC(fprintf)(stderr, ", ");
+            TCC(fprintf)(TCCSTD(err), ", ");
         }
-        TCC(fprintf)(stderr, ")");
+        TCC(fprintf)(TCCSTD(err), ")");
     }
-    TCC(fprintf)(stderr, "\n");
-    TCC(fflush)(stderr);
+    TCC(fprintf)(TCCSTD(err), "\n");
+    TCC(fflush)(TCCSTD(err));
     return func_addr;
 }
 
@@ -183,11 +183,11 @@ no_stabs:
 //    addr_t pc;
 //    int i;
 //
-//    TCC(fprintf)(stderr, "Runtime error: ");
+//    TCC(fprintf)(TCCSTD(err), "Runtime error: ");
 //    va_start(ap, fmt);
-//    TCC(vfprintf)(stderr, fmt, ap);
+//    TCC(vfprintf)(TCCSTD(err), fmt, ap);
 //    va_end(ap);
-//    TCC(fprintf)(stderr, "\n");
+//    TCC(fprintf)(TCCSTD(err), "\n");
 //
 //    for(i=0;i<rt_num_callers;i++) {
 //        if (rt_get_caller_pc(&pc, uc, i) < 0)

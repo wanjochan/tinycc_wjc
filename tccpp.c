@@ -186,20 +186,20 @@ tail_call:
     if (!al)
         return;
 #ifdef TAL_INFO
-    TCC(fprintf)(stderr, "limit=%5d, size=%5g MB, nb_peak=%6d, nb_total=%8d, nb_missed=%6d, usage=%5.1f%%\n",
+    TCC(fprintf)(TCCSTD(err), "limit=%5d, size=%5g MB, nb_peak=%6d, nb_total=%8d, nb_missed=%6d, usage=%5.1f%%\n",
             al->limit, al->size / 1024.0 / 1024.0, al->nb_peak, al->nb_total, al->nb_missed,
             (al->peak_p - al->buffer) * 100.0 / al->size);
 #endif
 #ifdef TAL_DEBUG
     if (al->nb_allocs > 0) {
         uint8_t *p;
-        TCC(fprintf)(stderr, "TAL_DEBUG: memory leak %d chunk(s) (limit= %d)\n",
+        TCC(fprintf)(TCCSTD(err), "TAL_DEBUG: memory leak %d chunk(s) (limit= %d)\n",
                 al->nb_allocs, al->limit);
         p = al->buffer;
         while (p < al->p) {
             tal_header_t *header = (tal_header_t *)p;
             if (header->line_num > 0) {
-                TCC(fprintf)(stderr, "%s:%d: chunk of %d bytes leaked\n",
+                TCC(fprintf)(TCCSTD(err), "%s:%d: chunk of %d bytes leaked\n",
                         header->file_name, header->line_num, header->size);
             }
             p += header->size + sizeof(tal_header_t);
@@ -225,9 +225,9 @@ tail_call:
 #ifdef TAL_DEBUG
         tal_header_t *header = (((tal_header_t *)p) - 1);
         if (header->line_num < 0) {
-            TCC(fprintf)(stderr, "%s:%d: TAL_DEBUG: double frees chunk from\n",
+            TCC(fprintf)(TCCSTD(err), "%s:%d: TAL_DEBUG: double frees chunk from\n",
                     file, line);
-            TCC(fprintf)(stderr, "%s:%d: %d bytes\n",
+            TCC(fprintf)(TCCSTD(err), "%s:%d: %d bytes\n",
                     header->file_name, (int)-header->line_num, (int)header->size);
         } else
             header->line_num = -header->line_num;
@@ -3650,7 +3650,7 @@ ST_FUNC void tccpp_new(TCCState *s)
 
     /* might be used in error() before preprocess_start() */
     s->include_stack_ptr = s->include_stack;
-    s->ppfp = (FILE*) stdout;
+    s->ppfp = (FILE*) TCCSTD(out);
 
     /* init isid table */
     for(i = CH_EOF; i<128; i++)

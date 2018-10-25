@@ -61,8 +61,8 @@ static int contains_any(const char *s, const char *list) {
 }
 
 static int ar_usage(int ret) {
-    TCC(fprintf)(stderr, "usage: tcc -ar [rcsv] lib file...\n");
-    TCC(fprintf)(stderr, "create library ([abdioptxN] not supported).\n");
+    TCC(fprintf)(TCCSTD(err), "usage: tcc -ar [rcsv] lib file...\n");
+    TCC(fprintf)(TCCSTD(err), "create library ([abdioptxN] not supported).\n");
     return ret;
 }
 
@@ -130,14 +130,14 @@ ST_FUNC int tcc_tool_ar(TCCState *s1, int argc, char **argv)
 
     if ((fh = TCC(fopen,FILE*)(argv[i_lib], "wb")) == NULL)
     {
-        TCC(fprintf)(stderr, "tcc: ar: can't open file %s \n", argv[i_lib]);
+        TCC(fprintf)(TCCSTD(err), "tcc: ar: can't open file %s \n", argv[i_lib]);
         goto the_end;
     }
 
     TCC(sprintf)(tfile, "%s.tmp", argv[i_lib]);
     if ((fo = TCC(fopen)(tfile, "wb+")) == NULL)
     {
-        TCC(fprintf)(stderr, "tcc: ar: can't create temporary file %s\n", tfile);
+        TCC(fprintf)(TCCSTD(err), "tcc: ar: can't create temporary file %s\n", tfile);
         goto the_end;
     }
 
@@ -153,7 +153,7 @@ ST_FUNC int tcc_tool_ar(TCCState *s1, int argc, char **argv)
             continue;
         }
         if ((fi = TCC(fopen)(argv[i_obj], "rb")) == NULL) {
-            TCC(fprintf)(stderr, "tcc: ar: can't open file %s \n", argv[i_obj]);
+            TCC(fprintf)(TCCSTD(err), "tcc: ar: can't open file %s \n", argv[i_obj]);
             goto the_end;
         }
         if (verbose)
@@ -170,7 +170,7 @@ ST_FUNC int tcc_tool_ar(TCCState *s1, int argc, char **argv)
         ehdr = (ElfW(Ehdr) *)buf;
         if (ehdr->e_ident[4] != ELFCLASSW)
         {
-            TCC(fprintf)(stderr, "tcc: ar: Unsupported Elf Class: %s\n", argv[i_obj]);
+            TCC(fprintf)(TCCSTD(err), "tcc: ar: Unsupported Elf Class: %s\n", argv[i_obj]);
             goto the_end;
         }
 
@@ -342,7 +342,7 @@ ST_FUNC int tcc_tool_impdef(TCCState *s1, int argc, char **argv)
 
     if (0 == infile[0]) {
 usage:
-        TCC(fprintf)(stderr,
+        TCC(fprintf)(TCCSTD(err),
             "usage: tcc -impdef library.dll [-v] [-o outputfile]\n"
             "create export definition file (.def) from dll\n"
             );
@@ -364,7 +364,7 @@ usage:
 #endif
     ret = tcc_get_dllexports(file, &p);
     if (ret || !p) {
-        TCC(fprintf)(stderr, "tcc: impdef: %s '%s'\n",
+        TCC(fprintf)(TCCSTD(err), "tcc: impdef: %s '%s'\n",
             ret == -1 ? "can't find file" :
             ret ==  1 ? "can't read symbols" :
             ret ==  0 ? "no symbols found in" :
@@ -378,7 +378,7 @@ usage:
 
     op = TCC(fopen)(outfile, "wb");
     if (NULL == op) {
-        TCC(fprintf)(stderr, "tcc: impdef: could not create output file: %s\n", outfile);
+        TCC(fprintf)(TCCSTD(err), "tcc: impdef: could not create output file: %s\n", outfile);
         goto the_end;
     }
 
