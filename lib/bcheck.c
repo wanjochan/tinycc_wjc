@@ -17,32 +17,27 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
 
-//#include <stdlib.h>
-////#include <tcc_build.h>
-//#include <stdio.h>
-////#include <stdarg.h>
-//#include <string.h>
-//
-//#if !defined(__FreeBSD__) \
-// && !defined(__FreeBSD_kernel__) \
-// && !defined(__DragonFly__) \
-// && !defined(__OpenBSD__) \
-// && !defined(__NetBSD__)
-//#include <malloc.h>
-//#endif
-//
-//#if !defined(_WIN32)
-//#include <unistd.h>
-//#endif
+#if !defined(__FreeBSD__) \
+ && !defined(__FreeBSD_kernel__) \
+ && !defined(__DragonFly__) \
+ && !defined(__OpenBSD__) \
+ && !defined(__NetBSD__)
+#include <malloc.h>
+#endif
 
-//#include "tcc_dl.h"
-#include "tcc.h"
+#if !defined(_WIN32)
+#include <unistd.h>
+#endif
 
 /* #define BOUND_DEBUG */
 
 #ifdef BOUND_DEBUG
- #define dprintf(a...) TCC(fprintf)(a)
+ #define dprintf(a...) fprintf(a)
 #else
  #define dprintf(a...)
 #endif
@@ -95,7 +90,6 @@ typedef struct BoundEntry {
 } BoundEntry;
 
 /* external interface */
-//@ref tccrun.c::tcc_run()
 void __bound_init(void);
 void __bound_new_region(void *p, size_t size);
 int __bound_delete_region(void *p);
@@ -170,7 +164,7 @@ static BoundEntry *__bound_find_region(BoundEntry *e1, void *p)
 static void bound_error(const char *fmt, ...)
 {
     __bound_error_msg = fmt;
-    TCC(fprintf)(stderr,"%s %s: %s\n", __FILE__, __FUNCTION__, fmt);
+    fprintf(stderr,"%s %s: %s\n", __FILE__, __FUNCTION__, fmt);
     *(void **)0 = 0; /* force a runtime error */
 }
 
@@ -202,7 +196,7 @@ void * FASTCALL __bound_ptr_add(void *p, size_t offset)
     }
     addr += offset;
     if (addr >= e->size) {
-	TCC(fprintf)(stderr,"%s %s: %p is outside of the region\n",
+	fprintf(stderr,"%s %s: %p is outside of the region\n",
             __FILE__, __FUNCTION__, p + offset);
         return INVALID_POINTER; /* return an invalid pointer */
     }
@@ -232,7 +226,7 @@ void * FASTCALL __bound_ptr_indir ## dsize (void *p, size_t offset)     \
     }                                                                   \
     addr += offset + dsize;                                             \
     if (addr > e->size) {                                               \
-	TCC(fprintf)(stderr,"%s %s: %p is outside of the region\n",          \
+	fprintf(stderr,"%s %s: %p is outside of the region\n",          \
             __FILE__, __FUNCTION__, p + offset);                        \
         return INVALID_POINTER; /* return an invalid pointer */         \
     }									\
@@ -770,7 +764,7 @@ static void *libc_malloc(size_t size)
 {
     void *ptr;
     restore_malloc_hooks();
-    ptr = TCC(malloc)(size);
+    ptr = malloc(size);
     install_malloc_hooks();
     return ptr;
 }
@@ -778,7 +772,7 @@ static void *libc_malloc(size_t size)
 static void libc_free(void *ptr)
 {
     restore_malloc_hooks();
-    TCC(free)(ptr);
+    free(ptr);
     install_malloc_hooks();
 }
 
@@ -816,7 +810,7 @@ void *__bound_memalign(size_t size, size_t align, const void *caller)
         ptr = NULL;
     } else {
         /* we suppose that malloc aligns to at least four bytes */
-        ptr = TCC(malloc)(size + 1);
+        ptr = malloc(size + 1);
     }
 #else
     /* we allocate one more byte to ensure the regions will be
@@ -862,7 +856,7 @@ void *__bound_realloc(void *ptr, size_t size, const void *caller)
         old_size = get_region_size(ptr);
         if (old_size == EMPTY_SIZE)
             bound_error("realloc'ing invalid pointer");
-        TCC(memcpy)(ptr1, ptr, old_size);
+        memcpy(ptr1, ptr, old_size);
         __bound_free(ptr, caller);
         return ptr1;
     }
@@ -876,33 +870,32 @@ void *__bound_calloc(size_t nmemb, size_t size)
     ptr = __bound_malloc(size, NULL);
     if (!ptr)
         return NULL;
-    TCC(memset)(ptr, 0, size);
+    memset(ptr, 0, size);
     return ptr;
 }
 #endif
 
-//oh?
 #if 0
 static void bound_dump(void)
 {
     BoundEntry *page, *e;
     size_t i, j;
 
-    TCC(fprintf)(stderr, "region dump:\n");
+    fprintf(stderr, "region dump:\n");
     for(i=0;i<BOUND_T1_SIZE;i++) {
         page = __bound_t1[i];
         for(j=0;j<BOUND_T2_SIZE;j++) {
             e = page + j;
             /* do not print invalid or empty entries */
             if (e->size != EMPTY_SIZE && e->start != 0) {
-                TCC(fprintf)(stderr, "%08x:", 
+                fprintf(stderr, "%08x:", 
                        (i << (BOUND_T2_BITS + BOUND_T3_BITS)) + 
                        (j << BOUND_T3_BITS));
                 do {
-                    TCC(fprintf)(stderr, " %08lx:%08lx", e->start, e->start + e->size);
+                    fprintf(stderr, " %08lx:%08lx", e->start, e->start + e->size);
                     e = e->next;
                 } while (e != NULL);
-                TCC(fprintf)(stderr, "\n");
+                fprintf(stderr, "\n");
             }
         }
     }
@@ -934,7 +927,7 @@ void *__bound_memcpy(void *dst, const void *src, size_t size)
     if (src >= dst && src < dst + size)
         bound_error("overlapping regions in memcpy()");
 
-    p = TCC(memcpy)(dst, src, size);
+    p = memcpy(dst, src, size);
 
     dprintf(stderr, "%s %s: end, p=%p\n", __FILE__, __FUNCTION__, p);
     return p;
@@ -944,13 +937,13 @@ void *__bound_memmove(void *dst, const void *src, size_t size)
 {
     __bound_check(dst, size);
     __bound_check(src, size);
-    return TCC(memmove)(dst, src, size);
+    return memmove(dst, src, size);
 }
 
 void *__bound_memset(void *dst, int c, size_t size)
 {
     __bound_check(dst, size);
-    return TCC(memset)(dst, c, size);
+    return memset(dst, c, size);
 }
 
 /* XXX: could be optimized */

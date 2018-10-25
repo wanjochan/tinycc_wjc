@@ -1,75 +1,11 @@
 // =============================================
 // crt1.c
 
-/*  mingw.h */
-//#ifdef _WIN64
-//#define __stdcall
-//#define _AMD64_ 1
-//#define __x86_64 1
-//#define _M_X64 100 /* Visual Studio */
-//#define _M_AMD64 100 /* Visual Studio */
-//#define USE_MINGW_SETJMP_TWO_ARGS
-//#define mingw_getsp tinyc_getbp
-//#define __TRY__
-//#else
-//#define __stdcall __attribute__((__stdcall__))
-//#define _X86_ 1
-//#define _M_IX86 300 /* Visual Studio */
-//#define WIN32 1
-//#define _USE_32BIT_TIME_T
-//#ifdef __arm__
-//#define __TRY__
-//#else
-//#define __TRY__ void __try__(void**), *_sehrec[6]; __try__(_sehrec);
-//#endif
-//#endif
-
-//TODO _UNICODE
 // _UNICODE for tchar.h, UNICODE for API
 #include <tchar.h>
 
-//#define __cdecl
-
-//#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
-
-///* stdlib.h */
-//#ifndef __argc
-//#ifdef _MSVCRT_
-//  extern int __argc;
-//#else
-//#define __argc (*_imp____argc)
-//  extern int *_imp____argc;
-//#endif
-//#endif
-//#ifndef __argv
-//#ifdef _MSVCRT_
-//  extern char **__argv;
-//#else
-//#define __argv  (*_imp____argv)
-//  extern char ***_imp____argv;
-//#endif
-//#endif
-//
-//#ifdef _UNICODE
-////#define __targv __wargv
-//#define __targv wchar_t**
-//#else//_UNICODE
-////#define __targv __argv
-//#define __targv char**
-//#endif
-//
-////#ifndef __wargv
-////#ifdef _MSVCRT_
-////  extern wchar_t **__wargv;
-////#else
-////#define __wargv (*_imp____wargv)
-////  extern wchar_t ***_imp____wargv;
-////#endif
-////#endif
-//	
-////#include <tcc.h>
-#include "tcc.h"
 
 #define _UNKNOWN_APP    0
 #define _CONSOLE_APP    1
@@ -93,11 +29,10 @@
 #endif
 
 typedef struct { int newmode; } _startupinfo;
-
-//int __cdecl __tgetmainargs(int *pargc, _TCHAR ***pargv, _TCHAR ***penv, int globb, _startupinfo*);
-//void __cdecl __set_app_type(int apptype);
-//unsigned int __cdecl _controlfp(unsigned int new_value, unsigned int mask);
-//extern int _tmain(int argc, _TCHAR * argv[], _TCHAR * env[]);
+int __cdecl __tgetmainargs(int *pargc, _TCHAR ***pargv, _TCHAR ***penv, int globb, _startupinfo*);
+void __cdecl __set_app_type(int apptype);
+unsigned int __cdecl _controlfp(unsigned int new_value, unsigned int mask);
+extern int _tmain(int argc, _TCHAR * argv[], _TCHAR * env[]);
 
 /* Allow command-line globbing with "int _dowildcard = 1;" in the user source */
 int _dowildcard;
@@ -108,16 +43,16 @@ void _tstart(void)
     _startupinfo start_info = {0};
 
     // Sets the current application type
-    TCC(__set_app_type)(_CONSOLE_APP);
+    __set_app_type(_CONSOLE_APP);
 
     // Set default FP precision to 53 bits (8-byte double)
     // _MCW_PC (Precision control) is not supported on ARM
 #if defined __i386__ || defined __x86_64__
-    TCC(_controlfp)(_PC_53, _MCW_PC);
+    _controlfp(_PC_53, _MCW_PC);
 #endif
 
-    TCC(__tgetmainargs)( &__argc, &__targv, &_tenviron, _dowildcard, &start_info);
-    TCC(exit)(TCC(_tmain,int)(__argc, __targv, _tenviron));
+    __tgetmainargs( &__argc, &__targv, &_tenviron, _dowildcard, &start_info);
+    exit(_tmain(__argc, __targv, _tenviron));
 }
 
 int _runtmain(int argc, /* as tcc passed in */ char **argv)
@@ -125,7 +60,7 @@ int _runtmain(int argc, /* as tcc passed in */ char **argv)
 #ifdef UNICODE
     _startupinfo start_info = {0};
 
-    TCC(__tgetmainargs)(&__argc, &__targv, &_tenviron, _dowildcard, &start_info);
+    __tgetmainargs(&__argc, &__targv, &_tenviron, _dowildcard, &start_info);
     /* may be wrong when tcc has received wildcards (*.c) */
     if (argc < __argc) {
         __targv += __argc - argc;
@@ -136,9 +71,9 @@ int _runtmain(int argc, /* as tcc passed in */ char **argv)
     __targv = argv;
 #endif
 #if defined __i386__ || defined __x86_64__
-    TCC(_controlfp)(_PC_53, _MCW_PC);
+    _controlfp(_PC_53, _MCW_PC);
 #endif
-    return TCC(_tmain,int)(__argc, __targv, _tenviron);
+    return _tmain(__argc, __targv, _tenviron);
 }
 
 // =============================================

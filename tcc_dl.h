@@ -89,7 +89,9 @@ extern char *dlerror (void);
 //TODO....
 //#define TCC_DL_IMPORT(LIB) TCC_DL_dlopen( lib##LIB##TCC_DL_EXT )
 
+//#ifndef _WIN32
 typedef struct __FILE FILE;
+//#endif
 
 //#ifdef __APPLE__
 //#define TCC_DL_EXT .dylib

@@ -6,9 +6,6 @@
 #include <windows.h>
 #include <stdlib.h>
 
-//TODO bring tcc_dl.h more
-//#include <tcc.h>
-
 #define __UNKNOWN_APP    0
 #define __CONSOLE_APP    1
 #define __GUI_APP        2
