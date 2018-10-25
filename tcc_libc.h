@@ -54,27 +54,14 @@ typedef int ssize_t;//TODO tmp...
 //extern char *strstr( const char *__s1, const char *__s2 );
 //extern int strncmp( const char *__s1, const char *__s2, size_t __n );
 
-#ifdef _WIN32//for win32
-//TODO....
-#define errno TCC(errno)
-#else//not win32
-//#include <errno.h>
-#ifdef errno
-//skip
-#else
-
-//TODO  
-#ifdef __APPLE__
-int *__error();
-#define errno (*__error())
-#else
+/* errno.h */
+#if defined(__linux__)
 int *__errno_location();
 #define errno (*__errno_location())
+#else
+int *__error();
+#define errno (*__error())
 #endif
-
-#endif
-#endif//_WIN32
-
 
 /* unistd.h */
 #define SEEK_CUR 1

@@ -203,10 +203,11 @@ DEFINES += $(DEF-$(or $(findstring win,$T),unx))
 ifneq ($(X),)
 ifeq ($(CONFIG_WIN32),yes)
 DEF-win += -DTCC_LIBTCC1="\"$(X)libtcc1.a\""
-DEF-unx += -DTCC_LIBTCC1="\"lib/$(X)libtcc1.a\""
+#DEF-unx += -DTCC_LIBTCC1="\"lib/$(X)libtcc1.a\""
+DEF-unx += -DTCC_LIBTCC1="\"$(X)libtcc1.a\""
 else
 DEF-all += -DTCC_LIBTCC1="\"$(X)libtcc1.a\""
-DEF-win += -DCONFIG_TCCDIR="\"$(tccdir)/win32\""
+#DEF-win += -DCONFIG_TCCDIR="\"$(tccdir)/win32\""
 endif
 endif
 
@@ -337,8 +338,8 @@ install-unx:
 	$(call IFw,tcc-doc.info,"$(infodir)")
 	$(call IFw,tcc-doc.html,"$(docdir)")
 ifneq "$(wildcard $(LIBTCC1_W))" ""
-	$(call IFw,$(TOPSRC)/win32/lib/*.def $(LIBTCC1_W),"$(tccdir)/win32/lib")
-	$(call IR,$(TOPSRC)/win32/include,"$(tccdir)/win32/include")
+	#$(call IFw,$(TOPSRC)/win32/lib/*.def $(LIBTCC1_W),"$(tccdir)/win32/lib")
+	#$(call IR,$(TOPSRC)/win32/include,"$(tccdir)/win32/include")
 	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/win32/include")
 endif
 
@@ -353,14 +354,14 @@ uninstall-unx:
 # install progs & libs on windows
 install-win:
 	$(call IBw,$(PROGS) $(PROGS_CROSS) $(subst libtcc.a,,$(LIBTCC)),"$(bindir)")
-	$(call IF,$(TOPSRC)/win32/lib/*.def,"$(tccdir)/lib")
+	#$(call IF,$(TOPSRC)/win32/lib/*.def,"$(tccdir)/lib")
 	$(call IFw,libtcc1.a $(LIBTCC1_W),"$(tccdir)/lib")
 	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/include")
-	$(call IR,$(TOPSRC)/win32/include,"$(tccdir)/include")
-	$(call IR,$(TOPSRC)/win32/examples,"$(tccdir)/examples")
-	$(call IF,$(TOPSRC)/tests/libtcc_test.c,"$(tccdir)/examples")
+	#$(call IR,$(TOPSRC)/win32/include,"$(tccdir)/include")
+	#$(call IR,$(TOPSRC)/win32/examples,"$(tccdir)/examples")
+	#$(call IF,$(TOPSRC)/tests/libtcc_test.c,"$(tccdir)/examples")
 	$(call IFw,$(TOPSRC)/libtcc.h $(subst .dll,.def,$(LIBTCC)),"$(libdir)")
-	$(call IFw,$(TOPSRC)/win32/tcc-win32.txt tcc-doc.html,"$(docdir)")
+	#$(call IFw,$(TOPSRC)/win32/tcc-win32.txt tcc-doc.html,"$(docdir)")
 ifneq "$(wildcard $(LIBTCC1_U))" ""
 	$(call IFw,$(LIBTCC1_U),"$(tccdir)/lib")
 	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/lib/include")
@@ -390,16 +391,16 @@ ETAGS : ; etags $(TAGFILES)
 # create release tarball from *current* git branch (including tcc-doc.html
 # and converting two files to CRLF)
 TCC-VERSION = tcc-$(VERSION)
-tar:    tcc-doc.html
-	mkdir $(TCC-VERSION)
-	( cd $(TCC-VERSION) && git --git-dir ../.git checkout -f )
-	cp tcc-doc.html $(TCC-VERSION)
-	for f in tcc-win32.txt build-tcc.bat ; do \
-	    cat win32/$$f | sed 's,\(.*\),\1\r,g' > $(TCC-VERSION)/win32/$$f ; \
-	done
-	tar cjf $(TCC-VERSION).tar.bz2 $(TCC-VERSION)
-	rm -rf $(TCC-VERSION)
-	git reset
+#tar:    tcc-doc.html
+#	mkdir $(TCC-VERSION)
+#	( cd $(TCC-VERSION) && git --git-dir ../.git checkout -f )
+#	cp tcc-doc.html $(TCC-VERSION)
+#	for f in tcc-win32.txt build-tcc.bat ; do \
+#	    cat win32/$$f | sed 's,\(.*\),\1\r,g' > $(TCC-VERSION)/win32/$$f ; \
+#	done
+#	tar cjf $(TCC-VERSION).tar.bz2 $(TCC-VERSION)
+#	rm -rf $(TCC-VERSION)
+#	git reset
 
 config.mak:
 	$(if $(wildcard $@),,@echo "Please run ./configure." && exit 1)
@@ -423,7 +424,7 @@ clean:
 distclean: clean
 	rm -f config.h config.mak config.texi tcc.1 tcc-doc.info tcc-doc.html
 
-.PHONY: all clean test tar tags ETAGS distclean install uninstall FORCE
+#.PHONY: all clean test tar tags ETAGS distclean install uninstall FORCE
 
 help:
 	@echo "make"

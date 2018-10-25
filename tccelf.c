@@ -123,7 +123,7 @@ ST_FUNC void tccelf_delete(TCCState *s1)
         DLLReference *ref = s1->loaded_dlls[i];
         if ( ref->handle )
 # ifdef _WIN32
-            FreeLibrary((HMODULE)ref->handle);
+            TCC(FreeLibrary)((HMODULE)ref->handle);
 # else
             dlclose(ref->handle);
 # endif

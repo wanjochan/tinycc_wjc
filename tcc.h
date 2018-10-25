@@ -23,8 +23,8 @@
 
 #define _GNU_SOURCE
 
-#include "config.h"
-//#define TCC_VERSION "TCCOS_0_0_2"
+//#include "config.h"
+#define TCC_VERSION "TCCOS_0_0_4"
 
 #include "tcc_libc.h"
 
@@ -48,6 +48,12 @@
 #ifdef _WIN32
 //TODO
 //# include <windows.h>
+/* winnt.h */
+#define DECLARE_HANDLE(name) struct name##__ { int unused; }; typedef struct name##__ *name
+/* windef.h */
+DECLARE_HANDLE(HINSTANCE);
+typedef HINSTANCE HMODULE;
+
 //# include <io.h> /* open, close etc. */
 //# include <direct.h> /* getcwd */
 //# ifdef __GNUC__
