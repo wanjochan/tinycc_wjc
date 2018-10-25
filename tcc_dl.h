@@ -23,7 +23,7 @@ extern char *dlerror (void);
 #define RTLD_NOLOAD				-1
 #define RTLD_GLOBAL				-1
 
-#define tcc_dlsym dlsym
+//#define tcc_dlsym dlsym
 #define tcc_dlopen dlopen
 
 #endif /* __DLFCN_H__ */
@@ -70,7 +70,7 @@ extern char *dlerror (void);
 #define RTLD_DEFAULT ((void *)0)
 #endif
 
-#define tcc_dlsym dlsym
+//#define tcc_dlsym dlsym
 #define tcc_dlopen dlopen
 //TODO make tcc_dlsym() more clever with tcc_dl.c ?
 //TODO make tcc_dlopen dlopen( #LIB , RTLD_GLOBAL | RTLD_LAZY)
@@ -80,10 +80,9 @@ extern char *dlerror (void);
 
 //TODO maybe improve tcc_dlsym() with somehou caching?
 
-//TODO check if preset skip !!
 // TCC( SM, TYPE=void*, LIB=c)
 // cast the symbol as a function that returns type-specified or void* as default.
-#define TCC(SYM,...) ((TCC_OR_ELSE(void*,__VA_ARGS__)(*)())tcc_dlsym(RTLD_DEFAULT,#SYM))
+#define TCC(SYM,...) ((TCC_OR_ELSE(void*,__VA_ARGS__)(*)())tcc_dlsym(#SYM))
 //TODO make TCC(SYM,TYPE,LIB) which LIB is not c....
 
 //TODO....
@@ -122,6 +121,10 @@ extern FILE *stderr;		/* Standard error output stream.  */
 //#define stderr stderr
 
 #endif//__APPLE__
+
+static inline void* tcc_dlsym(char* sym) {
+	return dlsym(RTLD_DEFAULT,sym);
+}
 
 #endif//_TCC_DL_H
 

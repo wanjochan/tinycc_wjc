@@ -8,11 +8,12 @@ echo arch=$arch,build_arch=$build_arch
 mkdir -p $build_arch/
 cd $build_arch/
 #../configure --prefix=. --cc=clang --config-musl
-../configure --config-musl
+../configure --config-musl --prefix=.
 make clean
 make
-make install
+#make install
 cd ..
-#ls -al $build_arch/
+ls -al $build_arch/
 #$build_arch/tcc -vv
-tcc -vv
+$build_arch/tcc -vv
+

@@ -746,12 +746,12 @@ struct TCCState {
 
     /* output file for preprocessing (-E) */
     FILE *ppfp;
-    enum {
-	LINE_MACRO_OUTPUT_FORMAT_GCC,
-	LINE_MACRO_OUTPUT_FORMAT_NONE,
-	LINE_MACRO_OUTPUT_FORMAT_STD,
-    LINE_MACRO_OUTPUT_FORMAT_P10 = 11
-    } Pflag; /* -P switch */
+		enum {
+			LINE_MACRO_OUTPUT_FORMAT_GCC,//
+			LINE_MACRO_OUTPUT_FORMAT_NONE,//
+			LINE_MACRO_OUTPUT_FORMAT_STD,//
+			LINE_MACRO_OUTPUT_FORMAT_P10 = 11
+		} Pflag; /* -P switch */
     char dflag; /* -dX value */
 
     /* for -MD/-MF: collected dependencies for this compilation */
@@ -1665,5 +1665,8 @@ ST_FUNC void tcc_run_free(TCCState *s1);
 #define ST_DATA
 #endif
 /********************************************************/
+
+static inline int tcc_assert(char* R, char* F, int L){TCC(printf)("%s %s %s",F,L,R);TCC(exit)(-1);return -1;}
+#define tcc_assert_macro(e) ((e)?(void)0:tcc_assert(#e,__FILE__,__LINE__))
 
 #endif /* _TCC_H */

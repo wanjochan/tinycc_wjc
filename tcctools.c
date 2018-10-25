@@ -476,7 +476,7 @@ static int execvp_win32(const char *prog, char **argv)
     if (-1 == ret)
         return ret;
     _cwait(&ret, ret, WAIT_CHILD);
-    exit(ret);
+    TCC(exit)(ret);
 }
 #define execvp execvp_win32
 #endif /* _WIN32 */

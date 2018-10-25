@@ -299,7 +299,7 @@ static mem_debug_header_t *malloc_check(void *ptr, const char *msg)
         if (header->magic1 == MEM_DEBUG_MAGIC1)
            TCC(fprintf)(stderr, "%s:%u: block allocated here.\n",
                 header->file_name, header->line_num);
-        exit(1);
+        TCC(exit)(1);
     }
     return header;
 }
@@ -406,7 +406,7 @@ PUB_FUNC void tcc_memcheck(void)
             header = header->next;
         }
 #if MEM_DEBUG-0 == 2
-        exit(2);
+        TCC(exit)(2);
 #endif
     }
 }

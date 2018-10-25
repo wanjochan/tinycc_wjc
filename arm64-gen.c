@@ -44,7 +44,6 @@
 #else /* ! TARGET_DEFS_ONLY */
 /******************************************************/
 #include "tcc.h"
-#include <assert.h>
 
 ST_DATA const int reg_classes[NB_REGS] = {
   RC_INT | RC_R(0),
@@ -81,13 +80,13 @@ ST_DATA const int reg_classes[NB_REGS] = {
 
 static uint32_t intr(int r)
 {
-    assert(TREG_R(0) <= r && r <= TREG_R30);
+    tcc_assert_macro(TREG_R(0) <= r && r <= TREG_R30);
     return r < TREG_R30 ? r : 30;
 }
 
 static uint32_t fltr(int r)
 {
-    assert(TREG_F(0) <= r && r <= TREG_F(7));
+    tcc_assert_macro(TREG_F(0) <= r && r <= TREG_F(7));
     return r - TREG_F(0);
 }
 
@@ -256,7 +255,7 @@ static int arm64_type_size(int t)
     case VT_BOOL: return 0;
     case VT_LLONG: return 3;
     }
-    assert(0);
+    tcc_assert_macro(0);
     return 0;
 }
 
@@ -313,7 +312,7 @@ static void arm64_ldrs(int reg_, int size)
     uint32_t reg = reg_;
     // Use x30 for intermediate value in some cases.
     switch (size) {
-    default: assert(0); break;
+    default: tcc_assert_macro(0); break;
     case 1:
         arm64_ldrx(0, 0, reg, reg, 0);
         break;
@@ -504,7 +503,7 @@ ST_FUNC void load(int r, SValue *sv)
         else if (!IS_FREG(r) && !IS_FREG(svr))
             o(0xaa0003e0 | intr(r) | intr(svr) << 16); // mov x(r),x(svr)
         else
-            assert(0);
+            tcc_assert_macro(0);
       return;
     }
 
@@ -538,7 +537,7 @@ ST_FUNC void load(int r, SValue *sv)
     }
 
     TCC(printf)("load(%x, (%x, %x, %llx))\n", r, svtt, sv->r, (long long)svcul);
-    assert(0);
+    tcc_assert_macro(0);
 }
 
 ST_FUNC void store(int r, SValue *sv)
@@ -575,13 +574,13 @@ ST_FUNC void store(int r, SValue *sv)
     }
 
     TCC(printf)("store(%x, (%x, %x, %llx))\n", r, svtt, sv->r, (long long)svcul);
-    assert(0);
+    tcc_assert_macro(0);
 }
 
 static void arm64_gen_bl_or_b(int b)
 {
     if ((vtop->r & (VT_VALMASK | VT_LVAL)) == VT_CONST && (vtop->r & VT_SYM)) {
-        assert(!b);
+        tcc_assert_macro(!b);
 	greloca(cur_text_section, vtop->sym, ind, R_AARCH64_CALL26, 0);
 	o(0x94000000); // bl .
     }
@@ -791,7 +790,7 @@ static unsigned long arm64_pcs(int n, CType **type, unsigned long *a)
         a[0] = -1;
     else {
         arm64_pcs_aux(1, type, a);
-        assert(a[0] == 0 || a[0] == 1 || a[0] == 16);
+        tcc_assert_macro(a[0] == 0 || a[0] == 1 || a[0] == 16);
     }
 
     // Argument types:
@@ -848,7 +847,7 @@ ST_FUNC void gfunc_call(int nb_args)
         if (a[i] & 1) {
             SValue *arg = &vtop[i - nb_args];
             int align, size = type_size(&arg->type, &align);
-            assert((arg->type.t & VT_BTYPE) == VT_STRUCT);
+            tcc_assert_macro((arg->type.t & VT_BTYPE) == VT_STRUCT);
             stack = (stack + align - 1) & -align;
             a1[i] = stack;
             stack += size;
@@ -856,7 +855,7 @@ ST_FUNC void gfunc_call(int nb_args)
 
     stack = (stack + 15) >> 4 << 4;
 
-    assert(stack < 0x1000);
+    tcc_assert_macro(stack < 0x1000);
     if (stack)
         o(0xd10003ff | stack << 10); // sub sp,sp,#(n)
 
@@ -967,7 +966,7 @@ ST_FUNC void gfunc_call(int nb_args)
             --vtop;
             if (a[0] == 0) {
                 int align, size = type_size(return_type, &align);
-                assert(size <= 16);
+                tcc_assert_macro(size <= 16);
                 if (size > 8)
                     o(0xa9000500); // stp x0,x1,[x8]
                 else if (size)
@@ -1130,7 +1129,7 @@ ST_FUNC void gen_va_arg(CType *t)
         uint32_t n = size > 16 ? 8 : (size + 7) & -8;
         o(0xb940181e | r0 << 5); // ldr w30,[x(r0),#24] // __gr_offs
         if (align == 16) {
-            assert(0); // this path untested but needed for __uint128_t
+            tcc_assert_macro(0); // this path untested but needed for __uint128_t
             o(0x11003fde); // add w30,w30,#15
             o(0x121c6fde); // and w30,w30,#-16
         }
@@ -1234,7 +1233,7 @@ ST_FUNC void gfunc_return(CType *func_type)
             gv(RC_FRET);
         break;
     default:
-      assert(0);
+      tcc_assert_macro(0);
     }
     vtop--;
 }
@@ -1299,7 +1298,7 @@ ST_FUNC int gjmp(int t)
 // Generate branch to known address:
 ST_FUNC void gjmp_addr(int a)
 {
-    assert(a - ind + 0x8000000 < 0x10000000);
+    tcc_assert_macro(a - ind + 0x8000000 < 0x10000000);
     o(0x14000000 | ((a - ind) >> 2 & 0x3ffffff));
 }
 
@@ -1410,7 +1409,7 @@ static int arm64_gen_opic(int op, uint32_t l, int rev, uint64_t val,
         if (rev)
             return 0;
         if (!val)
-            assert(0);
+            tcc_assert_macro(0);
         else if (op == TOK_SHL)
             o(0x53000000 | l << 31 | l << 22 | x | a << 5 |
               (n - val) << 16 | (n - 1 - val) << 10); // lsl
@@ -1455,7 +1454,7 @@ static void arm64_gen_opil(int op, uint32_t l)
     }
 
     gv2(RC_INT, RC_INT);
-    assert(vtop[-1].r < VT_CONST && vtop[0].r < VT_CONST);
+    tcc_assert_macro(vtop[-1].r < VT_CONST && vtop[0].r < VT_CONST);
     a = intr(vtop[-1].r);
     b = intr(vtop[0].r);
     vtop -= 2;
@@ -1552,7 +1551,7 @@ static void arm64_gen_opil(int op, uint32_t l)
           b << 16 | a << 10); // msub
         break;
     default:
-        assert(0);
+        tcc_assert_macro(0);
     }
 }
 
@@ -1585,7 +1584,7 @@ ST_FUNC void gen_opf(int op)
         case TOK_GE: func = TOK___getf2; cond = 11; break;
         case TOK_LE: func = TOK___letf2; cond = 12; break;
         case TOK_GT: func = TOK___gttf2; cond = 13; break;
-        default: assert(0); break;
+        default: tcc_assert_macro(0); break;
         }
         vpush_global_sym(&func_old_type, func);
         vrott(3);
@@ -1603,7 +1602,7 @@ ST_FUNC void gen_opf(int op)
 
     dbl = vtop[0].type.t != VT_FLOAT;
     gv2(RC_FLOAT, RC_FLOAT);
-    assert(vtop[-1].r < VT_CONST && vtop[0].r < VT_CONST);
+    tcc_assert_macro(vtop[-1].r < VT_CONST && vtop[0].r < VT_CONST);
     a = fltr(vtop[-1].r);
     b = fltr(vtop[0].r);
     vtop -= 2;
@@ -1661,7 +1660,7 @@ ST_FUNC void gen_opf(int op)
         o(0x1a9f07e0 | x); // cset w(x),ne
         break;
     default:
-        assert(0);
+        tcc_assert_macro(0);
     }
 }
 
@@ -1732,8 +1731,8 @@ ST_FUNC void gen_cvt_ftoi(int t)
 ST_FUNC void gen_cvt_ftof(int t)
 {
     int f = vtop[0].type.t;
-    assert(t == VT_FLOAT || t == VT_DOUBLE || t == VT_LDOUBLE);
-    assert(f == VT_FLOAT || f == VT_DOUBLE || f == VT_LDOUBLE);
+    tcc_assert_macro(t == VT_FLOAT || t == VT_DOUBLE || t == VT_LDOUBLE);
+    tcc_assert_macro(f == VT_FLOAT || f == VT_DOUBLE || f == VT_LDOUBLE);
     if (t == f)
         return;
 
@@ -1751,7 +1750,7 @@ ST_FUNC void gen_cvt_ftof(int t)
     else {
         int x, a;
         gv(RC_FLOAT);
-        assert(vtop[0].r < VT_CONST);
+        tcc_assert_macro(vtop[0].r < VT_CONST);
         a = fltr(vtop[0].r);
         --vtop;
         x = get_reg(RC_FLOAT);

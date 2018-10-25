@@ -106,7 +106,6 @@ enum {
 #else /* ! TARGET_DEFS_ONLY */
 /******************************************************/
 #include "tcc.h"
-#include <assert.h>
 
 ST_DATA const int reg_classes[NB_REGS] = {
     /* eax */ RC_INT | RC_RAX,
@@ -434,7 +433,7 @@ void load(int r, SValue *sv)
         } else if ((ft & VT_TYPE) == (VT_SHORT | VT_UNSIGNED)) {
             b = 0xb70f;   /* movzwl */
         } else {
-            assert(((ft & VT_BTYPE) == VT_INT)
+            tcc_assert_macro(((ft & VT_BTYPE) == VT_INT)
                    || ((ft & VT_BTYPE) == VT_LLONG)
                    || ((ft & VT_BTYPE) == VT_PTR)
                    || ((ft & VT_BTYPE) == VT_FUNC)
@@ -511,17 +510,17 @@ void load(int r, SValue *sv)
                     o(0x44 + REG_VALUE(r)*8); /* %xmmN */
                     o(0xf024);
                 } else {
-                    assert((v >= TREG_XMM0) && (v <= TREG_XMM7));
+                    tcc_assert_macro((v >= TREG_XMM0) && (v <= TREG_XMM7));
                     if ((ft & VT_BTYPE) == VT_FLOAT) {
                         o(0x100ff3);
                     } else {
-                        assert((ft & VT_BTYPE) == VT_DOUBLE);
+                        tcc_assert_macro((ft & VT_BTYPE) == VT_DOUBLE);
                         o(0x100ff2);
                     }
                     o(0xc0 + REG_VALUE(v) + REG_VALUE(r)*8);
                 }
             } else if (r == TREG_ST0) {
-                assert((v >= TREG_XMM0) && (v <= TREG_XMM7));
+                tcc_assert_macro((v >= TREG_XMM0) && (v <= TREG_XMM7));
                 /* gen_cvt_ftof(VT_LDOUBLE); */
                 /* movsd %xmmN,-0x10(%rsp) */
                 o(0x110ff2);
@@ -1124,7 +1123,7 @@ static X86_64_Mode classify_x86_64_inner(CType *ty)
         
         return mode;
     }
-    assert(0);
+    tcc_assert_macro(0);
     return 0;
 }
 
@@ -1320,7 +1319,7 @@ void gfunc_call(int nb_args)
 
 	    case VT_FLOAT:
 	    case VT_DOUBLE:
-		assert(mode == x86_64_mode_sse);
+		tcc_assert_macro(mode == x86_64_mode_sse);
 		r = gv(RC_FLOAT);
 		o(0x50); /* push $rax */
 		/* movq %xmmN, (%rsp) */
@@ -1330,7 +1329,7 @@ void gfunc_call(int nb_args)
 		break;
 
 	    default:
-		assert(mode == x86_64_mode_integer);
+		tcc_assert_macro(mode == x86_64_mode_integer);
 		/* simple type */
 		/* XXX: implicit cast ? */
 		r = gv(RC_INT);
@@ -1351,8 +1350,8 @@ void gfunc_call(int nb_args)
        Note that we cannot set RDX and RCX in this loop because gv()
        may break these temporary registers. Let's use R10 and R11
        instead of them */
-    assert(gen_reg <= REGN);
-    assert(sse_reg <= 8);
+    tcc_assert_macro(gen_reg <= REGN);
+    tcc_assert_macro(sse_reg <= 8);
     for(i = 0; i < nb_args; i++) {
         mode = classify_x86_64_arg(&vtop->type, &type, &size, &align, &reg_count);
         /* Alter stack entry type so that gv() knows how to treat it */
@@ -1370,7 +1369,7 @@ void gfunc_call(int nb_args)
                     o(0xc1 + ((sse_reg+1) << 3));
                 }
             } else {
-                assert(reg_count == 1);
+                tcc_assert_macro(reg_count == 1);
                 --sse_reg;
                 /* Load directly to register */
                 gv(RC_XMM0 << sse_reg);
@@ -1392,8 +1391,8 @@ void gfunc_call(int nb_args)
         }
         vtop--;
     }
-    assert(gen_reg == 0);
-    assert(sse_reg == 0);
+    tcc_assert_macro(gen_reg == 0);
+    tcc_assert_macro(sse_reg == 0);
 
     /* We shouldn't have many operands on the stack anymore, but the
        call address itself is still there, and it might be in %eax
@@ -1993,7 +1992,7 @@ void gen_opf(int op)
                 gv(RC_FLOAT);
                 vswap();
             }
-            assert(!(vtop[-1].r & VT_LVAL));
+            tcc_assert_macro(!(vtop[-1].r & VT_LVAL));
             
             if ((vtop->type.t & VT_BTYPE) == VT_DOUBLE)
                 o(0x66);
@@ -2012,7 +2011,7 @@ void gen_opf(int op)
             vtop->r = VT_CMP;
             vtop->c.i = op | 0x100;
         } else {
-            assert((vtop->type.t & VT_BTYPE) != VT_LDOUBLE);
+            tcc_assert_macro((vtop->type.t & VT_BTYPE) != VT_LDOUBLE);
             switch(op) {
             default:
             case '+':
@@ -2030,7 +2029,7 @@ void gen_opf(int op)
             }
             ft = vtop->type.t;
             fc = vtop->c.i;
-            assert((ft & VT_BTYPE) != VT_LDOUBLE);
+            tcc_assert_macro((ft & VT_BTYPE) != VT_LDOUBLE);
             
             r = vtop->r;
             /* if saved lvalue, then we must reload it */
@@ -2044,9 +2043,9 @@ void gen_opf(int op)
                 fc = 0;
             }
             
-            assert(!(vtop[-1].r & VT_LVAL));
+            tcc_assert_macro(!(vtop[-1].r & VT_LVAL));
             if (swapped) {
-                assert(vtop->r & VT_LVAL);
+                tcc_assert_macro(vtop->r & VT_LVAL);
                 gv(RC_FLOAT);
                 vswap();
             }
@@ -2199,7 +2198,7 @@ void gen_cvt_ftoi(int t)
     } else if (bt == VT_DOUBLE) {
         o(0xf2);
     } else {
-        assert(0);
+        tcc_assert_macro(0);
     }
     orex(size == 8, r, 0, 0x2c0f); /* cvttss2si or cvttsd2si */
     o(0xc0 + REG_VALUE(vtop->r) + REG_VALUE(r)*8);

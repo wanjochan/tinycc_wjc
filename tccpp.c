@@ -205,7 +205,7 @@ tail_call:
             p += header->size + sizeof(tal_header_t);
         }
 #if MEM_DEBUG-0 == 2
-        exit(2);
+        TCC(exit)(2);
 #endif
     }
 #endif
@@ -3744,23 +3744,22 @@ static void tok_print(const char *msg, const int *str)
 
 static void pp_line(TCCState *s1, BufferedFile *f, int level)
 {
-    int d = f->line_num - f->line_ref;
+	int d = f->line_num - f->line_ref;
 
-    if (s1->dflag & 4)
-	return;
+	if (s1->dflag & 4)
+		return;
 
-    if (s1->Pflag == LINE_MACRO_OUTPUT_FORMAT_NONE) {
-        ;
-    } else if (level == 0 && f->line_ref && d < 8) {
-	while (d > 0)
-	    TCC(fputs)("\n", s1->ppfp), --d;
-    } else if (s1->Pflag == LINE_MACRO_OUTPUT_FORMAT_STD) {
-	TCC(fprintf)(s1->ppfp, "#line %d \"%s\"\n", f->line_num, f->filename);
-    } else {
-	TCC(fprintf)(s1->ppfp, "# %d \"%s\"%s\n", f->line_num, f->filename,
-	    level > 0 ? " 1" : level < 0 ? " 2" : "");
-    }
-    f->line_ref = f->line_num;
+	if (s1->Pflag == LINE_MACRO_OUTPUT_FORMAT_NONE) {
+		;
+	} else if (level == 0 && f->line_ref && d < 8) {
+		while (d > 0) TCC(fputs)("\n", s1->ppfp), --d;
+	} else if (s1->Pflag == LINE_MACRO_OUTPUT_FORMAT_STD) {
+		TCC(fprintf)(s1->ppfp, "#line %d \"%s\"\n", f->line_num, f->filename);
+	} else {
+		TCC(fprintf)(s1->ppfp, "# %d \"%s\"%s\n", f->line_num, f->filename,
+				level > 0 ? " 1" : level < 0 ? " 2" : "");
+	}
+	f->line_ref = f->line_num;
 }
 
 static void define_print(TCCState *s1, int v)
