@@ -333,8 +333,8 @@ install-unx:
 	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/include")
 	$(call $(if $(findstring .so,$(LIBTCC)),IBw,IFw),$(LIBTCC),"$(libdir)")
 	$(call IF,$(TOPSRC)/libtcc.h,"$(includedir)")
-	$(call IFw,tcc-doc.info,"$(infodir)")
-	$(call IFw,tcc-doc.html,"$(docdir)")
+	#$(call IFw,tcc-doc.info,"$(infodir)")
+	#$(call IFw,tcc-doc.html,"$(docdir)")
 ifneq "$(wildcard $(LIBTCC1_W))" ""
 	$(call IFw,$(TOPSRC)/lib/*.def $(LIBTCC1_W),"$(tccdir)")
 endif

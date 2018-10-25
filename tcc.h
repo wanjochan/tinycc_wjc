@@ -24,7 +24,7 @@
 #define _GNU_SOURCE
 
 //#include "config.h"
-#define TCC_VERSION "TCCOS_0_0_4"
+#define TCC_VERSION "TCCOS_0_0_5"
 
 #include "tcc_libc.h"
 
