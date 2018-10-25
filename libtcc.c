@@ -116,17 +116,18 @@ ST_FUNC char *normalize_slashes(char *path)
 
 static HMODULE tcc_module;
 
-/* on win32, we suppose the lib and includes are at the location of 'tcc.exe' */
-static void tcc_set_lib_path_w32(TCCState *s)
-{
-    char path[1024], *p;
-    GetModuleFileNameA(tcc_module, path, sizeof path);
-    p = tcc_basename(normalize_slashes(strlwr(path)));
-    if (p > path)
-        --p;
-    *p = 0;
-    tcc_set_lib_path(s, path);
-}
+//TODO later: maybe not, but all ...
+///* on win32, we suppose the lib and includes are at the location of 'tcc.exe' */
+//static void tcc_set_lib_path_w32(TCCState *s)
+//{
+//    char path[1024], *p;
+//    GetModuleFileNameA(tcc_module, path, sizeof path);
+//    p = tcc_basename(normalize_slashes(strlwr(path)));
+//    if (p > path)
+//        --p;
+//    *p = 0;
+//    tcc_set_lib_path(s, path);
+//}
 
 #ifdef TCC_TARGET_PE
 static void tcc_add_systemdir(TCCState *s)
@@ -695,11 +696,12 @@ LIBTCCAPI TCCState *tcc_new(void)
     s->leading_underscore = 1;
 #endif
 
-#ifdef _WIN32
-    tcc_set_lib_path_w32(s);
-#else
+//#ifdef _WIN32
+//    tcc_set_lib_path_w32(s);
+//#else
+//    tcc_set_lib_path(s, CONFIG_TCCDIR);
+//#endif
     tcc_set_lib_path(s, CONFIG_TCCDIR);
-#endif
     tccelf_new(s);
     tccpp_new(s);
 

@@ -4323,8 +4323,10 @@ static int post_type(CType *type, AttributeDef *ad, int storage, int td)
 					next();
 					break;
 				}
-				if (l == FUNC_NEW && !parse_btype(&pt, &ad1))
+				if (l == FUNC_NEW && !parse_btype(&pt, &ad1)){
 					tcc_error("invalid type");
+					//tcc_error("invalid type for '%s'", get_tok_str(v, NULL));
+				}
 			}
 		} else
 			/* if no parameters, then old type prototype */

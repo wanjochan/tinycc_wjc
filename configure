@@ -249,9 +249,10 @@ else
     if test x"$infodir" = x""; then
       infodir="${sharedir}/info"
     fi
-    if test x"$tccdir" = x""; then
-      tccdir="${libdir}/tcc"
-    fi
+		#wjc: no need !!
+#    if test x"$tccdir" = x""; then
+#      tccdir="${libdir}/tcc"
+#    fi
     if test x"$includedir" = x""; then
       includedir="${prefix}/include"
     fi
@@ -269,7 +270,7 @@ Standard options:
 			   [same as prefix]
   --bindir=DIR             user executables in DIR [EPREFIX/bin]
   --libdir=DIR             object code libraries in DIR [EPREFIX/lib]
-  --tccdir=DIR             installation directory [EPREFIX/lib/tcc]
+  --tccdir=DIR             installation directory [EPREFIX]
   --includedir=DIR         C header files in DIR [PREFIX/include]
   --sharedir=DIR           documentation root DIR [PREFIX/share]
   --docdir=DIR             documentation in DIR [SHAREDIR/doc/tcc]

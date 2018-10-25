@@ -13,7 +13,7 @@ XTCC ?= $(TOP)/$(X)tcc$(EXESUF)
 XCC = $(XTCC)
 XAR = $(XTCC) -ar
 XFLAGS-unx = -B$(TOPSRC) -I$(TOPSRC)/include_lib -I$(TOPSRC)
-XFLAGS-win = -B$(TOPSRC)/win32 -I$(TOPSRC)/include_lib -I$(TOPSRC)
+XFLAGS-win = -B$(TOPSRC)/win32 -I$(TOPSRC)/win32/include -I$(TOPSRC)/include_lib -I$(TOPSRC)
 XFLAGS = $(XFLAGS$(XCFG))
 XCFG = $(or $(findstring -win,$T),-unx)
 

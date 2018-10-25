@@ -57,7 +57,9 @@ typedef int ssize_t;//TODO tmp...
 /* errno.h */
 #if defined(__linux__)
 int *__errno_location();
+#ifndef errno
 #define errno (*__errno_location())
+#endif
 #else
 int *__error();
 #define errno (*__error())

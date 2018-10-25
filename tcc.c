@@ -180,17 +180,17 @@ static void print_dirs(const char *msg, char **paths, int nb_paths)
 
 static void print_search_dirs(TCCState *s)
 {
-	TCC(printf)("install: %s\n", s->tcc_lib_path);
+	TCC(printf)("install(tcc_lib_path): %s\n", s->tcc_lib_path);
 	/* print_dirs("programs", NULL, 0); */
 	print_dirs("include", s->sysinclude_paths, s->nb_sysinclude_paths);
 	print_dirs("libraries", s->library_paths, s->nb_library_paths);
 #ifdef TCC_TARGET_PE
 #ifdef TCC_LIBTCC1
-	TCC(printf)("libtcc1(win):\n  %s/lib/"TCC_LIBTCC1"\n", s->tcc_lib_path);
+	TCC(printf)("libtcc1(win):\n  %s/"TCC_LIBTCC1"\n", s->tcc_lib_path);
 #endif
 #elif defined(TCC_TARGET_MACHO)
 #ifdef TCC_LIBTCC1
-	TCC(printf)("libtcc1(osx):\n  %s/lib/"TCC_LIBTCC1"\n", s->tcc_lib_path);
+	TCC(printf)("libtcc1(osx):\n  %s/"TCC_LIBTCC1"\n", s->tcc_lib_path);
 #endif
 #else //assume ELF
 #ifdef TCC_LIBTCC1

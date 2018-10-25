@@ -61,3 +61,4 @@ test_docker/include
 test_docker/lib
 wjc/
 build_*/
+tcc.pp.c

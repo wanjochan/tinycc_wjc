@@ -205,7 +205,8 @@ typedef HINSTANCE HMODULE;
 /* system include paths */
 #ifndef CONFIG_TCC_SYSINCLUDEPATHS
 # ifdef TCC_TARGET_PE
-#  define CONFIG_TCC_SYSINCLUDEPATHS "{B}/include"PATHSEP"{B}/include/winapi"
+//#  define CONFIG_TCC_SYSINCLUDEPATHS "{B}/include"PATHSEP"{B}/include/winapi"
+#  define CONFIG_TCC_SYSINCLUDEPATHS "{B}"
 # else
 #  define CONFIG_TCC_SYSINCLUDEPATHS \
         "{B}/include" \
@@ -217,7 +218,8 @@ typedef HINSTANCE HMODULE;
 /* library search paths */
 #ifndef CONFIG_TCC_LIBPATHS
 # ifdef TCC_TARGET_PE
-#  define CONFIG_TCC_LIBPATHS "{B}/lib"
+//#  define CONFIG_TCC_LIBPATHS "{B}/lib"
+#  define CONFIG_TCC_LIBPATHS "{B}"
 # else
 #  define CONFIG_TCC_LIBPATHS \
         ALSO_TRIPLET(CONFIG_SYSROOT "/usr/" CONFIG_LDDIR) \

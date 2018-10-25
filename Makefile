@@ -203,11 +203,10 @@ DEFINES += $(DEF-$(or $(findstring win,$T),unx))
 ifneq ($(X),)
 ifeq ($(CONFIG_WIN32),yes)
 DEF-win += -DTCC_LIBTCC1="\"$(X)libtcc1.a\""
-#DEF-unx += -DTCC_LIBTCC1="\"lib/$(X)libtcc1.a\""
 DEF-unx += -DTCC_LIBTCC1="\"$(X)libtcc1.a\""
 else
 DEF-all += -DTCC_LIBTCC1="\"$(X)libtcc1.a\""
-#DEF-win += -DCONFIG_TCCDIR="\"$(tccdir)/win32\""
+#DEF-win += -DCONFIG_TCCDIR="\"$(tccdir)\""
 endif
 endif
 
@@ -334,40 +333,26 @@ install-unx:
 	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/include")
 	$(call $(if $(findstring .so,$(LIBTCC)),IBw,IFw),$(LIBTCC),"$(libdir)")
 	$(call IF,$(TOPSRC)/libtcc.h,"$(includedir)")
-	#$(call IFw,tcc.1,"$(mandir)/man1")
 	$(call IFw,tcc-doc.info,"$(infodir)")
 	$(call IFw,tcc-doc.html,"$(docdir)")
 ifneq "$(wildcard $(LIBTCC1_W))" ""
-	#$(call IFw,$(TOPSRC)/win32/lib/*.def $(LIBTCC1_W),"$(tccdir)/win32/lib")
 	$(call IFw,$(TOPSRC)/lib/*.def $(LIBTCC1_W),"$(tccdir)")
-	#$(call IR,$(TOPSRC)/win32/include,"$(tccdir)/win32/include")
-	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/win32/include")
 endif
 
 # uninstall
 uninstall-unx:
 	@rm -fv $(foreach P,$(PROGS) $(PROGS_CROSS),"$(bindir)/$P")
 	@rm -fv "$(libdir)/libtcc.a" "$(libdir)/libtcc.so" "$(includedir)/libtcc.h"
-	#@rm -fv "$(mandir)/man1/tcc.1" "$(infodir)/tcc-doc.info"
-	@rm -fv "$(docdir)/tcc-doc.html"
 	rm -r "$(tccdir)"
 
 # install progs & libs on windows
 install-win:
 	$(call IBw,$(PROGS) $(PROGS_CROSS) $(subst libtcc.a,,$(LIBTCC)),"$(bindir)")
-	#$(call IF,$(TOPSRC)/win32/lib/*.def,"$(tccdir)/lib")
 	$(call IF,$(TOPSRC)/lib/*.def,"$(tccdir)")
-	#$(call IFw,libtcc1.a $(LIBTCC1_W),"$(tccdir)/lib")
 	$(call IFw,libtcc1.a $(LIBTCC1_W),"$(tccdir)")
-	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/include")
-	#$(call IR,$(TOPSRC)/win32/include,"$(tccdir)/include")
-	#$(call IR,$(TOPSRC)/win32/examples,"$(tccdir)/examples")
-	#$(call IF,$(TOPSRC)/tests/libtcc_test.c,"$(tccdir)/examples")
 	$(call IFw,$(TOPSRC)/libtcc.h $(subst .dll,.def,$(LIBTCC)),"$(libdir)")
-	#$(call IFw,$(TOPSRC)/win32/tcc-win32.txt tcc-doc.html,"$(docdir)")
 ifneq "$(wildcard $(LIBTCC1_U))" ""
 	$(call IFw,$(LIBTCC1_U),"$(tccdir)")
-	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/lib/include")
 endif
 
 # the msys-git shell works to configure && make except it does not have install
@@ -386,10 +371,10 @@ uninstall-win:
 # --------------------------------------------------------------------------
 # other stuff
 
-TAGFILES = *.[ch] include/*.h lib/*.[chS]
-tags : ; ctags $(TAGFILES)
-# cannot have both tags and TAGS on windows
-ETAGS : ; etags $(TAGFILES)
+#TAGFILES = *.[ch] include/*.h lib/*.[chS]
+#tags : ; ctags $(TAGFILES)
+## cannot have both tags and TAGS on windows
+#ETAGS : ; etags $(TAGFILES)
 
 # create release tarball from *current* git branch (including tcc-doc.html
 # and converting two files to CRLF)
