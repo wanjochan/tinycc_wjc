@@ -138,6 +138,7 @@ static inline FILE* tcc_std(int std){
 	if(TCC_C_stdin==std)return stdin;
 	if(TCC_C_stdout==std)return stdout;
 	if(TCC_C_stderr==std)return stderr;
+	return 0;
 }
 
 //TODO maybe merge to TCC() later
