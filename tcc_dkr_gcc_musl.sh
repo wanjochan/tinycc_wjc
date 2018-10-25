@@ -7,6 +7,7 @@ PWD=`pwd`
 CCC="mkdir -p build_in_dkr_gcc_musl &&
 cd build_in_dkr_gcc_musl &&
 ../configure --prefix=. --cc=gcc --config-musl --extra-cflags='-Wall -g -O2 -I ../include' &&
+make clean &&
 make &&
 make cross &&
 echo test1 &&

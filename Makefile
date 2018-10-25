@@ -339,6 +339,7 @@ install-unx:
 	$(call IFw,tcc-doc.html,"$(docdir)")
 ifneq "$(wildcard $(LIBTCC1_W))" ""
 	#$(call IFw,$(TOPSRC)/win32/lib/*.def $(LIBTCC1_W),"$(tccdir)/win32/lib")
+	$(call IFw,$(TOPSRC)/lib/*.def $(LIBTCC1_W),"$(tccdir)")
 	#$(call IR,$(TOPSRC)/win32/include,"$(tccdir)/win32/include")
 	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/win32/include")
 endif
@@ -355,7 +356,9 @@ uninstall-unx:
 install-win:
 	$(call IBw,$(PROGS) $(PROGS_CROSS) $(subst libtcc.a,,$(LIBTCC)),"$(bindir)")
 	#$(call IF,$(TOPSRC)/win32/lib/*.def,"$(tccdir)/lib")
-	$(call IFw,libtcc1.a $(LIBTCC1_W),"$(tccdir)/lib")
+	$(call IF,$(TOPSRC)/lib/*.def,"$(tccdir)")
+	#$(call IFw,libtcc1.a $(LIBTCC1_W),"$(tccdir)/lib")
+	$(call IFw,libtcc1.a $(LIBTCC1_W),"$(tccdir)")
 	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/include")
 	#$(call IR,$(TOPSRC)/win32/include,"$(tccdir)/include")
 	#$(call IR,$(TOPSRC)/win32/examples,"$(tccdir)/examples")
@@ -363,7 +366,7 @@ install-win:
 	$(call IFw,$(TOPSRC)/libtcc.h $(subst .dll,.def,$(LIBTCC)),"$(libdir)")
 	#$(call IFw,$(TOPSRC)/win32/tcc-win32.txt tcc-doc.html,"$(docdir)")
 ifneq "$(wildcard $(LIBTCC1_U))" ""
-	$(call IFw,$(LIBTCC1_U),"$(tccdir)/lib")
+	$(call IFw,$(LIBTCC1_U),"$(tccdir)")
 	#$(call IF,$(TOPSRC)/include/*.h,"$(tccdir)/lib/include")
 endif
 
