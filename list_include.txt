@@ -11,7 +11,6 @@ lib/armflush.c:#include <sys/syscall.h>
 lib/armflush.c:#include <stdio.h>
 lib/bcheck.c:#include <stdlib.h>
 lib/bcheck.c:#include <stdio.h>
-lib/bcheck.c:#include <stdarg.h>
 lib/bcheck.c:#include <string.h>
 lib/bcheck.c:#include <malloc.h>
 lib/bcheck.c:#include <unistd.h>

@@ -19,7 +19,8 @@
  */
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdarg.h>
+//#include <stdarg.h>
+#include "tcc_stdarg.h"
 #include <string.h>
 
 #if !defined(__FreeBSD__) \

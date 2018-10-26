@@ -23,6 +23,7 @@
 /* only native compiler supports -run */
 #ifdef TCC_IS_NATIVE
 
+//using debug backtrace trick for the tcc-run
 #include "tccrun_debug_bt.c"
 
 static void set_pages_executable(void *ptr, unsigned long length);
@@ -262,7 +263,7 @@ static void set_pages_executable(void *ptr, unsigned long length)
 {
 #ifdef _WIN32
     unsigned long old_protect;
-    VirtualProtect(ptr, length, PAGE_EXECUTE_READWRITE, &old_protect);
+    TCC(VirtualProtect)(ptr, length, PAGE_EXECUTE_READWRITE, &old_protect);
 #else
     void __clear_cache(void *beginning, void *end);
 # ifndef HAVE_SELINUX
