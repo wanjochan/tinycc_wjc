@@ -526,6 +526,7 @@ long double __floatundixf(unsigned long long a)
     }
 }
 
+//@ref libtcc.c !TCC_ARM_EABI
 unsigned long long __fixunssfdi (float a1)
 {
     register union float_long fl1;

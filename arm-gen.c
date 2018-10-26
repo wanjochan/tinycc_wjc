@@ -202,15 +202,16 @@ static int regmask(int r) {
 
 /******************************************************/
 
-#if defined(TCC_ARM_EABI) && !defined(CONFIG_TCC_ELFINTERP)
-const char *default_elfinterp(struct TCCState *s)
-{
-    if (s->float_abi == ARM_HARD_FLOAT)
-        return "/lib/ld-linux-armhf.so.3";
-    else
-        return "/lib/ld-linux.so.3";
-}
-#endif
+//TODO merge to tcc.h
+//#if defined(TCC_ARM_EABI) && !defined(CONFIG_TCC_ELFINTERP)
+//const char *default_elfinterp(struct TCCState *s)
+//{
+//    if (s->float_abi == ARM_HARD_FLOAT)
+//        return "/lib/ld-linux-armhf.so.3";
+//    else
+//        return "/lib/ld-linux.so.3";
+//}
+//#endif
 
 void o(uint32_t i)
 {

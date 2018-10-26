@@ -2101,14 +2101,13 @@ static int elf_output_file(TCCState *s1, const char *filename)
             if (file_type == TCC_OUTPUT_EXE) {
                 char *ptr;
                 /* allow override the dynamic loader */
-                const char *elfint = TCC(getenv)("LD_SO");
-                if (elfint == NULL)
-                    elfint = DEFAULT_ELFINTERP(s1);
+                const char *elfinterp = TCC(getenv)("LD_SO");
+                if (elfinterp == NULL) elfinterp = DEFAULT_ELFINTERP(s1);
                 /* add interpreter section only if executable */
                 interp = new_section(s1, ".interp", SHT_PROGBITS, SHF_ALLOC);
                 interp->sh_addralign = 1;
-                ptr = section_ptr_add(interp, 1 + TCC(strlen,int)(elfint));
-                TCC(strcpy)(ptr, elfint);
+                ptr = section_ptr_add(interp, 1 + TCC(strlen,int)(elfinterp));
+                TCC(strcpy)(ptr, elfinterp);
             }
 
             /* add dynamic symbol table */

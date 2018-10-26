@@ -114,8 +114,8 @@ LIBTCCAPI int tcc_run(TCCState *s1, int argc, char **argv)
     }
 #endif
 
+		//TODO tcc_set_errno(0)
     errno = 0; /* clean errno value */
-		//*((int *)TCC(errno)) = 0;//segment fault
 
 #ifdef CONFIG_TCC_BCHECK
     if (s1->do_bounds_check) {
@@ -166,93 +166,93 @@ LIBTCCAPI int tcc_run(TCCState *s1, int argc, char **argv)
 //@ref tcc_relocate()
 static int tcc_relocate_ex(TCCState *s1, void *ptr, addr_t ptr_diff)
 {
-    Section *s;
-    unsigned offset, length, align, max_align, i, k, f;
-    addr_t mem, addr;
+	Section *s;
+	unsigned offset, length, align, max_align, i, k, f;
+	addr_t mem, addr;
 
-    if (NULL == ptr) {
-        s1->nb_errors = 0;
+	if (NULL == ptr) {
+		s1->nb_errors = 0;
 #ifdef TCC_TARGET_PE
-        pe_output_file(s1, NULL);
+		pe_output_file(s1, NULL);
 #else
-        tcc_add_runtime(s1);
-	resolve_common_syms(s1);
-        build_got_entries(s1);
+		tcc_add_runtime(s1);
+		resolve_common_syms(s1);
+		build_got_entries(s1);
 #endif
-        if (s1->nb_errors)
-            return -1;
-    }
+		if (s1->nb_errors)
+			return -1;
+	}
 
-    offset = max_align = 0, mem = (addr_t)ptr;
+	offset = max_align = 0, mem = (addr_t)ptr;
 #ifdef _WIN64
-    offset += sizeof (void*); /* space for function_table pointer */
+	offset += sizeof (void*); /* space for function_table pointer */
 #endif
-    for (k = 0; k < 2; ++k) {
-        f = 0, addr = k ? mem : mem + ptr_diff;
-        for(i = 1; i < s1->nb_sections; i++) {
-            s = s1->sections[i];
-            if (0 == (s->sh_flags & SHF_ALLOC))
-                continue;
-            if (k != !(s->sh_flags & SHF_EXECINSTR))
-                continue;
-            align = s->sh_addralign - 1;
-            if (++f == 1 && align < RUN_SECTION_ALIGNMENT)
-                align = RUN_SECTION_ALIGNMENT;
-            if (max_align < align)
-                max_align = align;
-            offset += -(addr + offset) & align;
-            s->sh_addr = mem ? addr + offset : 0;
-            offset += s->data_offset;
+	for (k = 0; k < 2; ++k) {
+		f = 0, addr = k ? mem : mem + ptr_diff;
+		for(i = 1; i < s1->nb_sections; i++) {
+			s = s1->sections[i];
+			if (0 == (s->sh_flags & SHF_ALLOC))
+				continue;
+			if (k != !(s->sh_flags & SHF_EXECINSTR))
+				continue;
+			align = s->sh_addralign - 1;
+			if (++f == 1 && align < RUN_SECTION_ALIGNMENT)
+				align = RUN_SECTION_ALIGNMENT;
+			if (max_align < align)
+				max_align = align;
+			offset += -(addr + offset) & align;
+			s->sh_addr = mem ? addr + offset : 0;
+			offset += s->data_offset;
 #if 0
-            if (mem)
-                printf("%-16s %p  len %04x  align %2d\n",
-                    s->name, (void*)s->sh_addr, (unsigned)s->data_offset, align + 1);
+			if (mem)
+				printf("%-16s %p  len %04x  align %2d\n",
+						s->name, (void*)s->sh_addr, (unsigned)s->data_offset, align + 1);
 #endif
-        }
-    }
+		}
+	}
 
-    /* relocate symbols */
-    relocate_syms(s1, s1->symtab, 1);
-    if (s1->nb_errors)
-        return -1;
+	/* relocate symbols */
+	relocate_syms(s1, s1->symtab, 1);
+	if (s1->nb_errors)
+		return -1;
 
-    if (0 == mem)
-        return offset + max_align;
+	if (0 == mem)
+		return offset + max_align;
 
 #ifdef TCC_TARGET_PE
-    s1->pe_imagebase = mem;
+	s1->pe_imagebase = mem;
 #endif
 
-    /* relocate each section */
-    for(i = 1; i < s1->nb_sections; i++) {
-        s = s1->sections[i];
-        if (s->reloc)
-            relocate_section(s1, s);
-    }
-    relocate_plt(s1);
+	/* relocate each section */
+	for(i = 1; i < s1->nb_sections; i++) {
+		s = s1->sections[i];
+		if (s->reloc)
+			relocate_section(s1, s);
+	}
+	relocate_plt(s1);
 
-    for(i = 1; i < s1->nb_sections; i++) {
-        s = s1->sections[i];
-        if (0 == (s->sh_flags & SHF_ALLOC))
-            continue;
-        length = s->data_offset;
-        ptr = (void*)s->sh_addr;
-        if (s->sh_flags & SHF_EXECINSTR)
-            ptr = (char*)ptr - ptr_diff;
-        if (NULL == s->data || s->sh_type == SHT_NOBITS)
-            TCC(memset)(ptr, 0, length);
-        else
-            TCC(memcpy)(ptr, s->data, length);
-        /* mark executable sections as executable in memory */
-        if (s->sh_flags & SHF_EXECINSTR)
-            set_pages_executable((char*)ptr + ptr_diff, length);
-    }
+	for(i = 1; i < s1->nb_sections; i++) {
+		s = s1->sections[i];
+		if (0 == (s->sh_flags & SHF_ALLOC))
+			continue;
+		length = s->data_offset;
+		ptr = (void*)s->sh_addr;
+		if (s->sh_flags & SHF_EXECINSTR)
+			ptr = (char*)ptr - ptr_diff;
+		if (NULL == s->data || s->sh_type == SHT_NOBITS)
+			TCC(memset)(ptr, 0, length);
+		else
+			TCC(memcpy)(ptr, s->data, length);
+		/* mark executable sections as executable in memory */
+		if (s->sh_flags & SHF_EXECINSTR)
+			set_pages_executable((char*)ptr + ptr_diff, length);
+	}
 
 #ifdef _WIN64
-    *(void**)mem = win64_add_function_table(s1);
+	*(void**)mem = win64_add_function_table(s1);
 #endif
 
-    return 0;
+	return 0;
 }
 
 /* ------------------------------------------------------------- */

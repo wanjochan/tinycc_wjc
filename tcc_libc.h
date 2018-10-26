@@ -1,3 +1,6 @@
+#ifndef _TCC_LIBC_H
+#define _TCC_LIBC_H
+
 /* wrapper to libc */
 
 #include "tcc_dl.h"
@@ -118,6 +121,9 @@ struct tm {
 
 /* fcntl.h */
 //#include <fcntl.h>
+#ifndef O_BINARY
+# define O_BINARY 0
+#endif
 ///*
 // *  File access modes.
 // */
@@ -164,4 +170,44 @@ typedef int jmp_buf[1];
 #endif
 typedef __SIZE_TYPE__ uintptr_t;
 
+#ifdef _WIN32
+//TODO
+//#include <windows.h>
+/* winnt.h */
+#define DECLARE_HANDLE(name) struct name##__ { int unused; }; typedef struct name##__ *name
+/* windef.h */
+DECLARE_HANDLE(HINSTANCE);
+typedef HINSTANCE HMODULE;
 
+//TO DELETE
+//# include <io.h> /* open, close etc. */
+//# include <direct.h> /* getcwd */
+//# ifdef __GNUC__
+//#  include <stdint.h>
+//# endif
+# define inline __inline
+# define snprintf _snprintf
+# define vsnprintf _vsnprintf
+//# ifndef __GNUC__
+//#  define strtold (long double)strtod
+//#  define strtof (float)strtod
+//#  define strtoll _strtoi64
+//#  define strtoull _strtoui64
+//# endif
+# ifdef LIBTCC_AS_DLL
+#  define LIBTCCAPI __declspec(dllexport)
+#  define PUB_FUNC LIBTCCAPI
+# endif
+# define inp next_inp /* inp is an intrinsic on msvc/mingw */
+# ifdef _MSC_VER
+#  pragma warning (disable : 4244)  // conversion from 'uint64_t' to 'int', possible loss of data
+#  pragma warning (disable : 4267)  // conversion from 'size_t' to 'int', possible loss of data
+#  pragma warning (disable : 4996)  // The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name
+#  pragma warning (disable : 4018)  // signed/unsigned mismatch
+#  pragma warning (disable : 4146)  // unary minus operator applied to unsigned type, result still unsigned
+#  define ssize_t intptr_t
+# endif
+# undef CONFIG_TCC_STATIC
+#endif//_WIN32
+
+#endif//_TCC_LIBC_H

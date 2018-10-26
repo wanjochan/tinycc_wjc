@@ -21,13 +21,14 @@
 #ifndef _TCC_H
 #define _TCC_H
 
-#define _GNU_SOURCE
+//#define _GNU_SOURCE
 
 //#include "config.h"
 #define TCC_VERSION "TCCOS_0_0_6"
 
 #include "tcc_libc.h"
 
+//TODO using va_arg soon.
 #define error3(s1,is_warning,...) {\
 	char tcc_error3_buf[2048]={'\0'};\
 	tcc_error_a(s1,is_warning,tcc_error3_buf);\
@@ -44,49 +45,6 @@
 }
 
 #define tcc_error_noabort(...) error3(tcc_state, 0, __VA_ARGS__)
-
-#ifdef _WIN32
-//TODO
-//# include <windows.h>
-/* winnt.h */
-#define DECLARE_HANDLE(name) struct name##__ { int unused; }; typedef struct name##__ *name
-/* windef.h */
-DECLARE_HANDLE(HINSTANCE);
-typedef HINSTANCE HMODULE;
-
-//# include <io.h> /* open, close etc. */
-//# include <direct.h> /* getcwd */
-//# ifdef __GNUC__
-//#  include <stdint.h>
-//# endif
-# define inline __inline
-# define snprintf _snprintf
-# define vsnprintf _vsnprintf
-//# ifndef __GNUC__
-//#  define strtold (long double)strtod
-//#  define strtof (float)strtod
-//#  define strtoll _strtoi64
-//#  define strtoull _strtoui64
-//# endif
-# ifdef LIBTCC_AS_DLL
-#  define LIBTCCAPI __declspec(dllexport)
-#  define PUB_FUNC LIBTCCAPI
-# endif
-# define inp next_inp /* inp is an intrinsic on msvc/mingw */
-# ifdef _MSC_VER
-#  pragma warning (disable : 4244)  // conversion from 'uint64_t' to 'int', possible loss of data
-#  pragma warning (disable : 4267)  // conversion from 'size_t' to 'int', possible loss of data
-#  pragma warning (disable : 4996)  // The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name
-#  pragma warning (disable : 4018)  // signed/unsigned mismatch
-#  pragma warning (disable : 4146)  // unary minus operator applied to unsigned type, result still unsigned
-#  define ssize_t intptr_t
-# endif
-# undef CONFIG_TCC_STATIC
-#endif//_WIN32
-
-#ifndef O_BINARY
-# define O_BINARY 0
-#endif
 
 #ifndef offsetof
 #define offsetof(type, field) ((size_t) &((type *)0)->field)
@@ -275,7 +233,8 @@ typedef HINSTANCE HMODULE;
 #ifdef CONFIG_TCC_ELFINTERP
 # define DEFAULT_ELFINTERP(s) CONFIG_TCC_ELFINTERP
 #else
-# define DEFAULT_ELFINTERP(s) default_elfinterp(s)
+//# define DEFAULT_ELFINTERP(s) default_elfinterp(s)
+# define DEFAULT_ELFINTERP(s) tcc_default_elfinterp(s)
 #endif
 
 /* (target specific) libtcc1.a */
@@ -294,7 +253,7 @@ typedef HINSTANCE HMODULE;
 
 #include "libtcc.h"
 
-//@ref tccpp && tccgen
+//@ref for tccpp && tccgen
 #include "stab.h"
 
 /* -------------------------------------------- */
@@ -353,6 +312,7 @@ typedef HINSTANCE HMODULE;
 
 /* -------------------------------------------- */
 
+//@ref PTR_SIZE are related to TCC_TARGET_, defined in *-gen.c
 #if PTR_SIZE == 8
 # define ELFCLASSW ELFCLASS64
 # define ElfW(type) Elf##64##_##type
@@ -382,7 +342,8 @@ typedef HINSTANCE HMODULE;
 
 #define INCLUDE_STACK_SIZE  32
 #define IFDEF_STACK_SIZE    64
-#define VSTACK_SIZE         256
+#define VSTACK_SIZE         256//size(tcc)=436676
+//#define VSTACK_SIZE         64//size(tcc)=428484
 #define STRING_MAX_SIZE     1024
 #define TOKSTR_MAX_SIZE     256
 #define PACK_STACK_SIZE     8
@@ -1563,9 +1524,11 @@ ST_FUNC void gen_vla_result(int addr);
 
 /* ------------ arm-gen.c ------------ */
 #ifdef TCC_TARGET_ARM
-#if defined(TCC_ARM_EABI) && !defined(CONFIG_TCC_ELFINTERP)
-PUB_FUNC const char *default_elfinterp(struct TCCState *s);
-#endif
+
+//#if defined(TCC_ARM_EABI) && !defined(CONFIG_TCC_ELFINTERP)
+//PUB_FUNC const char *default_elfinterp(struct TCCState *s);
+//#endif
+
 ST_FUNC void arm_init(struct TCCState *s);
 ST_FUNC void gen_cvt_itof1(int t);
 #endif
@@ -1668,5 +1631,14 @@ ST_FUNC void tcc_run_free(TCCState *s1);
 
 static inline int tcc_assert(char* R, char* F, int L){TCC(printf)("%s %s %s",F,L,R);TCC(exit)(-1);return -1;}
 #define tcc_assert_macro(e) ((e)?(void)0:tcc_assert(#e,__FILE__,__LINE__))
+
+#if defined(TCC_ARM_EABI) && !defined(CONFIG_TCC_ELFINTERP)
+static inline const char* tcc_default_elfinterp(struct TCCState *s){
+	if (s->float_abi == ARM_HARD_FLOAT)
+		return "/lib/ld-linux-armhf.so.3";
+	else
+		return "/lib/ld-linux.so.3";
+}
+#endif
 
 #endif /* _TCC_H */
