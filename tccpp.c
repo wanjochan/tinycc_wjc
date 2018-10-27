@@ -2442,8 +2442,8 @@ static void parse_number(const char *p)
             }
             *q = '\0';
             t = toup(ch);
-            errno = 0;
-						//*((int *)TCC(errno)) = 0;//segment fault
+            //errno = 0;
+						tcc_errno(0);
 
             if (t == 'F') {
                 ch = *p++;

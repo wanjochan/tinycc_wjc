@@ -210,4 +210,9 @@ typedef HINSTANCE HMODULE;
 # undef CONFIG_TCC_STATIC
 #endif//_WIN32
 
+
+static inline void tcc_errno(int i){
+	errno = i;
+}
+
 #endif//_TCC_LIBC_H

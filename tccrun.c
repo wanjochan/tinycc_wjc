@@ -116,8 +116,8 @@ LIBTCCAPI int tcc_run(TCCState *s1, int argc, char **argv)
     }
 #endif
 
-		//TODO tcc_set_errno(0)
-    errno = 0; /* clean errno value */
+    //errno = 0; /* clean errno value */
+		tcc_errno(0);
 
 #ifdef CONFIG_TCC_BCHECK
     if (s1->do_bounds_check) {
