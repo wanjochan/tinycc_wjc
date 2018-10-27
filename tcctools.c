@@ -359,7 +359,7 @@ usage:
 
     file = infile;
 #ifdef _WIN32
-    if (SearchPath(NULL, file, ".dll", sizeof path, path, NULL))
+    if (TCC(SearchPath,int)(NULL, file, ".dll", sizeof path, path, NULL))
         file = path;
 #endif
     ret = tcc_get_dllexports(file, &p);
@@ -472,10 +472,12 @@ static int execvp_win32(const char *prog, char **argv)
     for (p = argv; *p; ++p)
         if (TCC(strchr,char*)(*p, '"'))
             *p = str_replace(*p, "\"", "\\\"");
-    ret = TCC(_spawnvp,int)(P_NOWAIT, prog, (const char *const*)argv);
+		ret = TCC(_spawnvp,int)(1//P_NOWAIT
+				, prog, (const char *const*)argv);
     if (-1 == ret)
         return ret;
-    _cwait(&ret, ret, WAIT_CHILD);
+		TCC(_cwait)(&ret, ret, 0//WAIT_CHILD
+				);
     TCC(exit)(ret);
 }
 #define execvp execvp_win32

@@ -108,8 +108,10 @@
 #endif
 
 #if defined TCC_IS_NATIVE && !defined CONFIG_TCCBOOT
-//TODO....
-//# define CONFIG_TCC_BACKTRACE
+//TODO.... win32 failed the backtrace, need more solving...
+#ifndef _WIN32
+# define CONFIG_TCC_BACKTRACE
+#endif
 # if (defined TCC_TARGET_I386 || defined TCC_TARGET_X86_64) \
   && !defined TCC_UCLIBC && !defined TCC_MUSL
 //TODO ....

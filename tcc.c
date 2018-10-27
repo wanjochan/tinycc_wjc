@@ -247,7 +247,7 @@ static char *default_outputfile(TCCState *s, const char *first_file)
 static unsigned getclock_ms(void)
 {
 #ifdef _WIN32
-    return GetTickCount();
+    return TCC(GetTickCount,unsigned)();
 #else
     struct timeval tv;
     TCC(gettimeofday)(&tv, NULL);

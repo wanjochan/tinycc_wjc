@@ -1,16 +1,20 @@
 #ifdef CONFIG_TCC_BACKTRACE
 # ifndef _WIN32
+//TODO remove signal.h dependency in future...
+#define _GNU_SOURCE //for REG_EIP in singal.h
 #  include <signal.h>
 #  ifndef __OpenBSD__
-//#   include <sys/ucontext.h>
+//TODO remove ucontext dependency in future..
+#   include <sys/ucontext.h>
 #  endif
-# else//not _WIN32
+# else// _WIN32
 #  define ucontext_t CONTEXT
 # endif//_WIN32
 ST_DATA int rt_num_callers = 6;
 ST_DATA const char **rt_bound_error_msg;
 ST_DATA void *rt_prog_main;
 static int rt_get_caller_pc(addr_t *paddr, ucontext_t *uc, int level);
+
 //static void rt_error(ucontext_t *uc, const char *fmt, ...);
 #define rt_error(uc, ...) \
 {\
@@ -330,7 +334,7 @@ static int rt_get_caller_pc(addr_t *paddr, ucontext_t *uc, int level)
         *paddr = uc->uc_mcontext.mc_rip;
 #elif defined(__NetBSD__)
         *paddr = uc->uc_mcontext.__gregs[_REG_RIP];
-#else
+#else//linux
         *paddr = uc->uc_mcontext.gregs[REG_RIP];
 #endif
         return 0;
