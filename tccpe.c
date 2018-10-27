@@ -846,7 +846,7 @@ static void pe_build_imports(struct pe_info *pe)
                     if (dllref) {
                         if ( !dllref->handle )
                             dllref->handle = LoadLibrary(dllref->name);
-                        v = (ADDR3264)GetProcAddress(dllref->handle, ordinal?(char*)0+ordinal:name);
+                        v = TCC(GetProcAddress,ADDR3264)(dllref->handle, ordinal?(char*)0+ordinal:name);
                     }
                     if (!v)
                         tcc_error_noabort("can't build symbol '%s'", name);

@@ -6,6 +6,7 @@ tcc_dlfcn.c:#include <stdio.h>
 tcc_dlfcn.c:#include <stdlib.h>
 tcc_dlfcn.c:#include <wchar.h>
 tccrun_debug_bt.c:#  include <signal.h>
+tccrun_debug_bt.c:#   include <sys/ucontext.h>
 lib/armflush.c:#include <unistd.h>
 lib/armflush.c:#include <sys/syscall.h>
 lib/armflush.c:#include <stdio.h>
