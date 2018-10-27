@@ -1565,6 +1565,7 @@ ST_FUNC void gen_opl(int op)
     arm64_gen_opil(op, 1);
 }
 
+//@ref lib/lib-arm64.c
 ST_FUNC void gen_opf(int op)
 {
     uint32_t x, a, b, dbl;

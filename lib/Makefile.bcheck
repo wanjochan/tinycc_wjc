@@ -26,15 +26,12 @@ ifeq "$($(T)-libtcc1-usegcc)" "yes"
  XFLAGS = $(CFLAGS) -fPIC
 endif
 
-# wjc not using bcheck, will do again in future...
-## only for native compiler
-#$(X)BCHECK_O = bcheck.o
-#
-#ifeq ($(CONFIG_musl)$(CONFIG_uClibc),yes)
-# BCHECK_O =
-#endif
+# only for native compiler
+$(X)BCHECK_O = bcheck.o
 
-BCHECK_O =
+ifeq ($(CONFIG_musl)$(CONFIG_uClibc),yes)
+ BCHECK_O =
+endif
 
 ifdef CONFIG_OSX
  XFLAGS += -D_ANSI_SOURCE
@@ -44,8 +41,6 @@ I386_O = libtcc1.o alloca86.o alloca86-bt.o
 X86_64_O = libtcc1.o alloca86_64.o alloca86_64-bt.o
 ARM_O = libtcc1.o armeabi.o alloca-arm.o armflush.o
 ARM64_O = lib-arm64.o
-
-#TODO
 WIN_O = crt1.o crt1w.o wincrt1.o wincrt1w.o dllcrt1.o dllmain.o
 
 OBJ-i386 = $(I386_O) $(BCHECK_O)

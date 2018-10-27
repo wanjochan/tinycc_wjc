@@ -1031,6 +1031,7 @@ void gfunc_epilog(void)
     v = (func_scratch + -loc + 15) & -16;
 
     if (v >= 4096) {
+			//@ref lib/chkstk.c
         Sym *sym = external_global_sym(TOK___chkstk, &func_old_type, 0);
         oad(0xb8, v); /* mov stacksize, %eax */
         oad(0xe8, 0); /* call __chkstk, (does the stackframe too) */

@@ -662,6 +662,7 @@ ST_FUNC void gfunc_epilog(void)
 #ifdef TCC_TARGET_PE
     if (v >= 4096) {
         oad(0xb8, v); /* mov stacksize, %eax */
+				//@ref lib/chkstk.c
         gen_static_call(TOK___chkstk); /* call __chkstk, (does the stackframe too) */
     } else
 #endif
