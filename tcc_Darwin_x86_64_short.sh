@@ -8,11 +8,8 @@ mkdir -p build_$arch/
 cd build_$arch/
 ../configure --prefix=. --cc=clang --config-musl
 make clean
-make
-make cross
-
-#make libtcc.so
-#make install
+make libtcc.so
+make 
 
 ls -al
 
@@ -21,11 +18,10 @@ echo test1
 
 cd ..
 
-echo test2
+echo ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I build_Darwin_x86_64/ -I include -I. -D __APPLE__ examples/eg_tcc_dl.c 30
 ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I build_Darwin_x86_64/ -I include -I. -D __APPLE__ examples/eg_tcc_dl.c 30
 
-echo test3
-#./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I build_Darwin_x86_64/ -I include -I. -D __APPLE__ tcc.c -v
+echo ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I include -I. -D __APPLE__ tcc.c -v
 ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I include -I. -D __APPLE__ tcc.c -v
 
 #error: file './libtcc1.a' not found

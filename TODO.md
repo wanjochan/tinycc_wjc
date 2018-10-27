@@ -1,23 +1,23 @@
 # TODO
 
+## tcc_dl.c
+
+
+
+## build closure
+
 ## va_arg
 
-... stdarg.h 
-learn tcc asm 
-handling for "..."
-
 ## seperate for more ARCH & CPU & COMPILEER
-
 organizing the codes for diff arch, like QNX did
 
 # OS MACHO binary generation
-
 osx mach-o gen
 
 ## arm-asm
+arm-asm.c
 
 ## Intel ASM syntax
-
 support intel ASM
 
 ## tcc boot/kernel/os

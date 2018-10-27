@@ -6,10 +6,9 @@
 PWD=`pwd`
 CCC="mkdir -p build_in_dkr_gcc_musl &&
 cd build_in_dkr_gcc_musl &&
-../configure --prefix=. --cc=gcc --config-musl --extra-cflags='-Wall -g -O2 -I ../include' &&
-make clean &&
+../configure --prefix=. --cc=gcc --config-musl &&
+make libtcc.so &&
 make &&
-make cross &&
 echo test1 &&
 ./tcc -I.. -B. -run ../examples/ex3.c 33
 "
@@ -24,8 +23,8 @@ echo $CCC | $DDD bash
 echo $DDD ./build_in_dkr_gcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl -run ./examples/ex3.c 33
 $DDD ./build_in_dkr_gcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl -run ./examples/ex3.c 33
 
-echo $DDD ./build_in_dkr_gcc_musl/i386-win32-tcc -I. -B build_in_dkr_gcc_musl -o ex3.exe examples/ex3.c
-$DDD ./build_in_dkr_gcc_musl/i386-win32-tcc -I. -B build_in_dkr_gcc_musl -o ex3.exe examples/ex3.c
+#echo $DDD ./build_in_dkr_gcc_musl/i386-win32-tcc -I. -B build_in_dkr_gcc_musl -o ex3.exe examples/ex3.c
+#$DDD ./build_in_dkr_gcc_musl/i386-win32-tcc -I. -B build_in_dkr_gcc_musl -o ex3.exe examples/ex3.c
 
 
 #make libtcc.so

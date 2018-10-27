@@ -1,14 +1,53 @@
-/* Dynmaic c libc header for TCC */
-//TODO do tcc_dl_XXXX() later
 #ifndef _TCC_DL_H
 #define _TCC_DL_H
+
+/* Dynmaic c libc header for TCC */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 #include "tcc_macro.h"
 
 #ifdef _WIN32
+
+//@ref
+//https://github.com/dlfcn-win32/dlfcn-win32
+
 #ifndef __DLFCN_H__
 # define __DLFCN_H__
 
+//symbol = GetProcAddress( (HMODULE) handle, name );
+	
+//#if defined(DLFCN_WIN32_EXPORTS)
+//#   define DLFCN_EXPORT __declspec(dllexport)
+//#else
+//#   define DLFCN_EXPORT
+//#endif
+//
+///* POSIX says these are implementation-defined.
+// * To simplify use with Windows API, we treat them the same way.
+// */
+//
+//#define RTLD_LAZY   0
+//#define RTLD_NOW    0
+//
+//#define RTLD_GLOBAL (1 << 1)
+//#define RTLD_LOCAL  (1 << 2)
+//
+///* These two were added in The Open Group Base Specifications Issue 6.
+// * Note: All other RTLD_* flags in any dlfcn.h are not standard compliant.
+// */
+//
+//#define RTLD_DEFAULT    0
+//#define RTLD_NEXT       0
+//
+//DLFCN_EXPORT void *dlopen ( const char *file, int mode );
+//DLFCN_EXPORT int   dlclose(void *handle);
+//DLFCN_EXPORT void *dlsym(void *handle, const char *name);
+//DLFCN_EXPORT char *dlerror(void);
+//
 //make them external because these are provided by sys
 extern void *dlopen  (const char *file, int mode);
 extern int   dlclose (void *handle);
@@ -144,5 +183,8 @@ static inline FILE* tcc_std(int std){
 //TODO maybe merge to TCC() later
 #define TCCSTD(STD) (FILE*)tcc_std(TCC_C_std##STD)
 
-#endif//_TCC_DL_H
+#ifdef __cplusplus
+}
+#endif
 
+#endif//_TCC_DL_H
