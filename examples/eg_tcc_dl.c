@@ -12,8 +12,8 @@ int main(int argc, char **argv)
 {
 	char buf[2048]={'\0'};
 
-	TCC(fprintf)(stderr, "%s\n", buf);
-	TCC(fflush)(stderr);
+	//TCC(fprintf)(stderr, "%s\n", buf);
+	//TCC(fflush)(stderr);
 	
 	//TCC_DL_IMPORT(c);//libc
 	//TCC_DL_IMPORT(qt);//libqt
@@ -24,7 +24,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	n = (int) TCC(atoi)(argv[1]);
+	n = TCC(atoi,int)(argv[1]);
 	TCC(printf)("fib(%d) = %d\n", n, fib(n, 2));
 	return 0;
 }

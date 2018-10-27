@@ -21,8 +21,20 @@ cd ..
 echo ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I build_Darwin_x86_64/ -I include -I. -D __APPLE__ examples/eg_tcc_dl.c 30
 ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I build_Darwin_x86_64/ -I include -I. -D __APPLE__ examples/eg_tcc_dl.c 30
 
-echo ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I include -I. -D __APPLE__ tcc.c -v
-./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I include -I. -D __APPLE__ tcc.c -v
+#echo ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I include -I. -D __APPLE__ tcc.c -v
+#./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I include -I. -D __APPLE__ tcc.c -v
+
+echo ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I. tcc.c -vv
+./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I. tcc.c -vv
+
+#echo ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I. examples/test_tcc_error_internal.c
+#./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I. examples/test_tcc_error_internal.c
+
+echo ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I. examples/test_tcc_h.c
+./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I. examples/test_tcc_h.c
+
+echo ./build_Darwin_x86_64/tcc -B build_Darwin_x86_64/ -I. -E -P0 tcc.c \> tcc.osx.pp.c
+./build_Darwin_x86_64/tcc -B build_Darwin_x86_64/ -I. -E -P0 tcc.c > tcc.osx.pp.c
 
 #error: file './libtcc1.a' not found
 #./build_Darwin_x86_64/tcc -run -I include -I. -D __APPLE__ tcc.c -v

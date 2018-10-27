@@ -23,8 +23,9 @@
 /* only native compiler supports -run */
 #ifdef TCC_IS_NATIVE
 
+//TODO redo the backtrace again...
 //using debug backtrace trick for the tcc-run
-#include "tccrun_debug_bt.c"
+//#include "tccrun_debug_bt.c"
 
 static void set_pages_executable(void *ptr, unsigned long length);
 static int tcc_relocate_ex(TCCState *s1, void *ptr, addr_t ptr_diff);
