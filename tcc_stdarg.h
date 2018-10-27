@@ -21,8 +21,17 @@ typedef char *va_list;
 #define va_copy(dest, src) ((dest) = (src))
 #define va_end(ap)
 
-#else//}{ //manually patch?...
-#include "__x86_64__-__va_list_struct.inc.c"
+#else//}{ //patch..
+//#include "__x86_64__-__va_list_struct.inc.c"
+typedef struct {
+	unsigned int gp_offset;
+	unsigned int fp_offset;
+	union {
+		unsigned int overflow_offset;
+		char *overflow_arg_area;
+	};
+	char *reg_save_area;
+} __va_list_struct;
 typedef __va_list_struct va_list[1];
 
 enum __va_arg_type {

@@ -845,6 +845,8 @@ static void pe_build_imports(struct pe_info *pe)
                 if (pe->type == PE_RUN) {
                     if (dllref) {
                         if ( !dllref->handle )
+													//TODO from windows.h and ....
+													//TODO dlopen + dlsym later
                             dllref->handle = LoadLibrary(dllref->name);
                         v = TCC(GetProcAddress,ADDR3264)(dllref->handle, ordinal?(char*)0+ordinal:name);
                     }
