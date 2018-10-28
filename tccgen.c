@@ -6600,18 +6600,20 @@ static void init_putv(CType *type, Section *sec, unsigned long c)
 	    case VT_DOUBLE:
 		*(double *)ptr = vtop->c.d;
 		break;
-	    case VT_LDOUBLE:
+	    case VT_LDOUBLE://@ref IEEE long double, https://en.wikipedia.org/wiki/Long_double
 #if defined TCC_IS_NATIVE_387
                 if (sizeof (long double) >= 10) /* zero pad ten-byte LD */
                     TCC(memcpy)(ptr, &vtop->c.ld, 10);
-#ifdef __TINYC__
-                else if (sizeof (long double) == sizeof (double))
-                    __asm__("fldl %1\nfstpt %0\n" : "=m" (*ptr) : "m" (vtop->c.ld));
-#endif
+//#ifdef __TINYC__
+//								//fld1 	把 +1.0 压入 FPU 堆栈中
+//								//fstpt value 	扩展精度数据保存到value，出栈
+//                else if (sizeof (long double) == sizeof (double))
+//                    __asm__("fldl %1\nfstpt %0\n" : "=m" (*ptr) : "m" (vtop->c.ld));
+//#endif
                 else if (vtop->c.ld == 0.0)
                     ;
                 else
-#endif
+#endif//TCC_IS_NATIVE_387
                 if (sizeof(long double) == LDOUBLE_SIZE)
 		    *(long double*)ptr = vtop->c.ld;
                 else if (sizeof(double) == LDOUBLE_SIZE)

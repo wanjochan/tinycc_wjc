@@ -22,7 +22,7 @@ typedef char *va_list;
 #define va_end(ap)
 
 #else//}{ //patch..
-//#include "__x86_64__-__va_list_struct.inc.c"
+
 typedef struct {
 	unsigned int gp_offset;
 	unsigned int fp_offset;
