@@ -26,6 +26,7 @@
 //#include "config.h"
 #define TCC_VERSION "TCCOS_0_0_8"
 
+#include "tcc_platform.h"
 #include "tcc_libc.h"
 
 #ifndef offsetof
@@ -265,10 +266,12 @@
 #endif
 
 /* -------------------------------------------- */
-//TODO build with arch
 /* include the target specific definitions */
 
 #define TARGET_DEFS_ONLY
+
+//# include __TCC_TARGET_CPU__##-##-__TCC_TARGET_CPU_BIT__ __TCC_TARGET_OS__ __TCC_TARGET_FORMAT__ 
+
 #ifdef TCC_TARGET_I386
 # include "i386-gen.c"
 # include "i386-link.c"

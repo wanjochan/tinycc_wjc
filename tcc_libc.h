@@ -3,6 +3,7 @@
 
 /* wrapper to libc */
 
+#include "tcc_platform.h"
 #include "tcc_dl.h"
 #include "tcc_stdarg.h"
 

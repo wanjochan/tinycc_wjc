@@ -42,6 +42,8 @@
 #	define __TCC_OS__  WIN
 #elif defined(__APPLE__)
 #	define __TCC_OS__  OSX
+#elif defined(__linux__)||defined(__LINUX__)
+#	define __TCC_OS__  LNX
 #elif defined(__FreeBSD__)
 #	define __TCC_OS__  FREEBSD
 #elif defined(__NetBSD__)
@@ -57,6 +59,8 @@
 #endif
 
 #endif //}__TCC_OS__
+
+//TODO iOS@Darwin/Android@Linux?
 
 ///////////////////////////////////////////////////////////////////////////
 #ifndef __TCC_CC__//{
