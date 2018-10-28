@@ -1,15 +1,19 @@
 #ifdef CONFIG_TCC_BACKTRACE
-# ifndef _WIN32
-//TODO remove signal.h dependency in future...
+# ifndef _WIN32//{
+
+//TODO maybe remove signal.h dependency in future...
+
 #define _GNU_SOURCE //for REG_EIP in singal.h
 #  include <signal.h>
 #  ifndef __OpenBSD__
 //TODO remove ucontext dependency in future..
 #   include <sys/ucontext.h>
 #  endif
-# else// _WIN32
+
+# else//}_WIN32
 #  define ucontext_t CONTEXT
 # endif//_WIN32
+
 ST_DATA int rt_num_callers = 6;
 ST_DATA const char **rt_bound_error_msg;
 ST_DATA void *rt_prog_main;
