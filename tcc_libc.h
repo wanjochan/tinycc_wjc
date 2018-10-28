@@ -4,6 +4,7 @@
 /* wrapper to libc */
 
 #include "tcc_dl.h"
+#include "tcc_stdarg.h"
 
 /* stddef.h */
 #ifndef __SIZE_TYPE__

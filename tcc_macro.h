@@ -82,8 +82,10 @@
 //#define TCC_ITR4(...) TCC_EVAL(TCC_WHILE4(__VA_ARGS__))
 #define TCC_ITR(n,...) TCC_EVAL(TCC_WHILE##n(__VA_ARGS__))
 
-// sth => "sth"
-#define TCC_QUOTE(sth) #sth
+// YYY => "YYY"
+#define TCC_QUOTE_PACK(sth) #sth
+// ZZZ => "$ZZZ"
+#define TCC_QUOTE(sth) TCC_QUOTE_PACK(sth)
 
 // XXXX => {XXXX}
 #define TCC_BRACKET_WRAP(...) {__VA_ARGS__}

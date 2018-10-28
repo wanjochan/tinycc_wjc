@@ -24,7 +24,7 @@
 //#define _GNU_SOURCE
 
 //#include "config.h"
-#define TCC_VERSION "TCCOS_0_0_7"
+#define TCC_VERSION "TCCOS_0_0_8"
 
 #include "tcc_libc.h"
 
@@ -1640,7 +1640,7 @@ static inline const char* tcc_default_elfinterp(struct TCCState *s){
 
 /********************************************************/
 //#include <stdarg.h>
-#include "tcc_stdarg.h"
+//#include "tcc_stdarg.h"//in tcc_libc.h already
 PUB_FUNC void tcc_error_internal(TCCState *s1, int is_warning, const char *fmt, ...);
 #define tcc_error(...) {tcc_error_internal(tcc_state, 0, __VA_ARGS__);(tcc_state->error_set_jmp_enabled)?TCC(longjmp)(tcc_state->error_jmp_buf, 1):TCC(exit)(1);}
 #define tcc_warning(...) {if(tcc_state->warn_none){}else{tcc_error_internal(tcc_state, 1, __VA_ARGS__);}}
