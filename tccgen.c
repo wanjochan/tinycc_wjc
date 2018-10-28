@@ -6600,7 +6600,11 @@ static void init_putv(CType *type, Section *sec, unsigned long c)
 	    case VT_DOUBLE:
 		*(double *)ptr = vtop->c.d;
 		break;
-	    case VT_LDOUBLE://@ref IEEE long double, https://en.wikipedia.org/wiki/Long_double
+	    case VT_LDOUBLE:
+		//@ref IEEE long double,
+		//https://en.wikipedia.org/wiki/Long_double
+		//https://en.wikipedia.org/wiki/C99
+		//long double is defined as IEEE 754 double extended or quad precision if available. Using higher precision than required for intermediate computations can minimize round-off error[10] (the typedef double_t can be used for code that is portable under all FLT_EVAL_METHODs).
 #if defined TCC_IS_NATIVE_387
                 if (sizeof (long double) >= 10) /* zero pad ten-byte LD */
                     TCC(memcpy)(ptr, &vtop->c.ld, 10);

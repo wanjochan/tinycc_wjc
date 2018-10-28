@@ -1,27 +1,19 @@
 #ifndef _STDARG_H//{
 #define _STDARG_H
 
-#if defined(__x86_64__)//{
+#if defined(__TINYC__)//{
 
-//TODO with __builtin_va_list ?
-//typedef __builtin_va_list	va_list;
-//#define va_start(ap, param) __builtin_va_start(ap, param)
-//#define va_end(ap)          __builtin_va_end(ap)
-//#define va_arg(ap, type)    __builtin_va_arg(ap, type)
-//#ifndef _VA_LIST_T//{
-//#define _VA_LIST_T
-//#endif//}_VA_LIST_T
+#if defined(__x86_64__)//{
 
 #if defined(_WIN64) //{
 
 typedef char *va_list;
 #define va_start(ap,last) __builtin_va_start(ap,last)
-#define va_arg(ap, t) ((sizeof(t) > 8 || (sizeof(t) & (sizeof(t) - 1))) \
-	? **(t **)((ap += 8) - 8) : *(t  *)((ap += 8) - 8))
+#define va_arg(ap, t) ((sizeof(t) > 8 || (sizeof(t) & (sizeof(t) - 1))) ? **(t **)((ap += 8) - 8) : *(t  *)((ap += 8) - 8))
 #define va_copy(dest, src) ((dest) = (src))
 #define va_end(ap)
 
-#else//}{ //patch..
+#else//}_WIN64{ //patch..
 
 typedef struct {
 	unsigned int gp_offset;
@@ -124,5 +116,21 @@ typedef char *va_list;
 #ifndef _VA_LIST_DEFINED
 #define _VA_LIST_DEFINED
 #endif
+
+#else//}__TINYC__{
+
+//TODO
+//TMP assume other compiler have __builtin_va_list ?
+
+//TESTED: clang@osx, gcc@osx, gcc@docker_alpine
+
+typedef __builtin_va_list	va_list;
+#define va_start(ap,last) __builtin_va_start(ap,last)
+#define va_end(ap)          __builtin_va_end(ap)
+#define va_arg(ap, type)    __builtin_va_arg(ap, type)
+//#define va_arg(ap, t) ((sizeof(t) > 8 || (sizeof(t) & (sizeof(t) - 1))) ? **(t **)((ap += 8) - 8) : *(t  *)((ap += 8) - 8))
+#define va_copy(dest, src) ((dest) = (src))
+
+#endif//}//__TINYC__
 
 #endif//}//_STDARG_H
