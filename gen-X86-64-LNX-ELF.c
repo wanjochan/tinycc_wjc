@@ -1,1 +1,1 @@
-# include "x86_64-gen.c"
+# include "gen-X86-64.c"

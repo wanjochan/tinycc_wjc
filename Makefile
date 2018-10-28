@@ -147,9 +147,9 @@ endif #NEED_CONFIG
 # --------------------------------------------------------------------------
 
 env:
-	$(eval export CPU_ARCH=$(CPU_ARCH))
-	$(eval export OS_TYPE=$(OS_TYPE))
-	@echo ${OS_TYPE},${CPU_ARCH}
+	$(eval export TCC_ARCH=$(TCC_ARCH))
+	$(eval export TCC_OS=$(TCC_OS))
+	@echo ${TCC_OS},${TCC_ARCH}
 
 # cross compiler targets to build
 
@@ -261,20 +261,6 @@ $(CROSS_TARGET)-tcc$(EXESUF): $(TCC_FILES)
 tcc_p$(EXESUF): $($T_FILES)
 	$(CC) -o $@ $< $(DEFINES) $(CFLAGS_P) $(LIBS_P) $(LDFLAGS_P)
 
-makedebug:
-	@echo TCCFLAGS=$(TCCFLAGS)
-	@echo CFGWIN=$(CFGWIN)
-	@echo TCC_ARCH=$(TCC_ARCH)
-	@echo CROSS_TARGET=$(CROSS_TARGET)
-	@echo NATIVE_TARGET=$(NATIVE_TARGET)
-	@echo DEFINES=$(DEFINES)
-	@echo T=$(T),X=$(X)
-	@echo LIBTCC_SRC=$(LIBTCC_SRC)
-	@echo CONFIG_OSX=$(CONFIG_OSX)
-	@echo ONE_SOURCE=$(ONE_SOURCE)
-	@echo LIBTCC_OBJ=$(LIBTCC_OBJ)
-	@echo LIBTCC_INC=$(LIBTCC_INC)
-
 # static libtcc library
 libtcc.a: $(LIBTCC_OBJ)
 	$(AR) rcs $@ $^
@@ -302,10 +288,12 @@ XTCC ?= ./tcc$(EXESUF)
 
 # TinyCC runtime libraries
 libtcc1.a : tcc$(EXESUF) FORCE
+	@echo libtcc1.a =: $(MAKE) -C lib DEFINES='$(DEF-$T)'
 	@$(MAKE) -C lib DEFINES='$(DEF-$T)'
 
 # Cross libtcc1.a
 %-libtcc1.a : %-tcc$(EXESUF) FORCE
+	@echo ???-libtcc1.a =: $(MAKE) -C lib DEFINES='$(DEF-$*)' CROSS_TARGET=$*
 	@$(MAKE) -C lib DEFINES='$(DEF-$*)' CROSS_TARGET=$*
 
 .PRECIOUS: %-libtcc1.a
@@ -473,6 +461,23 @@ help:
 	@echo "   install install-strip tags ETAGS tar clean distclean help"
 	@echo ""
 
+makedebug:
+	@echo T=$(T),X=$(X)
+	@echo DEF-T=$(DEF-$T)
+	@echo T_FILES=$($T_FILES)
+	@echo TCCLIBS=$(TCCLIBS)
+	@echo LIBTCC=$(LIBTCC)
+	@echo TCCFLAGS=$(TCCFLAGS)
+	@echo CFGWIN=$(CFGWIN)
+	@echo TCC_ARCH=$(TCC_ARCH)
+	@echo CROSS_TARGET=$(CROSS_TARGET)
+	@echo NATIVE_TARGET=$(NATIVE_TARGET)
+	@echo DEFINES=$(DEFINES)
+	@echo LIBTCC_SRC=$(LIBTCC_SRC)
+	@echo CONFIG_OSX=$(CONFIG_OSX)
+	@echo ONE_SOURCE=$(ONE_SOURCE)
+	@echo LIBTCC_OBJ=$(LIBTCC_OBJ)
+	@echo LIBTCC_INC=$(LIBTCC_INC)
+
 # --------------------------------------------------------------------------
 endif # ($(INCLUDED),no)
-

@@ -1476,7 +1476,7 @@ ST_FUNC void gen_bounded_ptr_add(void);
 ST_FUNC void gen_bounded_ptr_deref(void);
 #endif
 
-/* ------------ x86_64-gen.c ------------ */
+/* ------------ gen-X86-?.c ------------ */
 #ifdef TCC_TARGET_X86_64
 ST_FUNC void gen_addr64(int r, Sym *sym, int64_t c);
 ST_FUNC void gen_opl(int op);

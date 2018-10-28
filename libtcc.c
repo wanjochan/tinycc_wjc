@@ -43,33 +43,36 @@ static int nb_states;
 #include "tccelf.c"
 #include "tccrun.c"
 
-//TODO like qnx, using ARCH to include the arch codes....
-#ifdef TCC_TARGET_I386
-#include "i386-gen.c"
-#include "i386-link.c"
-#include "i386-asm.c"
-#endif
+#include TCC_QUOTE(gen-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
+#include TCC_QUOTE(link-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
+#include TCC_QUOTE(asm-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__.c)
 
-#ifdef TCC_TARGET_ARM
-#include "arm-gen.c"
-#include "arm-link.c"
-#include "arm-asm.c"
-#endif
-#ifdef TCC_TARGET_ARM64
-#include "arm64-gen.c"
-#include "arm64-link.c"
-//#include "arm64-asm.c"//TODO
-#endif
-#ifdef TCC_TARGET_C67
-#include "c67-gen.c"
-#include "c67-link.c"
-#include "tcccoff.c"//TODO change name to arch?
-#endif
-#ifdef TCC_TARGET_X86_64
-#include "x86_64-gen.c"
-#include "x86_64-link.c"
-#include "i386-asm.c"
-#endif
+//#ifdef TCC_TARGET_I386
+//#include "i386-gen.c"
+//#include "i386-link.c"
+//#include "i386-asm.c"
+//#endif
+//
+//#ifdef TCC_TARGET_ARM
+//#include "arm-gen.c"
+//#include "arm-link.c"
+//#include "arm-asm.c"
+//#endif
+//#ifdef TCC_TARGET_ARM64
+//#include "arm64-gen.c"
+//#include "arm64-link.c"
+////#include "arm64-asm.c"//TODO
+//#endif
+//#ifdef TCC_TARGET_C67
+//#include "c67-gen.c"
+//#include "c67-link.c"
+//#include "tcccoff.c"//TODO change name to arch?
+//#endif
+//#ifdef TCC_TARGET_X86_64
+//#include "x86_64-gen.c"
+//#include "x86_64-link.c"
+//#include "i386-asm.c"
+//#endif
 
 #ifdef CONFIG_TCC_ASM
 #include "tccasm.c"
