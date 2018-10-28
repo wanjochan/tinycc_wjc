@@ -1623,44 +1623,27 @@ static inline const char* tcc_default_elfinterp(struct TCCState *s){
 #endif
 
 /********************************************************/
-PUB_FUNC void tcc_error_a(TCCState *s1, int is_warning,char* buf);
-PUB_FUNC void tcc_error_b(TCCState *s1, int is_warning,char* buf);
-
-#define error3(s1,is_warning,...) {char tcc_error3_buf[2048]={'\0'};tcc_error_a(s1,is_warning,tcc_error3_buf);\
-	TCC(snprintf)(tcc_error3_buf + TCC(strlen,int)(tcc_error3_buf),sizeof(tcc_error3_buf)-TCC(strlen,int)(tcc_error3_buf),__VA_ARGS__);\
+//PUB_FUNC void tcc_error_a(TCCState *s1, int is_warning,char* buf);
+//PUB_FUNC void tcc_error_b(TCCState *s1, int is_warning,char* buf);
+/*
+#define error3(s1,is_warning,...){\
+	char tcc_error3_buf[2048]={'\0'};int len_buf;\
+	tcc_error_a(s1,is_warning,tcc_error3_buf);\
+	len_buf = TCC(strlen,int)(tcc_error3_buf);\
+	TCC(snprintf)(tcc_error3_buf+len_buf,sizeof(tcc_error3_buf)-len_buf,__VA_ARGS__);\
 	tcc_error_b(s1,is_warning,tcc_error3_buf);\
 }
+*/
+//#define tcc_warning(...) {if(tcc_state->warn_none){}else{error3(tcc_state, 1, __VA_ARGS__);}}
+//#define tcc_error(...) { error3(tcc_state, 0, __VA_ARGS__);(tcc_state->error_set_jmp_enabled)?TCC(longjmp)(tcc_state->error_jmp_buf, 1):TCC(exit)(1);}
+//#define tcc_error_noabort(...) error3(tcc_state, 0, __VA_ARGS__)
 
-//TMP
-//#define error3(s1,is_warning,...) TCC(printf)(__VA_ARGS__)
-
-#define tcc_warning(...) {if(tcc_state->warn_none){}else{error3(tcc_state, 1, __VA_ARGS__);}}
-#define tcc_error(...) { error3(tcc_state, 0, __VA_ARGS__);(tcc_state->error_set_jmp_enabled)?TCC(longjmp)(tcc_state->error_jmp_buf, 1):TCC(exit)(1);}
-#define tcc_error_noabort(...) error3(tcc_state, 0, __VA_ARGS__)
-
-//static void inline tcc_error4(TCCState *s1, int is_warning, ...)
-//{
-//	char tcc_error4_buf[2048]={'\0'};
-//	int len;
-//	va_list ap;
-//	tcc_error_a(s1,is_warning,tcc_error4_buf);
-//	va_start(ap, is_warning);
-//	//strcat_vprintf(buf, buf_size, fmt, ap);
-//	len=TCC(strlen,int)(tcc_error4_buf);
-//	TCC(vsnprintf)(tcc_error4_buf+len,sizeof(tcc_error4_buf)-len,ap);
-//	va_end(ap);
-//	tcc_error_b(s1,is_warning,tcc_error4_buf);
-//}
-//#define tcc_error(...) {tcc_error4(tcc_state, 0, __VA_ARGS__);(tcc_state->error_set_jmp_enabled)?TCC(longjmp)(tcc_state->error_jmp_buf, 1):TCC(exit)(1);}
-
-//NOTES: stdarg is very "fragile" for diff platform, try to not use inside TCC;
-//  and for future libc for tcc is on-the-plan..!
-//#include "tcc_stdarg.h"
+/********************************************************/
 //#include <stdarg.h>
-//PUB_FUNC void tcc_error_internal(TCCState *s1, int is_warning, const char *fmt, ...);
-//
-//#define tcc_error(...) {tcc_error_internal(tcc_state, 0, __VA_ARGS__);(tcc_state->error_set_jmp_enabled)?TCC(longjmp)(tcc_state->error_jmp_buf, 1):TCC(exit)(1);}
-//#define tcc_warning(...) {if(tcc_state->warn_none){}else{tcc_error_internal(tcc_state, 1, __VA_ARGS__);}}
-//#define tcc_error_noabort(...) tcc_error_internal(tcc_state, 0, __VA_ARGS__)
+#include "tcc_stdarg.h"
+PUB_FUNC void tcc_error_internal(TCCState *s1, int is_warning, const char *fmt, ...);
+#define tcc_error(...) {tcc_error_internal(tcc_state, 0, __VA_ARGS__);(tcc_state->error_set_jmp_enabled)?TCC(longjmp)(tcc_state->error_jmp_buf, 1):TCC(exit)(1);}
+#define tcc_warning(...) {if(tcc_state->warn_none){}else{tcc_error_internal(tcc_state, 1, __VA_ARGS__);}}
+#define tcc_error_noabort(...) tcc_error_internal(tcc_state, 0, __VA_ARGS__)
 
 #endif /* _TCC_H */

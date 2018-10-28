@@ -23,8 +23,8 @@ echo $CCC | $DDD bash
 echo $DDD ./build_in_dkr_gcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl -run ./examples/ex3.c 33
 $DDD ./build_in_dkr_gcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl -run ./examples/ex3.c 33
 
-echo $DDD ./build_in_dkr_gcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl -E -P0 tcc.c \> tcc.dkr.pp.c
-$DDD ./build_in_dkr_gcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl -E -P0 tcc.c > tcc.dkr.pp.c
+#echo $DDD ./build_in_dkr_gcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl -E -P0 tcc.c \> tcc.dkr.pp.c
+#$DDD ./build_in_dkr_gcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl -E -P0 tcc.c > tcc.dkr.pp.c
 
 #echo $DDD ./build_in_dkr_gcc_musl/i386-win32-tcc -I. -B build_in_dkr_gcc_musl -o ex3.exe examples/ex3.c
 #$DDD ./build_in_dkr_gcc_musl/i386-win32-tcc -I. -B build_in_dkr_gcc_musl -o ex3.exe examples/ex3.c
