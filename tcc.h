@@ -110,7 +110,7 @@
 #if defined TCC_IS_NATIVE && !defined CONFIG_TCCBOOT
 //TODO redo again in diff branch...
 //#ifndef _WIN32
-//# define CONFIG_TCC_BACKTRACE
+# define CONFIG_TCC_BACKTRACE
 //#endif
 # if (defined TCC_TARGET_I386 || defined TCC_TARGET_X86_64) \
   && !defined TCC_UCLIBC && !defined TCC_MUSL
