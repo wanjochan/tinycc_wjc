@@ -230,9 +230,9 @@ static const ASMInstr asm_instrs[] = {
 #define DEF_ASM_OP2(name, opcode, group, instr_type, op0, op1) { TOK_ASM_ ## name, O(opcode), T(opcode, instr_type, group), 2, { op0, op1 }},
 #define DEF_ASM_OP3(name, opcode, group, instr_type, op0, op1, op2) { TOK_ASM_ ## name, O(opcode), T(opcode, instr_type, group), 3, { op0, op1, op2 }},
 #ifdef TCC_TARGET_X86_64
-# include "x86_64-asm.h"
+# include "asm-X86-64.h"
 #else
-# include "i386-asm.h"
+# include "asm-X86-32.h"
 #endif
     /* last operation */
     { 0, },
@@ -246,9 +246,9 @@ static const uint16_t op0_codes[] = {
 #define DEF_ASM_OP2(name, opcode, group, instr_type, op0, op1)
 #define DEF_ASM_OP3(name, opcode, group, instr_type, op0, op1, op2)
 #ifdef TCC_TARGET_X86_64
-# include "x86_64-asm.h"
+# include "asm-X86-64.h"
 #else
-# include "i386-asm.h"
+# include "asm-X86-32.h"
 #endif
 };
 

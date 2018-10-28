@@ -346,5 +346,5 @@
  DEF_ASMDIR(section)            /* must be last directive */
 
 #if defined TCC_TARGET_I386 || defined TCC_TARGET_X86_64
-#include "i386-tok.h"
+#include "tok-X86.h"
 #endif
