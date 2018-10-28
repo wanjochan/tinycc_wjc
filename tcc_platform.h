@@ -42,6 +42,7 @@
 #	define __TCC_OS__  WIN
 #elif defined(__APPLE__)
 #	define __TCC_OS__  OSX
+#  define __TCC_TARGET_FORMAT__  MACHO//SPECIAL
 #elif defined(__linux__)||defined(__LINUX__)
 #	define __TCC_OS__  LNX
 #elif defined(__FreeBSD__)
@@ -133,12 +134,16 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////
-#if defined(TCC_TARGET_MACHO)
+#ifdef __TCC_TARGET_FORMAT__
+//SKIP THEN
+#elif defined(TCC_TARGET_MACHO)
 # define __TCC_TARGET_FORMAT__  MACHO
 #elif defined(TCC_TARGET_PE)
 # define __TCC_TARGET_FORMAT__  PE
 #else
-# define __TCC_TARGET_FORMAT__  ELF
+//# if defined(__TCC_TARGET_OS__)==OSX
+#  define __TCC_TARGET_FORMAT__  ELF
+//# endif
 #endif
 
 ///////////////////////////////////////////////////////////////////////////

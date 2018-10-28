@@ -1,1 +1,1 @@
-# include "i386-gen.c"
+# include "arm-gen.c"

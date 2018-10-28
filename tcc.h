@@ -24,7 +24,7 @@
 //#define _GNU_SOURCE
 
 //#include "config.h"
-#define TCC_VERSION "TCCOS_0_0_8"
+#define TCC_VERSION "TCCOS_0_0_9"
 
 #include "tcc_platform.h"
 #include "tcc_libc.h"
@@ -270,31 +270,33 @@
 
 #define TARGET_DEFS_ONLY
 
-//# include __TCC_TARGET_CPU__##-##-__TCC_TARGET_CPU_BIT__ __TCC_TARGET_OS__ __TCC_TARGET_FORMAT__ 
+#include TCC_QUOTE(gen-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_CPU__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
+#include TCC_QUOTE(link-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_CPU__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
+#include TCC_QUOTE(asm-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_CPU__.c)
 
-#ifdef TCC_TARGET_I386
-# include "i386-gen.c"
-# include "i386-link.c"
-#endif
-#ifdef TCC_TARGET_X86_64
-# include "x86_64-gen.c"
-# include "x86_64-link.c"
-#endif
-#ifdef TCC_TARGET_ARM
-# include "arm-gen.c"
-# include "arm-link.c"
-# include "arm-asm.c"
-#endif
-#ifdef TCC_TARGET_ARM64
-# include "arm64-gen.c"
-# include "arm64-link.c"
-#endif
-#ifdef TCC_TARGET_C67
-# define TCC_TARGET_COFF
-# include "coff.h"
-# include "c67-gen.c"
-# include "c67-link.c"
-#endif
+//#ifdef TCC_TARGET_I386
+//# include "i386-gen.c"
+//# include "i386-link.c"
+//#endif
+//#ifdef TCC_TARGET_X86_64
+//# include "x86_64-gen.c"
+//# include "x86_64-link.c"
+//#endif
+//#ifdef TCC_TARGET_ARM
+//# include "arm-gen.c"
+//# include "arm-link.c"
+//# include "arm-asm.c"
+//#endif
+//#ifdef TCC_TARGET_ARM64
+//# include "arm64-gen.c"
+//# include "arm64-link.c"
+//#endif
+//#ifdef TCC_TARGET_C67
+//# define TCC_TARGET_COFF
+//# include "coff.h"
+//# include "c67-gen.c"
+//# include "c67-link.c"
+//#endif
 #undef TARGET_DEFS_ONLY
 
 /* -------------------------------------------- */

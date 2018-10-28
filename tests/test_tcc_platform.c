@@ -2,8 +2,10 @@
 ./build_Darwin_x86_64/tcc -B build_Darwin_x86_64 -I . -run tests/test_tcc_platform.c
 */
 
-#include "tcc_platform.h"
-#include "tcc_libc.h"
+#include "tcc.h"
+
+//#include "tcc_platform.h"
+//#include "tcc_libc.h"
 
 void ppff(char* fmt, ...){
 	va_list ap;
@@ -33,5 +35,6 @@ int main(int argc, char **argv)
 	// IS IT CROSS BUILD TODO USE strcmp in program later??
 	//ppff("%s = %s\n", "__TCC_TARGET_CROSS__", TCC_QUOTE(__TCC_TARGET_CROSS__));
 
+	ppff("%s = %s\n", "TEST", TCC_QUOTE(xxx-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_CPU__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__));
 	return 42;
 }
