@@ -158,28 +158,24 @@ extern FILE *stderr;		/* Standard error output stream.  */
 
 #endif//__APPLE__
 
-static inline void* tcc_dlsym(const char* sym) {
-	return dlsym(RTLD_DEFAULT,sym);
-}
+static inline void* tcc_dlsym(const char* sym){return dlsym(RTLD_DEFAULT,sym);}
 
-static inline void* tcc_dlopen(const char* lib) {
-	return dlopen(lib, RTLD_GLOBAL | RTLD_LAZY);
-}
+static inline void* tcc_dlopen(const char* lib){return dlopen(lib,RTLD_GLOBAL|RTLD_LAZY);}
 
 enum{
     TCC_C_stdin,
     TCC_C_stdout,
     TCC_C_stderr,
 };
-//TODO improve later
+//TODO improve later, try my_dlsym later...
 static inline FILE* tcc_std(int std){
-	//TODO try dlsym later...
 	if(TCC_C_stdin==std)return stdin;
 	if(TCC_C_stdout==std)return stdout;
 	if(TCC_C_stderr==std)return stderr;
 	return 0;
 }
 
+//stdio/stdout/stderr wrapping
 //TODO maybe merge to TCC() later
 #define TCCSTD(STD) (FILE*)tcc_std(TCC_C_std##STD)
 

@@ -181,7 +181,7 @@ typedef __SIZE_TYPE__ uintptr_t;
 DECLARE_HANDLE(HINSTANCE);
 typedef HINSTANCE HMODULE;
 
-//TO DELETE
+//TODO DELETE and move to tcc.h....
 //# include <io.h> /* open, close etc. */
 //# include <direct.h> /* getcwd */
 //# ifdef __GNUC__
