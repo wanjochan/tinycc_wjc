@@ -1119,6 +1119,7 @@ ST_FUNC int tcc_add_file_internal(TCCState *s1, const char *filename, int flags)
                     ret = -1;
 #endif
             } else {
+							//tcc_load_dylib or support MACHO ...
                 ret = tcc_load_dll(s1, fd, filename,
                                    (flags & AFF_REFERENCED_DLL) != 0);
             }

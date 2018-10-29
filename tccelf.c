@@ -2709,6 +2709,7 @@ ST_FUNC int tcc_load_archive(TCCState *s1, int fd, int alacarte)
 /* load a DLL and all referenced DLLs. 'level = 0' means that the DLL
    is referenced by the user (so it should be added as DT_NEEDED in
    the generated ELF file) */
+//TODO MACHO, @ref macho.h
 ST_FUNC int tcc_load_dll(TCCState *s1, int fd, const char *filename, int level)
 {
     ElfW(Ehdr) ehdr;
@@ -2726,7 +2727,7 @@ ST_FUNC int tcc_load_dll(TCCState *s1, int fd, const char *filename, int level)
     /* test CPU specific stuff */
     if (ehdr.e_ident[5] != ELFDATA2LSB ||
         ehdr.e_machine != EM_TCC_TARGET) {
-        tcc_error_noabort("tcc_load_dll(): bad architecture %s",filename);
+        tcc_error_noabort("tcc_load_dll(): bad architecture %s (%d,%d)",filename,ehdr.e_machine,ehdr.e_ident[5]);
         return -1;
     }
 
