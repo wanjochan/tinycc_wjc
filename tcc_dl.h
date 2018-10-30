@@ -174,11 +174,15 @@ static inline void* tcc_dlopen(const char* lib){return dlopen(lib,RTLD_GLOBAL|RT
 
 //FILE* tcc_stdfile[3]=NULL;//={stdin,stdout,stderr};
 
-enum{
-    TCC_C_stdin,
-    TCC_C_stdout,
-    TCC_C_stderr,
-};
+//enum{
+//    TCC_C_stdin,
+//    TCC_C_stdout,
+//    TCC_C_stderr,
+//};
+
+#define TCC_C_stdin 1
+#define TCC_C_stdout 2
+#define TCC_C_stderr 3
 
 ////TODO improve later, try my_dlsym later...
 static inline FILE* tcc_std(int std){
