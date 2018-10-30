@@ -119,7 +119,10 @@ extern char *dlerror (void);
 
 // TCC( SM, TYPE=void*, LIB=c)
 // cast the symbol as a function that returns type-specified or void* as default.
-#define TCC(SYM,...) ((TCC_OR_ELSE(void*,__VA_ARGS__)(*)())tcc_dlsym(#SYM))
+//#define TCC(SYM,...) ((TCC_OR_ELSE(void*,__VA_ARGS__)(*)())tcc_dlsym(#SYM))//OK
+//typedef void*(*tcc_func_ptr_void)();
+//#define TCC(SYM,...) (TCC_IF_ELSE(__VA_ARGS__)((__VA_ARGS__(*)())tcc_dlsym(#SYM),tcc_dlsym_(#SYM)))//OK
+#define TCC(SYM,...) (TCC_IF_ELSE(__VA_ARGS__)((__VA_ARGS__(*)())tcc_dlsym(#SYM),tcc_dlsym_(#SYM)))
 //TODO make TCC(SYM,TYPE,LIB) which LIB is not c....
 
 //TODO....
@@ -164,25 +167,31 @@ extern FILE *stderr;		/* Standard error output stream.  */
 #endif//__APPLE__
 
 static inline void* tcc_dlsym(const char* sym){return dlsym(RTLD_DEFAULT,sym);}
+//static inline tcc_func_ptr_void tcc_dlsym_(const char* sym){return (tcc_func_ptr_void) dlsym(RTLD_DEFAULT,sym);}//OK
+static inline typeof(void*(*)()) tcc_dlsym_(const char* sym){return (void*(*)())dlsym(RTLD_DEFAULT,sym);}
 
 static inline void* tcc_dlopen(const char* lib){return dlopen(lib,RTLD_GLOBAL|RTLD_LAZY);}
+
+//FILE* tcc_stdfile[3]=NULL;//={stdin,stdout,stderr};
 
 enum{
     TCC_C_stdin,
     TCC_C_stdout,
     TCC_C_stderr,
 };
-//TODO improve later, try my_dlsym later...
+
+////TODO improve later, try my_dlsym later...
 static inline FILE* tcc_std(int std){
 	if(TCC_C_stdin==std)return stdin;
 	if(TCC_C_stdout==std)return stdout;
 	if(TCC_C_stderr==std)return stderr;
-	return 0;
+	return (FILE*)0;
 }
 
 //stdio/stdout/stderr wrapping
 //TODO maybe merge to TCC() later
-#define TCCSTD(STD) (FILE*)tcc_std(TCC_C_std##STD)
+#define TCCSTD(STD) tcc_std(TCC_C_std##STD)
+//#define TCCSTD(STD) tcc_stdfile[TCC_C_std##STD]
 
 #ifdef __cplusplus
 }

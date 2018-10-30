@@ -34,7 +34,7 @@
 // e.g. TCC_IF_ELSE(__VA_ARGS__)( __VA_ARGS__, void* )
 #define TCC_IF_ELSE(...) TCC_IF(TCC_NOT(TCC_IS_PAREN(__VA_ARGS__ ())))
 
-// return args or else returns d
+// return vargs or else returns d
 #define TCC_OR_ELSE(d,...) TCC_IF_ELSE(__VA_ARGS__)(__VA_ARGS__,d)
 
 #define TCC_EMPTY()

@@ -65,6 +65,7 @@ OBJ-ARM-32-EABIHF= $(ARM_O)
 OBJ-ARM-32-WIN = $(ARM_O) $(WIN_O)
 
 $(BIN) :$(patsubst %.o,$(X)%.o,$(OBJ-$T))
+	@echo BIN=$(BIN),X=$(X),T=$(T),,,$@,,,$^
 	$(XAR) rcs $@ $^
 
 $(X)%.o : %.c

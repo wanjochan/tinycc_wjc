@@ -24,7 +24,7 @@
 //#define _GNU_SOURCE
 
 //#include "config.h"
-#define TCC_VERSION "TCCOS_0_0_9"
+#define TCC_VERSION "TCCOS_0_0_10"
 
 #include "tcc_platform.h"
 #include "tcc_libc.h"
@@ -274,7 +274,14 @@
 #include TCC_QUOTE(link-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
 #include TCC_QUOTE(asm-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__.c)
 
-//TMP DEBUG, TODO remove after done
+//#ifdef TCC_TARGET_C67
+//# define TCC_TARGET_COFF
+//# include "coff.h"
+//# include "c67-gen.c"
+//# include "c67-link.c"
+//#endif
+//#undef TARGET_DEFS_ONLY
+
 //#pragma message "CPU/BIT/OS/FMT/PTR_SIZE:" TCC_QUOTE(__TCC_TARGET_CPU__,__TCC_TARGET_CPU_BIT__,__TCC_TARGET_OS__,__TCC_TARGET_FORMAT__,PTR_SIZE)
 
 #undef TARGET_DEFS_ONLY
@@ -1626,9 +1633,15 @@ static inline const char* tcc_default_elfinterp(struct TCCState *s){
 /********************************************************/
 //#include <stdarg.h>
 //#include "tcc_stdarg.h"//in tcc_libc.h already
-PUB_FUNC void tcc_error_internal(TCCState *s1, int is_warning, const char *fmt, ...);
-#define tcc_error(...) {tcc_error_internal(tcc_state, 0, __VA_ARGS__);(tcc_state->error_set_jmp_enabled)?TCC(longjmp)(tcc_state->error_jmp_buf, 1):TCC(exit)(1);}
-#define tcc_warning(...) {if(tcc_state->warn_none){}else{tcc_error_internal(tcc_state, 1, __VA_ARGS__);}}
-#define tcc_error_noabort(...) tcc_error_internal(tcc_state, 0, __VA_ARGS__)
+//PUB_FUNC void tcc_error_internal(TCCState *s1, int is_warning, const char *fmt, ...);
+//#define tcc_error(...) {tcc_error_internal(tcc_state, 0, __VA_ARGS__);(tcc_state->error_set_jmp_enabled)?TCC(longjmp)(tcc_state->error_jmp_buf, 1):TCC(exit)(1);}
+//#define tcc_warning(...) {if(tcc_state->warn_none){}else{tcc_error_internal(tcc_state, 1, __VA_ARGS__);}}
+//#define tcc_error_noabort(...) tcc_error_internal(tcc_state, 0, __VA_ARGS__)
+
+/********************************************************/
+PUB_FUNC void tcc_error_internal_v(TCCState *s1, int is_warning, const char *fmt, va_list ap);
+PUB_FUNC void tcc_error_noabort(const char *fmt, ...);
+PUB_FUNC void tcc_error(const char *fmt, ...);
+PUB_FUNC void tcc_warning(const char *fmt, ...);
 
 #endif /* _TCC_H */

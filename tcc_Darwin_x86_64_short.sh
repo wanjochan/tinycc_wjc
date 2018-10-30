@@ -33,6 +33,7 @@ echo ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I. tcc.c -vv
 echo ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I. examples/test_tcc_h.c
 ./build_Darwin_x86_64/tcc -run -B build_Darwin_x86_64/ -I. examples/test_tcc_h.c
 
+echo
 echo ./build_Darwin_x86_64/tcc -B build_Darwin_x86_64/ -I. -E -P0 tcc.c \> tcc.osx.pp.c
 #./build_Darwin_x86_64/tcc -B build_Darwin_x86_64/ -I. -E -P0 tcc.c > tcc.osx.pp.c
 

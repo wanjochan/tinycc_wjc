@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifdef TARGET_DEFS_ONLY
+#if defined(TARGET_DEFS_ONLY)//||defined(TCC_TARGET_MACHO)
 //SKIP
 #else//TARGET_DEFS_ONLY
 #include "tcc.h"

@@ -24,8 +24,9 @@ echo $CCC | $DDD bash
 echo $DDD ./build_in_dkr_gcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl -run ./examples/ex3.c 33
 $DDD ./build_in_dkr_gcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl -run ./examples/ex3.c 33
 
+# TODO
 echo $DDD ./build_in_dkr_gcc_musl/i386-win32-tcc -I. -B build_in_dkr_gcc_musl -o ex3.exe examples/ex3.c
-$DDD ./build_in_dkr_gcc_musl/i386-win32-tcc -I. -B build_in_dkr_gcc_musl -o ex3.exe examples/ex3.c
+$DDD ./build_in_dkr_gcc_musl/X86-32-WIN-tcc -I. -B build_in_dkr_gcc_musl -o ex3.exe examples/ex3.c
 
 
 #make libtcc.so

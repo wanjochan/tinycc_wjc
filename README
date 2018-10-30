@@ -11,6 +11,9 @@ Features && Targets:
 * osx macho output (not yet start)
 * foundation toolchain for TccOS (cool)
 
+LACK
+
+* C67/COFF/WINCE is tmp dropped, may rewrite later
 
 
 -----------------------------------------------------------------------
