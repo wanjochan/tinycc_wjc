@@ -13,7 +13,7 @@ Features && Targets:
 
 LACK
 
-* C67/COFF/WINCE is tmp dropped, may rewrite later
+* C67/COFF/WINCE/BCHECK is tmp dropped, may rewrite later (as shared lib?)
 
 
 -----------------------------------------------------------------------
