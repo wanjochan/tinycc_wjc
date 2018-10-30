@@ -214,7 +214,7 @@ endif
 
 CORE_FILES = tcc.c tcctools.c libtcc.c tccpp.c tccgen.c tccelf.c tccasm.c tccrun.c
 CORE_FILES += tcc.h config.h libtcc.h tcctok.h
-X86-32_FILES = $(CORE_FILES) gen-X86.c link-X86.c asm-X86.c asm-X86.h tok-X86.h
+X86-32_FILES = $(CORE_FILES) gen-X86-32.c link-X86.c asm-X86.c asm-X86-32.h tok-X86.h
 X86-32-WIN_FILES = $(i386_FILES) tccpe.c
 X86-64_FILES = $(CORE_FILES) gen-X86-64.c link-X86-64.c asm-X86.c asm-X86-64.h
 X86-64-WIN_FILES = $(X86-64_FILES) tccpe.c

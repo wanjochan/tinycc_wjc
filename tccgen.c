@@ -2008,8 +2008,11 @@ general_case:
 			/* call low level op generator */
 			if (t1 == VT_LLONG || t2 == VT_LLONG ||
 					(PTR_SIZE == 8 && (t1 == VT_PTR || t2 == VT_PTR))){
-				gen_opl(op);
+
 				//@ref (64=>gen-X86-64.c: gen_opl()=>gen_opi(), 32=>THISFILE:gen_opl())
+
+				gen_opl(op);
+
 			}else{
 				gen_opi(op);//@ref gen-X86-64.c
 			}
