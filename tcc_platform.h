@@ -40,23 +40,30 @@
 
 #if defined(_WIN32)||defined(_WIN64)
 #	define __TCC_OS__  WIN
+# define __TCC_OS_FORMAT__  PE
 #elif defined(__APPLE__)
 #	define __TCC_OS__  OSX
-#  define __TCC_TARGET_FORMAT__  MACHO//SPECIAL
+# define __TCC_OS_FORMAT__  MACHO
 #elif defined(__linux__)||defined(__LINUX__)
 #	define __TCC_OS__  LNX
+# define __TCC_OS_FORMAT__  ELF
 #elif defined(__FreeBSD__)
 #	define __TCC_OS__  FREEBSD
+# define __TCC_OS_FORMAT__  ELF
 #elif defined(__NetBSD__)
 #	define __TCC_OS__  NETBSD
+# define __TCC_OS_FORMAT__  ELF
 #elif defined(__QNXNTO__)
 #	define __TCC_OS__  QNXNTO
+# define __TCC_OS_FORMAT__  ELF
 #elif defined(__QNX__)
 #	define __TCC_OS__  QNX
+# define __TCC_OS_FORMAT__  ELF
 #elif defined(__TccOS__)
-#	define __TCC_OS__  NETBSD
+#	define __TCC_OS__  TCCOS
+# define __TCC_OS_FORMAT__  ELF
 #else
-# define __TCC_OS__
+//# define __TCC_OS__
 #endif
 
 #endif //}__TCC_OS__
@@ -114,6 +121,7 @@
 #ifndef __TCC_TARGET_CPU_BIT__//{
 
 #if defined(TCC_TARGET_I386)
+# define __TCC_TARGET_CPU_BIT__ 32
 #elif defined(TCC_TARGET_X86_64)
 # define __TCC_TARGET_CPU_BIT__ 64
 #elif defined(TCC_TARGET_X86_ARM)
@@ -129,21 +137,28 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////
-#ifndef __TCC_TARGET_OS__
-# define __TCC_TARGET_OS__ __TCC_OS__
-#endif
-
-///////////////////////////////////////////////////////////////////////////
 #ifdef __TCC_TARGET_FORMAT__
 //SKIP THEN
 #elif defined(TCC_TARGET_MACHO)
 # define __TCC_TARGET_FORMAT__  MACHO
+# define __TCC_TARGET_OS__  OSX
 #elif defined(TCC_TARGET_PE)
 # define __TCC_TARGET_FORMAT__  PE
+# define __TCC_TARGET_OS__  WIN
 #else
-//# if defined(__TCC_TARGET_OS__)==OSX
-#  define __TCC_TARGET_FORMAT__  ELF
-//# endif
+//#ifdef __TCC_OS_FORMAT__
+//# define __TCC_TARGET_FORMAT__ __TCC_OS_FORMAT__
+//#else
+//# define __TCC_TARGET_FORMAT__  ELF
+//#endif
+# define __TCC_TARGET_FORMAT__  ELF
+#endif
+
+///////////////////////////////////////////////////////////////////////////
+//TODO not good, need to adjust Makefile better?
+#ifndef __TCC_TARGET_OS__
+//# define __TCC_TARGET_OS__ __TCC_OS__
+# define __TCC_TARGET_OS__ LNX
 #endif
 
 ///////////////////////////////////////////////////////////////////////////

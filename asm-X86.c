@@ -19,6 +19,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifdef TARGET_DEFS_ONLY
+//SKIP
+#else//TARGET_DEFS_ONLY
 #include "tcc.h"
 
 #define MAX_OPERANDS 3
@@ -1750,3 +1753,5 @@ ST_FUNC void asm_clobber(uint8_t *clobber_regs, const char *str)
 	}
 	clobber_regs[reg] = 1;
 }
+
+#endif//TARGET_DEFS_ONLY

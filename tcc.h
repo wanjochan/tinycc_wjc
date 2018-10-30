@@ -274,6 +274,8 @@
 #include TCC_QUOTE(link-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
 #include TCC_QUOTE(asm-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__.c)
 
+#pragma message "CPU/BIT/OS/FMT/PTR_SIZE" TCC_QUOTE(__TCC_TARGET_CPU__,__TCC_TARGET_CPU_BIT__,__TCC_TARGET_OS__,__TCC_TARGET_FORMAT__,PTR_SIZE)
+
 #undef TARGET_DEFS_ONLY
 
 /* -------------------------------------------- */

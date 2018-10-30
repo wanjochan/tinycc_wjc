@@ -1,1 +1,1 @@
-# include "i386-gen.c"
+# include "gen-X86-32.c"
