@@ -43,6 +43,7 @@ endif
 
 X86-32_O = libtcc1.o alloca86.o alloca86-bt.o
 X86-64_O = libtcc1.o alloca86_64.o alloca86_64-bt.o
+
 ARM_O = libtcc1.o armeabi.o alloca-arm.o armflush.o
 ARM-64_O = lib-arm64.o
 
@@ -55,13 +56,13 @@ OBJ-X86-64-OSX = $(X86-64_O)
 OBJ-X86-32-WIN = $(X86-32_O) chkstk.o $(BCHECK_O) $(WIN_O)
 OBJ-X86-64-WIN = $(X86-64_O) chkstk.o $(BCHECK_O) $(WIN_O)
 OBJ-ARM-64 = $(ARM-64_O)
-OBJ-ARM = $(ARM_O)
-OBJ-ARM-FPA = $(ARM_O)
-OBJ-ARM-FPA-LD = $(ARM_O)
-OBJ-ARM-VFP = $(ARM_O)
-OBJ-ARM-EABI= $(ARM_O)
-OBJ-ARM-EABIHF= $(ARM_O)
-OBJ-ARM-WIN = $(ARM_O) $(WIN_O)
+OBJ-ARM-32 = $(ARM_O)
+OBJ-ARM-32-FPA = $(ARM_O)
+OBJ-ARM-32-FPA-LD = $(ARM_O)
+OBJ-ARM-32-VFP = $(ARM_O)
+OBJ-ARM-32-EABI= $(ARM_O)
+OBJ-ARM-32-EABIHF= $(ARM_O)
+OBJ-ARM-32-WIN = $(ARM_O) $(WIN_O)
 
 $(BIN) :$(patsubst %.o,$(X)%.o,$(OBJ-$T))
 	$(XAR) rcs $@ $^
