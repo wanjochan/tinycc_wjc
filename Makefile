@@ -293,7 +293,7 @@ libtcc1.a : tcc$(EXESUF) FORCE
 
 # Cross libtcc1.a
 %-libtcc1.a : %-tcc$(EXESUF) FORCE
-	@echo ???-libtcc1.a =: $(MAKE) -C lib DEFINES='$(DEF-$*)' CROSS_TARGET=$*
+	@echo *-libtcc1.a =: $(MAKE) -C lib DEFINES='$(DEF-$*)' CROSS_TARGET=$*
 	@$(MAKE) -C lib DEFINES='$(DEF-$*)' CROSS_TARGET=$*
 
 .PRECIOUS: %-libtcc1.a
