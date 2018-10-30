@@ -74,7 +74,9 @@ extern void *dlopen  (const char *file, int mode);
 extern int   dlclose (void *handle);
 extern void *dlsym   (void * handle, const char * name);
 extern char *dlerror (void);
+
 #ifdef __APPLE__
+//@ref https://opensource.apple.com/source/Libwrappers/Libwrappers-9/dlcompat/dlfcn.h.auto.html
 #define RTLD_LAZY	0x1
 #define RTLD_NOW	0x2
 #define RTLD_LOCAL	0x4
@@ -124,7 +126,10 @@ extern char *dlerror (void);
 //#define TCC_DL_IMPORT(LIB) TCC_DL_dlopen( lib##LIB##TCC_DL_EXT )
 
 //#ifndef _WIN32
+#ifndef __STDIO_H_
 typedef struct __FILE FILE;
+#endif
+//typedef struct __sFILE FILE;
 //#endif
 
 //#ifdef __APPLE__

@@ -822,8 +822,12 @@ LIBTCCAPI TCCState *tcc_new(void)
 //#else
 //    tcc_set_lib_path(s, CONFIG_TCCDIR);
 //#endif
+
     tcc_set_lib_path(s, CONFIG_TCCDIR);
+
+		//TODO ELF/PE/MACHO divide
     tccelf_new(s);
+
     tccpp_new(s);
 
     /* we add dummy defines for some special macros to speed up tests
@@ -840,6 +844,9 @@ LIBTCCAPI TCCState *tcc_new(void)
         TCC(sprintf)(buffer, "%d", a*10000 + b*100 + c);
         tcc_define_symbol(s, "__TINYC__", buffer);
     }
+
+		//TODO forward symbol from current compiler to new compile env if not cross compile.
+		//how to say a cross compile? diff os/cpu-type/cpu-bit....
 
     /* standard defines */
     tcc_define_symbol(s, "__STDC__", NULL);
@@ -1111,18 +1118,20 @@ ST_FUNC int tcc_add_file_internal(TCCState *s1, const char *filename, int flags)
             ret = tcc_load_object_file(s1, fd, 0);
             break;
 #ifndef TCC_TARGET_PE
-        case AFF_BINTYPE_DYN:
+				case AFF_BINTYPE_DYN://NOTES: mostly .dylib from above, .so from tcc_object_type()
             if (s1->output_type == TCC_OUTPUT_MEMORY) {
                 ret = 0;
 #ifdef TCC_IS_NATIVE
+								//using libdl directly for tccrun...
                 if (NULL == tcc_dlopen(filename))
                     ret = -1;
 #endif
-            } else {
+						} else {
 							//tcc_load_dylib or support MACHO ...
-                ret = tcc_load_dll(s1, fd, filename,
-                                   (flags & AFF_REFERENCED_DLL) != 0);
-            }
+							//ret = tcc_load_dylib(s1, fd, filename, (flags & AFF_REFERENCED_DLL) != 0);
+							//@ref tccelf.c
+							ret = tcc_load_dll(s1, fd, filename, (flags & AFF_REFERENCED_DLL) != 0);
+						}
             break;
 #endif
         case AFF_BINTYPE_AR:

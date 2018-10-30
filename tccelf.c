@@ -1209,9 +1209,9 @@ ST_FUNC void tcc_add_runtime(TCCState *s1)
         }
 #endif
 
-#ifdef TCC_LIBTCC1
-        tcc_add_support(s1, TCC_LIBTCC1);
-#endif
+//#ifdef TCC_LIBTCC1
+//        tcc_add_support(s1, TCC_LIBTCC1);
+//#endif
         /* add crt end if not memory output */
         if (s1->output_type != TCC_OUTPUT_MEMORY)
             tcc_add_crt(s1, "crtn.o");
@@ -2298,6 +2298,7 @@ ST_FUNC int tcc_object_type(int fd, ElfW(Ehdr) *h)
 
 /* load an object file and merge it with current files */
 /* XXX: handle correctly stab (debug) info */
+//TODO macho
 ST_FUNC int tcc_load_object_file(TCCState *s1,
                                 int fd, unsigned long file_offset)
 {
@@ -2328,8 +2329,7 @@ ST_FUNC int tcc_load_object_file(TCCState *s1,
         return -1;
     }
     /* read sections */
-    shdr = load_data(fd, file_offset + ehdr.e_shoff,
-                     sizeof(ElfW(Shdr)) * ehdr.e_shnum);
+    shdr = load_data(fd, file_offset + ehdr.e_shoff, sizeof(ElfW(Shdr)) * ehdr.e_shnum);
     sm_table = tcc_mallocz(sizeof(SectionMergeInfo) * ehdr.e_shnum);
 
     /* load section names */
@@ -2709,7 +2709,9 @@ ST_FUNC int tcc_load_archive(TCCState *s1, int fd, int alacarte)
 /* load a DLL and all referenced DLLs. 'level = 0' means that the DLL
    is referenced by the user (so it should be added as DT_NEEDED in
    the generated ELF file) */
-//TODO MACHO, @ref macho.h
+//TODO MACHO, @ref macho.h, loading .dylib is not ready
+//TODO PE/ELF/MACHO need to rewrite the source...
+//NOTES: loading .so (ELF)
 ST_FUNC int tcc_load_dll(TCCState *s1, int fd, const char *filename, int level)
 {
     ElfW(Ehdr) ehdr;

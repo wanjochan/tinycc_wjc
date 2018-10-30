@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <tcc_libc.h>
+
 #include "libtcc.h"
 
 /* this function is called by the generated code */
@@ -19,7 +21,7 @@ int add(int a, int b)
 const char hello[] = "Hello World!";
 
 char my_program[] =
-"#include <tcclib.h>\n" /* include the "Simple libc header for TCC" */
+"#include <tcc_libc.h>\n" /* include the "Simple libc header for TCC" */
 "extern int add(int a, int b);\n"
 "#ifdef _WIN32\n" /* dynamically linked data needs 'dllimport' */
 " __attribute__((dllimport))\n"

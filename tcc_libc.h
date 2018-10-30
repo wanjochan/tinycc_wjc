@@ -31,10 +31,12 @@ typedef __SIZE_TYPE__ size_t;
 
 #if defined(_SSIZE_T_DEFINED)
 #elif defined(__DEFINED_ssize_t)
+#elif defined(_SSIZE_T)
+//SKIP
 #elif defined(__SSIZE_T)
 typedef __SSIZE_T	ssize_t;
 #elif defined(__GNUC__)
-//TODO
+//TODO..
 typedef int ssize_t;
 #define __DEFINED_ssize_t
 #else
@@ -89,10 +91,12 @@ typedef __SUSECONDS_T suseconds_t;
 #else
 typedef int suseconds_t;
 #endif
+#ifndef _STRUCT_TIMEVAL
 struct timeval {
 	time_t	tv_sec;		/* seconds */
 	suseconds_t		tv_usec;	/* microseconds */
 };
+#endif
 struct tm {
 	int tm_sec;
 	int tm_min;

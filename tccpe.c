@@ -1998,4 +1998,10 @@ ST_FUNC int pe_output_file(TCCState *s1, const char *filename)
     return ret;
 }
 
+//TODO
+//ST_FUNC void tccpe_new(TCCState *s)
+//{
+//}
+
+
 /* ------------------------------------------------------------- */
