@@ -57,6 +57,9 @@
 
 /* -------------------------------------------- */
 
+/* debug for make */
+/* #define MAKE_DEBUG */
+
 /* parser debug */
 /* #define PARSE_DEBUG */
 /* preprocessor debug */
@@ -235,7 +238,9 @@
 /* -------------------------------------------- */
 
 //#include "elf.h"
-#include "tcc-ELF.h"
+//#include "tcc-ELF.h"
+#include TCC_QUOTE(tcc-__TCC_TARGET_FORMAT__.h)
+
 //TODO
 //#include "tcc_fileformat.h"
 
@@ -285,7 +290,9 @@
 //#endif
 //#undef TARGET_DEFS_ONLY
 
+#ifdef MAKE_DEBUG
 #pragma message "CPU/BIT/OS/FMT/PTR_SIZE:" TCC_QUOTE(__TCC_TARGET_CPU__,__TCC_TARGET_CPU_BIT__,__TCC_TARGET_OS__,__TCC_TARGET_FORMAT__,PTR_SIZE)
+#endif
 
 #undef TARGET_DEFS_ONLY
 

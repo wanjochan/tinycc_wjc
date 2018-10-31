@@ -1,6 +1,7 @@
 # TODO -Wno-unused-result
 
 #../configure --prefix=. --cc=clang --config-musl --extra-cflags="-Wall -g -O2 -I ../include"
+# --extra-cflags="-Wall -g -O2 -DMAKE_DEBUG"
 
 arch=$(uname -s)_$(uname -m)
 echo arch=$arch

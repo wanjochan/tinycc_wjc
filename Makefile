@@ -221,14 +221,15 @@ endif
 
 CORE_FILES = tcc.c tcctools.c libtcc.c tccpp.c tccgen.c tccasm.c tccrun.c
 CORE_FILES += tcc.h config.h libtcc.h tcctok.h
-X86-32-LNX_FILES = $(CORE_FILES) tcc-ELF.c gen-X86-32.c link-X86.c asm-X86.c asm-X86-32.h tok-X86.h
-X86-32-WIN_FILES = $(X86-32-LNX_FILES) tcc-PE.c
-X86-64-LNX_FILES = $(CORE_FILES) tcc-ELF.c gen-X86-64.c link-X86-64.c asm-X86.c asm-X86-64.h
-X86-64-WIN_FILES = $(X86-64-LNX_FILES) tcc-PE.c
+
+X86-32-LNX_FILES = $(CORE_FILES) tcc-ELF.c   gen-X86-32.c link-X86.c asm-X86.c asm-X86-32.h tok-X86.h
+X86-32-WIN_FILES = $(CORE_FILES) tcc-PE.c    gen-X86-32.c link-X86.c asm-X86.c asm-X86-32.h tok-X86.h
+X86-64-LNX_FILES = $(CORE_FILES) tcc-ELF.c   gen-X86-64.c link-X86-64.c asm-X86.c asm-X86-64.h
+X86-64-WIN_FILES = $(CORE_FILES) tcc-PE.c    gen-X86-64.c link-X86-64.c asm-X86.c asm-X86-64.h
 X86-64-OSX_FILES = $(CORE_FILES) tcc-MACHO.c gen-X86-64.c link-X86-64.c asm-X86.c asm-X86-64.h
-ARM-32-LNX_FILES = $(CORE_FILES) tcc-ELF.c gen-ARM-32.c link-ARM-32.c asm-ARM-32.c
-ARM-32-WIN_FILES = $(ARM_FILES) tcc-PE.c
-ARM-64-LNX_FILES = $(CORE_FILES) tcc-ELF.c gen-ARM-64.c link-ARM-64.c
+ARM-32-LNX_FILES = $(CORE_FILES) tcc-ELF.c   gen-ARM-32.c link-ARM-32.c asm-ARM-32.c
+ARM-32-WIN_FILES = $(CORE_FILES) tcc-PE.c    gen-ARM-32.c link-ARM-32.c asm-ARM-32.c
+ARM-64-LNX_FILES = $(CORE_FILES) tcc-ELF.c   gen-ARM-64.c link-ARM-64.c
 
 #C67_FILES = $(CORE_FILES) gen-C67.c link-C67.c tcccoff.c
 
