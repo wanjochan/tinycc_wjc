@@ -234,7 +234,10 @@
 
 /* -------------------------------------------- */
 
-#include "elf.h"
+//#include "elf.h"
+#include "tcc-ELF.h"
+//TODO
+//#include "tcc_fileformat.h"
 
 #include "libtcc.h"
 
@@ -282,7 +285,7 @@
 //#endif
 //#undef TARGET_DEFS_ONLY
 
-//#pragma message "CPU/BIT/OS/FMT/PTR_SIZE:" TCC_QUOTE(__TCC_TARGET_CPU__,__TCC_TARGET_CPU_BIT__,__TCC_TARGET_OS__,__TCC_TARGET_FORMAT__,PTR_SIZE)
+#pragma message "CPU/BIT/OS/FMT/PTR_SIZE:" TCC_QUOTE(__TCC_TARGET_CPU__,__TCC_TARGET_CPU_BIT__,__TCC_TARGET_OS__,__TCC_TARGET_FORMAT__,PTR_SIZE)
 
 #undef TARGET_DEFS_ONLY
 

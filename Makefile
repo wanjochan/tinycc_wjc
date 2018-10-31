@@ -64,9 +64,12 @@ endif
   endif
  endif
  CFGWIN =-unx
- NATIVE_TARGET = $(TCC_ARCH)
+
+ NATIVE_TARGET = $(TCC_ARCH)-$(TCC_OS)
+ 
+# NATIVE_TARGET = $(TCC_ARCH)
  ifdef CONFIG_OSX
-  NATIVE_TARGET = $(TCC_ARCH)-OSX
+#  NATIVE_TARGET = $(TCC_ARCH)-OSX
 ifeq (-$(findstring $(CC),tcc)-,-tcc-)
   LDFLAGS += -flat_namespace
 else
@@ -154,11 +157,13 @@ env:
 # cross compiler targets to build
 
 #TCC_X = X86-32 X86-64 X86-32-WIN X86-64-WIN X86-64-OSX ARM-32 ARM-64 ARM-32-WIN C67
-TCC_X     = X86-32 X86-64 X86-32-WIN X86-64-WIN X86-64-OSX ARM-32 ARM-64
+#TCC_X     = X86-32 X86-64 X86-32-WIN X86-64-WIN X86-64-OSX ARM-32 ARM-64
+TCC_X     = X86-32-LNX X86-64-LNX X86-32-WIN X86-64-WIN X86-64-OSX ARM-32-LNX ARM-64-LNX
 
 # cross libtcc1.a targets to build
 #LIBTCC1_X = X86-32 X86-64 X86-32-WIN X86-64-WIN X86-64-OSX ARM-32 ARM-64 ARM-32-WIN
-LIBTCC1_X = X86-32 X86-64 X86-32-WIN X86-64-WIN X86-64-OSX ARM-32 ARM-64
+#LIBTCC1_X = X86-32 X86-64 X86-32-WIN X86-64-WIN X86-64-OSX ARM-32 ARM-64
+LIBTCC1_X = X86-32-LNX X86-64-LNX X86-32-WIN X86-64-WIN X86-64-OSX ARM-32-LNX ARM-64-LNX
 
 PROGS_CROSS = $(foreach X,$(TCC_X),$X-tcc$(EXESUF))
 LIBTCC1_CROSS = $(foreach X,$(LIBTCC1_X),$X-libtcc1.a)
@@ -214,17 +219,18 @@ endif
 # include custom configuration (see make help)
 -include config-extra.mak
 
-CORE_FILES = tcc.c tcctools.c libtcc.c tccpp.c tccgen.c tccelf.c tccasm.c tccrun.c
+CORE_FILES = tcc.c tcctools.c libtcc.c tccpp.c tccgen.c tccasm.c tccrun.c
 CORE_FILES += tcc.h config.h libtcc.h tcctok.h
-X86-32_FILES = $(CORE_FILES) gen-X86-32.c link-X86.c asm-X86.c asm-X86-32.h tok-X86.h
-X86-32-WIN_FILES = $(i386_FILES) tccpe.c
-X86-64_FILES = $(CORE_FILES) gen-X86-64.c link-X86-64.c asm-X86.c asm-X86-64.h
-X86-64-WIN_FILES = $(X86-64_FILES) tccpe.c
-X86-64-OSX_FILES = $(X86-64_FILES)
-ARM-32_FILES = $(CORE_FILES) gen-ARM-32.c link-ARM-32.c asm-ARM-32.c
-ARM-32-WIN_FILES = $(ARM_FILES) tccpe.c
-ARM-64_FILES = $(CORE_FILES) gen-ARM-64.c link-ARM-64.c
-C67_FILES = $(CORE_FILES) gen-C67.c link-C67.c tcccoff.c
+X86-32-LNX_FILES = $(CORE_FILES) tcc-ELF.c gen-X86-32.c link-X86.c asm-X86.c asm-X86-32.h tok-X86.h
+X86-32-WIN_FILES = $(X86-32-LNX_FILES) tcc-PE.c
+X86-64-LNX_FILES = $(CORE_FILES) tcc-ELF.c gen-X86-64.c link-X86-64.c asm-X86.c asm-X86-64.h
+X86-64-WIN_FILES = $(X86-64-LNX_FILES) tcc-PE.c
+X86-64-OSX_FILES = $(CORE_FILES) tcc-MACHO.c gen-X86-64.c link-X86-64.c asm-X86.c asm-X86-64.h
+ARM-32-LNX_FILES = $(CORE_FILES) tcc-ELF.c gen-ARM-32.c link-ARM-32.c asm-ARM-32.c
+ARM-32-WIN_FILES = $(ARM_FILES) tcc-PE.c
+ARM-64-LNX_FILES = $(CORE_FILES) tcc-ELF.c gen-ARM-64.c link-ARM-64.c
+
+#C67_FILES = $(CORE_FILES) gen-C67.c link-C67.c tcccoff.c
 
 # libtcc sources
 LIBTCC_SRC = $(filter-out tcc.c tcctools.c,$(filter %.c,$($T_FILES)))

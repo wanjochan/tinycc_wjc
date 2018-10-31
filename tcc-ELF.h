@@ -16,8 +16,8 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-#ifndef _ELF_H
-#define	_ELF_H 1
+#ifndef _TCC_ELF_H
+#define	_TCC_ELF_H 1
 
 //#ifndef _WIN32
 ////#include <inttypes.h>
@@ -3234,4 +3234,4 @@ typedef Elf32_Addr Elf32_Conflict;
 #define R_TILEGX_NUM		130
 
 
-#endif	/* elf.h */
+#endif//_TCC_ELF_H

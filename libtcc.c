@@ -40,12 +40,8 @@ static int nb_states;
 
 #include "tccpp.c"
 #include "tccgen.c"
-#include "tccelf.c"
+//#include "tccelf.c"
 #include "tccrun.c"
-
-#include TCC_QUOTE(gen-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
-#include TCC_QUOTE(link-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
-#include TCC_QUOTE(asm-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__.c)
 
 //#ifdef TCC_TARGET_I386
 //#include "i386-gen.c"
@@ -87,9 +83,14 @@ ST_FUNC void asm_global_instr(void)
 }
 #endif
 
-#ifdef TCC_TARGET_PE
-#include "tccpe.c"
-#endif
+#include TCC_QUOTE(gen-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
+#include TCC_QUOTE(link-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
+#include TCC_QUOTE(asm-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__.c)
+#include TCC_QUOTE(tcc-__TCC_TARGET_FORMAT__.c)
+
+//#ifdef TCC_TARGET_PE
+//#include "tccpe.c"
+//#endif
 #endif /* ONE_SOURCE */
 
 ///********************************************************/
