@@ -938,7 +938,8 @@ void *__bound_memmove(void *dst, const void *src, size_t size)
 {
     __bound_check(dst, size);
     __bound_check(src, size);
-    return memmove(dst, src, size);
+    //return TCC(memmove)(dst, src, size);
+    return memmove(dst, src, size);//TODO
 }
 
 void *__bound_memset(void *dst, int c, size_t size)

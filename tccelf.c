@@ -2094,7 +2094,12 @@ static int elf_output_file(TCCState *s1, const char *filename)
 
     if (file_type != TCC_OUTPUT_OBJ) {
         /* if linking, also link in runtime libraries (libc, libgcc, etc.) */
-        tcc_add_runtime(s1);
+//#ifdef TCC_TARGET_MACHO
+//				//SKIP
+//#else//{
+//        tcc_add_runtime(s1);
+//#endif//}
+//        tcc_add_runtime(s1);
 	resolve_common_syms(s1);
 
         if (!s1->static_link) {

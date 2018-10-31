@@ -222,10 +222,11 @@
 # define DEFAULT_ELFINTERP(s) tcc_default_elfinterp(s)
 #endif
 
+//TODO try no default...
 /* (target specific) libtcc1.a */
-#ifndef TCC_LIBTCC1
-# define TCC_LIBTCC1 "libtcc1.a"
-#endif
+//#ifndef TCC_LIBTCC1
+//# define TCC_LIBTCC1 "libtcc1.a"
+//#endif
 
 /* library to use with CONFIG_USE_LIBGCC instead of libtcc1.a */
 #if defined CONFIG_USE_LIBGCC && !defined TCC_LIBGCC
