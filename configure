@@ -366,13 +366,20 @@ if test "$bigendian" = "yes" ; then
 fi
 
 # a final configuration tuning
+# if not tcc, add compile arg as below
 if ! echo "$cc" | grep -q "tcc"; then
   OPT1="-Wdeclaration-after-statement -fno-strict-aliasing"
   # we want -Wno- but gcc does not always reject unknown -Wno- options
-  OPT2="-Wpointer-sign -Wsign-compare -Wunused-result -Wunused-function -Wunused-but-set-variable"
+  #OPT2="-Wpointer-sign -Wsign-compare -Wunused-result -Wunused-function -Wunused-but-set-variable"
+  OPT2="-Wpointer-sign -Wsign-compare -Wunused-result -Wunused-function"
+	# for clang:
   if echo "$cc" | grep -q "clang"; then
     OPT1="$OPT1 -fheinous-gnu-extensions"
     OPT2="$OPT2 -Wstring-plus-int"
+  fi
+	# for gcc
+  if echo "$cc" | grep -q "gcc"; then
+    OPT2="$OPT2 -Wunused-but-set-variable"
   fi
   $cc $OPT1 $OPT2 -o a.out -c -xc - < /dev/null > cc_msg.txt 2>&1
   for o in $OPT1; do # enable these options
