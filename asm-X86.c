@@ -869,8 +869,8 @@ again:
             g(b);
             return;
         } else if (opcode <= TOK_ASM_alllast) {
-            tcc_error("bad operand with opcode '%s'",
-                  get_tok_str(opcode, NULL));
+            tcc_error("bad operand with opcode '%s',opcode=%d",
+                  get_tok_str(opcode, NULL),opcode);
         } else {
 	    /* Special case for cmovcc, we accept size suffixes but ignore
 	       them, but we don't want them to blow up our tables.  */
