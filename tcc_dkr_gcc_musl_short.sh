@@ -1,7 +1,8 @@
 # fail...
 #../configure --prefix=. --cc=gcc --config-musl --extra-cflags='-Wall -g -O2 -I ../include_qnx' &&
 
-#make clean &&
+
+#NOTES: using ONE_SOURCE is not good for compiling so
 
 PWD=`pwd`
 CCC="mkdir -p build_in_dkr_gcc_musl &&

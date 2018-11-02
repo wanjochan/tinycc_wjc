@@ -9,6 +9,7 @@ mkdir -p build_$arch/
 cd build_$arch/
 ../configure --prefix=. --cc=clang --config-musl
 make clean
+make makedebug
 make libtcc.so
 make 
 

@@ -46,6 +46,9 @@ static int nb_states;
 #include TCC_QUOTE(asm-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__.c)
 #include TCC_QUOTE(tcc-__TCC_TARGET_FORMAT__.c)
 
+#endif//}ONE_SOURCE
+
+/********************************************************/
 #include "tccasm.c"
 
 #ifndef CONFIG_TCC_ASM//{
@@ -58,8 +61,6 @@ ST_FUNC void asm_global_instr(void)
     tcc_error("inline asm() not supported for this arch yet");//TODO to show arch
 }
 #endif//}CONFIG_TCC_ASM
-
-#endif//}ONE_SOURCE
 
 /********************************************************/
 #ifdef _WIN32//{

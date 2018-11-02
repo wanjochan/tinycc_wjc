@@ -246,12 +246,12 @@ ifeq ($(ONE_SOURCE),yes)
 LIBTCC_OBJ = $(X)libtcc.o
 LIBTCC_INC = $($T_FILES)
 TCC_FILES = $(X)tcc.o
-tcc.o : DEFINES += -DONE_SOURCE=0
+tcc.o : DEFINES += -D ONE_SOURCE=0
 else
 LIBTCC_OBJ = $(patsubst %.c,$(X)%.o,$(LIBTCC_SRC))
 LIBTCC_INC = $(filter %.h gen-%.c link-%.c,$($T_FILES))
 TCC_FILES = $(X)tcc.o $(LIBTCC_OBJ)
-$(TCC_FILES) : DEFINES += -DONE_SOURCE=0
+$(TCC_FILES) : DEFINES += -D ONE_SOURCE=0
 endif
 
 # target specific object rule
@@ -424,6 +424,8 @@ clean:
 	rm -f  *~ *.o *.a *.so* *.out *.log lib*.def *.exe *.dll a.out tags TAGS
 	@$(MAKE) -C lib $@
 	@$(MAKE) -C tests $@
+	cd ..
+	rm -f  *~ *.o *.a *.so* *.out *.log lib*.def *.exe *.dll a.out tags TAGS
 
 distclean: clean
 	rm -f config.h config.mak config.texi tcc.1 tcc-doc.info tcc-doc.html

@@ -23,8 +23,8 @@
 
 //#define _GNU_SOURCE
 
-//#include "config.h"
-#define TCC_VERSION "TCCOS_0_0_10"
+#include "config.h"//which from ./configure
+//#define TCC_VERSION "TCCOS_0_0_10"
 
 #include "tcc_platform.h"
 #include "tcc_libc.h"

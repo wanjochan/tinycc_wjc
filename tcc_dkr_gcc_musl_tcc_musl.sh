@@ -26,9 +26,11 @@ echo DDD=$DDD
 #echo $CCC | docker run -v $PWD:/work/ -w /work/ -i cmptech/docker_tinycc_dev bash
 echo $CCC | $DDD bash
 
-#echo test3
-#$DDD ./build_in_dkr_gcc_musl_tcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl_tcc_musl -run ./examples/ex3.c 33
-#echo test4
-#$DDD ./build_in_dkr_gcc_musl_tcc_musl/i386-win32-tcc -I. -B ./build_in_dkr_gcc_musl_tcc_musl -o ex3.exe examples/ex3.c
+echo test3
+$DDD ./build_in_dkr_gcc_musl_tcc_musl/tcc -I. -B ./build_in_dkr_gcc_musl_tcc_musl -run ./examples/ex3.c 33
+
+# TODO seg fault need to be solve....
+echo test4
+$DDD ./build_in_dkr_gcc_musl_tcc_musl/i386-win32-tcc -I. -B ./build_in_dkr_gcc_musl_tcc_musl -o ex3.exe examples/ex3.c
 
 
