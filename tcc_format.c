@@ -33,7 +33,7 @@ static int new_undef_sym = 0; /* Is there a new undefined sym since last new_und
 
 /* ------------------------------------------------------------------------- */
 
-ST_FUNC void tccelf_new(TCCState *s)
+ST_FUNC void tcc_format_new(TCCState *s)
 {
     /* no section zero */
     dynarray_add(&s->sections, &s->nb_sections, NULL);
@@ -59,7 +59,7 @@ ST_FUNC void tccelf_new(TCCState *s)
 }
 
 #ifdef CONFIG_TCC_BCHECK
-ST_FUNC void tccelf_bounds_new(TCCState *s)
+ST_FUNC void tcc_format_bounds_new(TCCState *s)
 {
     /* create bounds sections */
     bounds_section = new_section(s, ".bounds",
@@ -69,7 +69,7 @@ ST_FUNC void tccelf_bounds_new(TCCState *s)
 }
 #endif
 
-ST_FUNC void tccelf_stab_new(TCCState *s)
+ST_FUNC void tcc_format_stab_new(TCCState *s)
 {
     stab_section = new_section(s, ".stab", SHT_PROGBITS, 0);
     stab_section->sh_entsize = sizeof(Stab_Sym);
@@ -85,7 +85,7 @@ static void free_section(Section *s)
     tcc_free(s->data);
 }
 
-ST_FUNC void tccelf_delete(TCCState *s1)
+ST_FUNC void tcc_format_delete(TCCState *s1)
 {
     int i;
 
@@ -118,7 +118,7 @@ ST_FUNC void tccelf_delete(TCCState *s1)
 }
 
 /* save section data state */
-ST_FUNC void tccelf_begin_file(TCCState *s1)
+ST_FUNC void tcc_format_begin_file(TCCState *s1)
 {
     Section *s; int i;
     for (i = 1; i < s1->nb_sections; i++) {
@@ -134,7 +134,7 @@ ST_FUNC void tccelf_begin_file(TCCState *s1)
 
 /* At the end of compilation, convert any UNDEF syms to global, and merge
    with previously existing symbols */
-ST_FUNC void tccelf_end_file(TCCState *s1)
+ST_FUNC void tcc_format_end_file(TCCState *s1)
 {
     Section *s = s1->symtab;
     int first_sym, nb_syms, *tr, i;

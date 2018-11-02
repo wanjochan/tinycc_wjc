@@ -1,4 +1,4 @@
 //TODO
-#include "tcc_fileformat.c"
+#include "tcc_format.c"
 //TODO MACHO
 

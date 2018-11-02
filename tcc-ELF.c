@@ -1,2 +1,2 @@
-#include "tcc_fileformat.c"
+#include "tcc_format.c"
 

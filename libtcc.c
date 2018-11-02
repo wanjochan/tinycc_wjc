@@ -597,7 +597,7 @@ static int tcc_compile(TCCState *s1, int filetype)
 
     define_start = define_stack;
     is_asm = !!(filetype & (AFF_TYPE_ASM|AFF_TYPE_ASMPP));
-    tccelf_begin_file(s1);
+    tcc_format_begin_file(s1);
 
     if (TCC(setjmp,int)(s1->error_jmp_buf) == 0) {
         s1->nb_errors = 0;
@@ -624,7 +624,7 @@ static int tcc_compile(TCCState *s1, int filetype)
     free_defines(define_start);
     sym_pop(&global_stack, NULL, 0);
     sym_pop(&local_stack, NULL, 0);
-    tccelf_end_file(s1);
+    tcc_format_end_file(s1);
     return s1->nb_errors != 0 ? -1 : 0;
 }
 
@@ -725,7 +725,7 @@ LIBTCCAPI TCCState *tcc_new(void)
     tcc_set_lib_path(s, CONFIG_TCCDIR);
 
 		//TODO ELF/PE/MACHO divide
-    tccelf_new(s);
+    tcc_format_new(s);
 
     tccpp_new(s);
 
@@ -880,7 +880,7 @@ LIBTCCAPI void tcc_delete(TCCState *s1)
     tcc_cleanup();
 
     /* free sections */
-    tccelf_delete(s1);
+    tcc_format_delete(s1);
 
     /* free library paths */
     dynarray_reset(&s1->library_paths, &s1->nb_library_paths);
@@ -934,14 +934,14 @@ LIBTCCAPI int tcc_set_output_type(TCCState *s, int output_type)
 #ifdef CONFIG_TCC_BCHECK
     if (s->do_bounds_check) {
         /* if bound checking, then add corresponding sections */
-        tccelf_bounds_new(s);
+        tcc_format_bounds_new(s);
         /* define symbol */
         tcc_define_symbol(s, "__BOUNDS_CHECKING_ON", NULL);
     }
 #endif
     if (s->do_debug) {
         /* add debug sections */
-        tccelf_stab_new(s);
+        tcc_format_stab_new(s);
     }
 
     tcc_add_library_path(s, CONFIG_TCC_LIBPATHS);

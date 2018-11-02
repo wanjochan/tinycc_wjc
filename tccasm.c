@@ -20,6 +20,8 @@
 
 #ifdef CONFIG_TCC_ASM
 
+//NOTES: entry = tcc_assemble()
+
 #include "tcc.h"
 
 ST_FUNC int asm_get_local_label_name(TCCState *s1, unsigned int n)
