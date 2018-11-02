@@ -2021,6 +2021,7 @@ general_case:
 }//gen_opic()
 
 /* generate a floating point operation with constant propagation */
+//@ref gen_op()
 static void gen_opif(int op)
 {
     int c1, c2;
@@ -2081,9 +2082,9 @@ static void gen_opif(int op)
         vtop--;
     } else {
     general_case:
-        gen_opf(op);
+        gen_opf(op);//IMPORTANT? see gen-$ARCH-$BIT.c
     }
-}
+}//gen_opif()
 
 static int pointed_size(CType *type)
 {

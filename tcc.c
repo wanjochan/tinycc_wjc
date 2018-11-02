@@ -23,6 +23,7 @@
 #if ONE_SOURCE
 # include "libtcc.c"
 #endif
+
 #include "tcctools.c"
 
 static const char help[] =

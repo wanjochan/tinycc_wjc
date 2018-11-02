@@ -2286,11 +2286,13 @@ static void parse_number(const char *p)
             q--;
             ch = *p++;
             b = 16;
-        } else if (tcc_ext && (ch == 'b' || ch == 'B')) {
-            q--;
-            ch = *p++;
-            b = 2;
-        }
+				} else
+					if (tcc_ext && (ch == 'b' || ch == 'B')) {
+						//tcc ext: support \b0101
+						q--;
+						ch = *p++;
+						b = 2;
+					}
     }
     /* parse all digits. cannot check octal numbers at this stage
        because of floating point constants */

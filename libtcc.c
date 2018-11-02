@@ -35,75 +35,31 @@ ST_DATA struct TCCState *tcc_state;
 static int nb_states;
 
 /********************************************************/
-
-#if ONE_SOURCE
+#if ONE_SOURCE//{ONE_SOURCE
 
 #include "tccpp.c"
 #include "tccgen.c"
-//#include "tccelf.c"
 #include "tccrun.c"
-
-//#ifdef TCC_TARGET_I386
-//#include "i386-gen.c"
-//#include "i386-link.c"
-//#include "i386-asm.c"
-//#endif
-//
-//#ifdef TCC_TARGET_ARM
-//#include "arm-gen.c"
-//#include "arm-link.c"
-//#include "arm-asm.c"
-//#endif
-//#ifdef TCC_TARGET_ARM64
-//#include "arm64-gen.c"
-//#include "arm64-link.c"
-////#include "arm64-asm.c"//TODO
-//#endif
-//#ifdef TCC_TARGET_C67
-//#include "c67-gen.c"
-//#include "c67-link.c"
-//#include "tcccoff.c"//TODO change name to arch?
-//#endif
-//#ifdef TCC_TARGET_X86_64
-//#include "x86_64-gen.c"
-//#include "x86_64-link.c"
-//#include "i386-asm.c"
-//#endif
-
-#ifdef CONFIG_TCC_ASM
-#include "tccasm.c"
-#else
-ST_FUNC void asm_instr(void)
-{
-    tcc_error("inline asm() not supported for this arch");//TODO add %s to show arch
-}
-ST_FUNC void asm_global_instr(void)
-{
-    tcc_error("inline asm() not supported for arch ");//TODO to show arch
-}
-#endif
 
 #include TCC_QUOTE(gen-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
 #include TCC_QUOTE(link-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__-__TCC_TARGET_OS__-__TCC_TARGET_FORMAT__.c)
 #include TCC_QUOTE(asm-__TCC_TARGET_CPU__-__TCC_TARGET_CPU_BIT__.c)
 #include TCC_QUOTE(tcc-__TCC_TARGET_FORMAT__.c)
 
-//#ifdef TCC_TARGET_PE
-//#include "tccpe.c"
-//#endif
-#endif /* ONE_SOURCE */
+#include "tccasm.c"
 
-///********************************************************/
-//#ifndef CONFIG_TCC_ASM
-//ST_FUNC void asm_instr(void)
-//{
-//    tcc_error("inline asm() not supported");
-//}
-//ST_FUNC void asm_global_instr(void)
-//{
-//    tcc_error("inline asm() not supported");
-//}
-//#endif
+#ifndef CONFIG_TCC_ASM//{
+ST_FUNC void asm_instr(void)
+{
+    tcc_error("inline asm() not supported for this arch yet");//TODO add %s to show arch
+}
+ST_FUNC void asm_global_instr(void)
+{
+    tcc_error("inline asm() not supported for this arch yet");//TODO to show arch
+}
+#endif//}CONFIG_TCC_ASM
+
+#endif//}ONE_SOURCE
 
 /********************************************************/
 #ifdef _WIN32
@@ -1203,7 +1159,7 @@ ST_FUNC int tcc_add_file_internal(TCCState *s1, const char *filename, int flags)
 						} else {
 							//tcc_load_dylib or support MACHO ...
 							//ret = tcc_load_dylib(s1, fd, filename, (flags & AFF_REFERENCED_DLL) != 0);
-							//@ref tccelf.c
+							//@ref tcc-$FORMAT
 							ret = tcc_load_dll(s1, fd, filename, (flags & AFF_REFERENCED_DLL) != 0);
 						}
             break;

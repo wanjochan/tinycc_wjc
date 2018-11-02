@@ -117,6 +117,13 @@ typedef char *va_list;
 #define _VA_LIST_DEFINED
 #endif
 
+#elif defined(__SMALLER_PP__)//{
+
+typedef char* va_list;
+#define va_start(vl, last)      { (vl) = (char*)&(last) + ((sizeof(last) + sizeof(int) - 1) & -sizeof(int)); }
+#define va_arg(vl, type)        (*(type*)(((vl) += ((sizeof(type) + sizeof(int) - 1) & -sizeof(int))) - ((sizeof(type) + sizeof(int) - 1) & -sizeof(int))))
+#define va_end(vl)
+
 #else//}__TINYC__{
 
 //TODO
