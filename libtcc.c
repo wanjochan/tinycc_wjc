@@ -62,7 +62,7 @@ ST_FUNC void asm_global_instr(void)
 #endif//}ONE_SOURCE
 
 /********************************************************/
-#ifdef _WIN32
+#ifdef _WIN32//{
 ST_FUNC char *normalize_slashes(char *path)
 {
     //char *p;
@@ -89,14 +89,14 @@ static HMODULE tcc_module;
 //    tcc_set_lib_path(s, path);
 //}
 
-#ifdef TCC_TARGET_PE
+#ifdef TCC_TARGET_PE//{
 static void tcc_add_systemdir(TCCState *s)
 {
     char buf[1000];
     TCC(GetSystemDirectory)(buf, sizeof buf);
     tcc_add_library_path(s, normalize_slashes(buf));
 }
-#endif
+#endif//}
 
 #ifdef LIBTCC_AS_DLL
 BOOL WINAPI DllMain (HINSTANCE hDll, DWORD dwReason, LPVOID lpReserved)
@@ -106,7 +106,7 @@ BOOL WINAPI DllMain (HINSTANCE hDll, DWORD dwReason, LPVOID lpReserved)
     return TRUE;
 }
 #endif
-#endif
+#endif//}_WIN32
 
 /********************************************************/
 /* copy a string and truncate it. */
@@ -438,87 +438,6 @@ static void tcc_split_path(TCCState *s, void *p_ary, int *p_nb_ary, const char *
 
 /********************************************************/
 
-//PUB_FUNC void tcc_error_a(TCCState *s1, int is_warning,char* buf)
-//{
-//	BufferedFile **pf, *f;
-//	for (f = file; f && f->filename[0] == ':'; f = f->prev);
-//	if (f) {
-//		for(pf = s1->include_stack; pf < s1->include_stack_ptr; pf++)
-//			TCC(snprintf)(buf, sizeof(buf), "In file included from %s:%d:\n",(*pf)->filename, (*pf)->line_num);
-//		if (s1->error_set_jmp_enabled) {
-//			TCC(snprintf)(buf, sizeof(buf), "%s:%d: ", f->filename, f->line_num - !!(tok_flags & TOK_FLAG_BOL));
-//		} else {
-//			TCC(snprintf)(buf, sizeof(buf), "%s: ", f->filename);
-//		}
-//	} else { TCC(snprintf)(buf, sizeof(buf), "tcc: "); }
-//	if (is_warning) TCC(snprintf)(buf, sizeof(buf), "warning: ");
-//	else TCC(snprintf)(buf, sizeof(buf), "tcc error: ");
-//}
-//
-//PUB_FUNC void tcc_error_b(TCCState *s1, int is_warning,char* buf)
-//{
-//	if (!s1->error_func) {
-//		if (s1->output_type == TCC_OUTPUT_PREPROCESS && s1->ppfp == TCCSTD(out)){
-//		TCC(printf)("\n"), TCC(fflush)(TCCSTD(out));
-//		}
-//		TCC(fflush)(TCCSTD(out));
-//		TCC(fprintf)(TCCSTD(err), "%s\n", buf);
-//		TCC(fflush)(TCCSTD(err));
-//	} else { s1->error_func(s1->error_opaque, buf); }
-//	if (!is_warning || s1->warn_error) s1->nb_errors++;
-//}
-
-//static inline void strcat_vprintf(char *buf, int buf_size, const char *fmt, va_list ap)
-//{
-//	int len;
-//	len = TCC(strlen,int)(buf);
-//	TCC(vsnprintf)(buf + len, buf_size - len, fmt, ap);
-//}
-//
-//static inline void strcat_printf(char *buf, int buf_size, const char *fmt, ...)
-//{
-//	va_list ap;
-//	va_start(ap, fmt);
-//	strcat_vprintf(buf, buf_size, fmt, ap);
-//	va_end(ap);
-//}
-
-//static inline void error1(TCCState *s1, int is_warning, const char *fmt, va_list ap)
-//{
-//	char buf[2048]={'\0'};
-//	BufferedFile **pf, *f;
-//
-//	buf[0] = '\0';
-//	/* use upper file if inline ":asm:" or token ":paste:" */
-//	for (f = file; f && f->filename[0] == ':'; f = f->prev)
-//		;
-//	if (f) {
-//		for(pf = s1->include_stack; pf < s1->include_stack_ptr; pf++)
-//			TCC(snprintf)(buf, sizeof(buf), "In file included from %s:%d:\n",(*pf)->filename, (*pf)->line_num);
-//		if (s1->error_set_jmp_enabled) {
-//			TCC(snprintf)(buf, sizeof(buf), "%s:%d: ", f->filename, f->line_num - !!(tok_flags & TOK_FLAG_BOL));
-//		} else {
-//			TCC(snprintf)(buf, sizeof(buf), "%s: ", f->filename);
-//		}
-//	} else {
-//		strcat_printf(buf, sizeof(buf), "tcc: ");
-//	}
-//	if (is_warning) TCC(snprintf)(buf, sizeof(buf), "warning: ");
-//	else TCC(snprintf)(buf, sizeof(buf), "error: ");
-//
-//	strcat_vprintf(buf, sizeof(buf), fmt, ap);
-//
-//	if (!s1->error_func) {
-//		if (s1->output_type == TCC_OUTPUT_PREPROCESS && s1->ppfp == TCCSTD(out)){
-//			TCC(printf)("\n"), TCC(fflush)(TCCSTD(out));
-//		}
-//		TCC(fflush)(TCCSTD(out));
-//		TCC(fprintf)(TCCSTD(err), "%s\n", buf);
-//		TCC(fflush)(TCCSTD(err));
-//	} else { s1->error_func(s1->error_opaque, buf); }
-//	if (!is_warning || s1->warn_error) s1->nb_errors++;
-//}
-
 static inline void strcat_vprintf(char *buf, int buf_size, const char *fmt, va_list ap)
 {
 	int len;
@@ -533,57 +452,6 @@ static inline void strcat_printf(char *buf, int buf_size, const char *fmt, ...)
 	strcat_vprintf(buf, buf_size, fmt, ap);
 	va_end(ap);
 }
-
-//PUB_FUNC void tcc_error_internal(TCCState *s1, int is_warning, const char *fmt, ...)
-//{
-//	va_list ap;
-//
-//	char buf[2048]={'\0'};
-//	BufferedFile **pf, *f;
-//
-//	buf[0] = '\0';
-//	/* use upper file if inline ":asm:" or token ":paste:" */
-//	for (f = file; f && f->filename[0] == ':'; f = f->prev)
-//		;
-//	if (f) {
-//		for(pf = s1->include_stack; pf < s1->include_stack_ptr; pf++)
-//			strcat_printf(buf, sizeof(buf), "In file included from %s:%d:\n",(*pf)->filename, (*pf)->line_num);
-//		if (s1->error_set_jmp_enabled) {
-//			strcat_printf(buf, sizeof(buf), "%s:%d: ", f->filename, f->line_num - !!(tok_flags & TOK_FLAG_BOL));
-//		} else {
-//			strcat_printf(buf, sizeof(buf), "%s: ", f->filename);
-//		}
-//	} else {
-//		strcat_printf(buf, sizeof(buf), "tcc: ");
-//	}
-//	if (is_warning) strcat_printf(buf, sizeof(buf), "warning: ");
-//	else strcat_printf(buf, sizeof(buf), "error: ");
-//
-//	va_start(ap, fmt);
-//	strcat_vprintf(buf, sizeof(buf), fmt, ap);
-//	va_end(ap);
-//
-//	if (!s1->error_func) {
-//		if (s1->output_type == TCC_OUTPUT_PREPROCESS && s1->ppfp == TCCSTD(out)){
-//			TCC(printf)("\n"), TCC(fflush)(TCCSTD(out));
-//		}
-//		TCC(fflush)(TCCSTD(out));
-//		TCC(fprintf)(TCCSTD(err), "%s\n", buf);
-//		TCC(fflush)(TCCSTD(err));
-//	} else { s1->error_func(s1->error_opaque, buf); }
-//	if (!is_warning || s1->warn_error) s1->nb_errors++;
-//	
-////	char tcc_error4_buf[2048]={'\0'};
-////	int len;
-////	va_list ap;
-////	tcc_error_a(s1,is_warning,tcc_error4_buf);
-////	va_start(ap, is_warning);
-////	//strcat_vprintf(buf, buf_size, fmt, ap);
-////	len=TCC(strlen,int)(tcc_error4_buf);
-////	TCC(vsnprintf)(tcc_error4_buf+len,sizeof(tcc_error4_buf)-len,ap);
-////	va_end(ap);
-////	tcc_error_b(s1,is_warning,tcc_error4_buf);
-//}
 
 PUB_FUNC void tcc_error_internal_v(TCCState *s1, int is_warning, const char *fmt, va_list ap)
 {
